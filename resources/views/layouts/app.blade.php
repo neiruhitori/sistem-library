@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>AdminLTE 3 | Dashboard 2</title>
+    <title>Admin | Perpustakaan SMPN 02 Klakah</title>
+    <link rel="icon" href="{{ asset('AdminLTE-3.2.0/dist/img/smp2.png') }}" type="image/png" />
     <style>
         #user-dropdown-menu a,
         #user-dropdown-menu button {
@@ -33,14 +34,21 @@
     <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/dist/css/adminlte.min.css') }}">
+    <!-- DataTables -->
+    <link rel="stylesheet"
+        href="{{ asset('AdminLTE-3.2.0/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ asset('AdminLTE-3.2.0/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ asset('AdminLTE-3.2.0/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
 </head>
 
-<body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+<body class="hold-transition  sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
     <div class="wrapper">
 
         <!-- Preloader -->
         <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__wobble" src="{{ asset('AdminLTE-3.2.0/dist/img/AdminLTELogo.png') }}"
+            <img class="animation__wobble" src="{{ asset('AdminLTE-3.2.0/dist/img/smp2.png') }}"
                 alt="AdminLTELogo" height="60" width="60">
         </div>
 
@@ -51,10 +59,10 @@
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="index3.html" class="brand-link">
-                <img src="{{ asset('AdminLTE-3.2.0/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo"
+            <a href="https://smpn2klakah-lmj.sch.id/" class="brand-link">
+                <img src="{{ asset('AdminLTE-3.2.0/dist/img/smp2.png') }}" alt="AdminLTE Logo"
                     class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light">AdminLTE 3</span>
+                <span class="brand-text font-weight-light">SMPN 02 KLAKAH</span>
             </a>
 
             <!-- Sidebar -->
@@ -65,7 +73,7 @@
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
-            @yield('content')
+            @yield('contents')
             <!-- /.content -->
         </div>
         <!-- /.content-wrapper -->
@@ -78,7 +86,7 @@
 
         <!-- Main Footer -->
         <footer class="main-footer">
-            <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
+            <strong>Copyright &copy; 2024-2025 Perpustakaan <a href="https://smpn2klakah-lmj.sch.id/">SMPN 02 Klakah</a>.</strong>
             All rights reserved.
             <div class="float-right d-none d-sm-inline-block">
                 <b>Version</b> 3.2.0
@@ -126,6 +134,34 @@
             }
         });
     </script>
+    <!-- Modal -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/plugins/fontawesome-free/css/all.min.css') }}">
+    <!-- DataTables -->
+    <link rel="stylesheet"
+        href="{{ asset('AdminLTE-3.2.0/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ asset('AdminLTE-3.2.0/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ asset('AdminLTE-3.2.0/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/dist/css/adminlte.min.css') }}">
+    <!-- daterange picker -->
+    <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/plugins/daterangepicker/daterangepicker.css') }}">
+
+    
+    @stack('scripts')
 </body>
 
 <!-- Profile Modal -->

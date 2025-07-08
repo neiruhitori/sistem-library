@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SI Kasir</title>
+    <title>Perpustakaan SMPN 02 Klakah</title>
 
     <!-- Tambahkan semua CSS AdminLTE -->
     <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/plugins/fontawesome-free/css/all.min.css') }}">
@@ -17,14 +17,13 @@
 </head>
 
 <body class="hold-transition login-page">
-
+    
     {{ $slot }}
 
     <!-- Tambahkan semua JS AdminLTE -->
     <script src="{{ asset('AdminLTE-3.2.0/plugins/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('AdminLTE-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('AdminLTE-3.2.0/dist/js/adminlte.min.js') }}"></script>
-
     <!-- jQuery -->
     <script src="{{ asset('AdminLTE-3.2.0/plugins/jquery/jquery.min.js') }}"></script>
     <!-- Bootstrap 4 -->

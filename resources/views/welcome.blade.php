@@ -29,7 +29,8 @@
   <div id="particles-bg"></div>
 
   <div class="text-center text-white animate__animated animate__fadeIn">
-    <h1 class="text-5xl md:text-6xl font-bold mb-6">Welcome to Our System</h1>
+    <h1 class="text-5xl md:text-6xl font-bold mb-6">Welcome to Our Library System</h1>
+    <h1 class="text-5xl md:text-6xl font-bold mb-6">SMPN 02 KLAKAH</h1>
     <p class="mb-8 text-lg md:text-xl text-gray-300">Your gateway to a smarter solution.</p>
 
     <div class="flex justify-center space-x-6">

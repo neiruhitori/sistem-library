@@ -14,7 +14,7 @@
     if (window.___browserSync___ === undefined && Number(localStorage.getItem('AdminLTE:Demo:MessageShowed')) < Date.now()) {
       localStorage.setItem('AdminLTE:Demo:MessageShowed', (Date.now()) + (15 * 60 * 1000))
       // eslint-disable-next-line no-alert
-      alert('Selamat Datang di Website Saya, \nHalaman ini C:\laragon\www\sistem-kasir\public\AdminLTE-3.2.0\dist\js\demo.js')
+      alert('Selamat Datang di Website Perpustakaan SMPN 02 Klakah, \nHalaman ini hanya bisa diakses oleh Admin')
     }
   }, 1000)
 
