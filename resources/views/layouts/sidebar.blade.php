@@ -46,617 +46,447 @@
               <nav class="mt-2">
                   <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                       data-accordion="false">
-                      <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-                      <li class="nav-item menu-open">
-                          <a href="/dashboard" class="nav-link active">
-                              <i class="nav-icon fas fa-tachometer-alt"></i>
+                      <li class="nav-item">
+                          <a href="/dashboard" class="nav-link {{ Request::is('dashboard') ? 'active' : '' }}">
+                              <i class="nav-icon fas fa-home"></i>
                               <p>
-                                  Dashboard
+                                  Beranda
                               </p>
                           </a>
                       </li>
                       <li class="nav-item">
-                          <a href="pages/widgets.html" class="nav-link">
-                              <i class="nav-icon fas fa-th"></i>
+                          <a href="/siswa" class="nav-link {{ Request::is('siswa') ? 'active' : '' }}">
+                              <i class="nav-icon fas fa-users"></i>
                               <p>
-                                  Widgets
-                                  <span class="right badge badge-danger">New</span>
+                                  Siswa
                               </p>
                           </a>
                       </li>
-                      <li class="nav-item">
-                          <a href="#" class="nav-link">
-                              <i class="nav-icon fas fa-copy"></i>
-                              <p>
-                                  Layout Options
-                                  <i class="fas fa-angle-left right"></i>
-                                  <span class="badge badge-info right">6</span>
-                              </p>
-                          </a>
-                          <ul class="nav nav-treeview">
-                              <li class="nav-item">
-                                  <a href="pages/layout/top-nav.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Top Navigation</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/layout/top-nav-sidebar.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Top Navigation + Sidebar</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/layout/boxed.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Boxed</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/layout/fixed-sidebar.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Fixed Sidebar</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/layout/fixed-sidebar-custom.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Fixed Sidebar <small>+ Custom Area</small></p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/layout/fixed-topnav.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Fixed Navbar</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/layout/fixed-footer.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Fixed Footer</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/layout/collapsed-sidebar.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Collapsed Sidebar</p>
-                                  </a>
-                              </li>
-                          </ul>
-                      </li>
-                      <li class="nav-item">
-                          <a href="#" class="nav-link">
-                              <i class="nav-icon fas fa-chart-pie"></i>
-                              <p>
-                                  Charts
-                                  <i class="right fas fa-angle-left"></i>
-                              </p>
-                          </a>
-                          <ul class="nav nav-treeview">
-                              <li class="nav-item">
-                                  <a href="pages/charts/chartjs.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>ChartJS</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/charts/flot.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Flot</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/charts/inline.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Inline</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/charts/uplot.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>uPlot</p>
-                                  </a>
-                              </li>
-                          </ul>
-                      </li>
-                      <li class="nav-item">
-                          <a href="#" class="nav-link">
-                              <i class="nav-icon fas fa-tree"></i>
-                              <p>
-                                  UI Elements
-                                  <i class="fas fa-angle-left right"></i>
-                              </p>
-                          </a>
-                          <ul class="nav nav-treeview">
-                              <li class="nav-item">
-                                  <a href="pages/UI/general.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>General</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/UI/icons.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Icons</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/UI/buttons.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Buttons</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/UI/sliders.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Sliders</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/UI/modals.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Modals & Alerts</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/UI/navbar.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Navbar & Tabs</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/UI/timeline.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Timeline</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/UI/ribbons.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Ribbons</p>
-                                  </a>
-                              </li>
-                          </ul>
-                      </li>
-                      <li class="nav-item">
-                          <a href="#" class="nav-link">
-                              <i class="nav-icon fas fa-edit"></i>
-                              <p>
-                                  Forms
-                                  <i class="fas fa-angle-left right"></i>
-                              </p>
-                          </a>
-                          <ul class="nav nav-treeview">
-                              <li class="nav-item">
-                                  <a href="pages/forms/general.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>General Elements</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/forms/advanced.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Advanced Elements</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/forms/editors.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Editors</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/forms/validation.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Validation</p>
-                                  </a>
-                              </li>
-                          </ul>
-                      </li>
-                      <li class="nav-item">
-                          <a href="#" class="nav-link">
-                              <i class="nav-icon fas fa-table"></i>
-                              <p>
-                                  Tables
-                                  <i class="fas fa-angle-left right"></i>
-                              </p>
-                          </a>
-                          <ul class="nav nav-treeview">
-                              <li class="nav-item">
-                                  <a href="pages/tables/simple.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Simple Tables</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/tables/data.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>DataTables</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/tables/jsgrid.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>jsGrid</p>
-                                  </a>
-                              </li>
-                          </ul>
-                      </li>
-                      <li class="nav-header">EXAMPLES</li>
-                      <li class="nav-item">
-                          <a href="pages/calendar.html" class="nav-link">
-                              <i class="nav-icon fas fa-calendar-alt"></i>
-                              <p>
-                                  Calendar
-                                  <span class="badge badge-info right">2</span>
-                              </p>
-                          </a>
-                      </li>
-                      <li class="nav-item">
-                          <a href="pages/gallery.html" class="nav-link">
-                              <i class="nav-icon far fa-image"></i>
-                              <p>
-                                  Gallery
-                              </p>
-                          </a>
-                      </li>
-                      <li class="nav-item">
-                          <a href="pages/kanban.html" class="nav-link">
-                              <i class="nav-icon fas fa-columns"></i>
-                              <p>
-                                  Kanban Board
-                              </p>
-                          </a>
-                      </li>
-                      <li class="nav-item">
-                          <a href="#" class="nav-link">
-                              <i class="nav-icon far fa-envelope"></i>
-                              <p>
-                                  Mailbox
-                                  <i class="fas fa-angle-left right"></i>
-                              </p>
-                          </a>
-                          <ul class="nav nav-treeview">
-                              <li class="nav-item">
-                                  <a href="pages/mailbox/mailbox.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Inbox</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/mailbox/compose.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Compose</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/mailbox/read-mail.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Read</p>
-                                  </a>
-                              </li>
-                          </ul>
-                      </li>
-                      <li class="nav-item">
-                          <a href="#" class="nav-link">
+                      <li
+                          class="nav-item {{ Request::is('buku') ? 'menu-open' : '' }} {{ Request::is('bukuharian') ? 'menu-open' : '' }}">
+                          <a href="#"
+                              class="nav-link {{ Request::is('buku') ? 'active' : '' }} {{ Request::is('bukuharian') ? 'active' : '' }}">
                               <i class="nav-icon fas fa-book"></i>
                               <p>
-                                  Pages
+                                  Buku
                                   <i class="fas fa-angle-left right"></i>
                               </p>
                           </a>
                           <ul class="nav nav-treeview">
                               <li class="nav-item">
-                                  <a href="pages/examples/invoice.html" class="nav-link">
+                                  <a href="/bukuharian"
+                                      class="nav-link {{ Request::is('bukuharian') ? 'active' : '' }}">
                                       <i class="far fa-circle nav-icon"></i>
-                                      <p>Invoice</p>
+                                      <p>Buku Harian</p>
                                   </a>
                               </li>
+                          </ul>
+                          <ul class="nav nav-treeview">
                               <li class="nav-item">
-                                  <a href="pages/examples/profile.html" class="nav-link">
+                                  <a href="/buku" class="nav-link {{ Request::is('buku') ? 'active' : '' }}">
                                       <i class="far fa-circle nav-icon"></i>
-                                      <p>Profile</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/examples/e-commerce.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>E-commerce</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/examples/projects.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Projects</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/examples/project-add.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Project Add</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/examples/project-edit.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Project Edit</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/examples/project-detail.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Project Detail</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/examples/contacts.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Contacts</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/examples/faq.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>FAQ</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/examples/contact-us.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Contact us</p>
+                                      <p>Buku Tahunan</p>
                                   </a>
                               </li>
                           </ul>
                       </li>
-                      <li class="nav-item">
-                          <a href="#" class="nav-link">
-                              <i class="nav-icon far fa-plus-square"></i>
+                      {{-- <div class="user-panel d-flex"></div> --}}
+                      <li
+                          class="nav-item {{ Request::is('peminjaman') ? 'menu-open' : '' }} {{ Request::is('pengembalian') ? 'menu-open' : '' }}">
+                          <a href="#"
+                              class="nav-link {{ Request::is('peminjaman') ? 'active' : '' }} {{ Request::is('pengembalian') ? 'active' : '' }}">
+                              <i class="nav-icon fas fa-table"></i>
                               <p>
-                                  Extras
+                                  Data Harian
                                   <i class="fas fa-angle-left right"></i>
                               </p>
                           </a>
                           <ul class="nav nav-treeview">
                               <li class="nav-item">
-                                  <a href="#" class="nav-link">
+                                  <a href="/peminjaman"
+                                      class="nav-link {{ Request::is('peminjaman') ? 'active' : '' }}">
                                       <i class="far fa-circle nav-icon"></i>
+                                      <p>Data Peminjaman</p>
+                                  </a>
+                              </li>
+                          </ul>
+                          <ul class="nav nav-treeview">
+                              <li class="nav-item">
+                                  <a href="/pengembalian"
+                                      class="nav-link {{ Request::is('pengembalian') ? 'active' : '' }}">
+                                      <i class="far fa-circle nav-icon"></i>
+                                      <p>Data Pengembalian</p>
+                                  </a>
+                              </li>
+                          </ul>
+                      </li>
+                      <li
+                          class="nav-item {{ Request::is('peminjamantahunan') ? 'menu-open' : '' }} {{ Request::is('pengembaliantahunan') ? 'menu-open' : '' }}">
+                          <a href="#"
+                              class="nav-link {{ Request::is('peminjamantahunan') ? 'active' : '' }} {{ Request::is('pengembaliantahunan') ? 'active' : '' }}">
+                              <i class="nav-icon far fa-calendar"></i>
+                              <p>
+                                  Data Tahunan
+                                  <i class="fas fa-angle-left right"></i>
+                              </p>
+                          </a>
+                          <ul class="nav nav-treeview">
+                              <li class="nav-item">
+                                  <a href="/peminjamantahunan"
+                                      class="nav-link {{ Request::is('peminjamantahunan') ? 'active' : '' }}">
+                                      <i class="far fa-circle nav-icon"></i>
+                                      <p>Data Peminjaman</p>
+                                  </a>
+                              </li>
+                          </ul>
+                          <ul class="nav nav-treeview">
+                              <li class="nav-item">
+                                  <a href="/pengembaliantahunan"
+                                      class="nav-link {{ Request::is('pengembaliantahunan') ? 'active' : '' }}">
+                                      <i class="far fa-circle nav-icon"></i>
+                                      <p>Data Pengembalian</p>
+                                  </a>
+                              </li>
+                          </ul>
+                      <li
+                          class="nav-item {{ Request::is('sedangmeminjam') ? 'menu-open' : '' }} {{ Request::is('selesaimeminjam') ? 'menu-open' : '' }} {{ Request::is('sedangmeminjamtahunan') ? 'menu-open' : '' }} {{ Request::is('selesaimeminjamtahunan') ? 'menu-open' : '' }}">
+                          <a href="#"
+                              class="nav-link  {{ Request::is('sedangmeminjam') ? 'active' : '' }} {{ Request::is('selesaimeminjam') ? 'active' : '' }} {{ Request::is('sedangmeminjamtahunan') ? 'active' : '' }} {{ Request::is('selesaimeminjamtahunan') ? 'active' : '' }}">
+                              <i class="nav-icon fas fa-info-circle"></i>
+                              <p>
+                                  Laporan
+                                  <i class="fas fa-angle-left right"></i>
+                              </p>
+                          </a>
+                          <ul class="nav nav-treeview">
+                              <li
+                                  class="nav-item  {{ Request::is('sedangmeminjam') ? 'menu-open' : '' }} {{ Request::is('selesaimeminjam') ? 'menu-open' : '' }}">
+                                  <a href="#" class="nav-link">
+                                      <i class="nav-icon far fa-folder"></i>
                                       <p>
-                                          Login & Register v1
+                                          Harian
                                           <i class="fas fa-angle-left right"></i>
                                       </p>
                                   </a>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="pages/examples/login.html" class="nav-link">
+                                          <a href="/sedangmeminjam"
+                                              class="nav-link {{ Request::is('sedangmeminjam') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
-                                              <p>Login v1</p>
+                                              <p>Sedang Meminjam</p>
                                           </a>
                                       </li>
+                                  </ul>
+                                  <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="pages/examples/register.html" class="nav-link">
+                                          <a href="/selesaimeminjam"
+                                              class="nav-link {{ Request::is('selesaimeminjam') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
-                                              <p>Register v1</p>
-                                          </a>
-                                      </li>
-                                      <li class="nav-item">
-                                          <a href="pages/examples/forgot-password.html" class="nav-link">
-                                              <i class="far fa-circle nav-icon"></i>
-                                              <p>Forgot Password v1</p>
-                                          </a>
-                                      </li>
-                                      <li class="nav-item">
-                                          <a href="pages/examples/recover-password.html" class="nav-link">
-                                              <i class="far fa-circle nav-icon"></i>
-                                              <p>Recover Password v1</p>
+                                              <p>Selesai Meminjam</p>
                                           </a>
                                       </li>
                                   </ul>
                               </li>
-                              <li class="nav-item">
+                          </ul>
+                          <ul class="nav nav-treeview">
+                              <li
+                                  class="nav-item {{ Request::is('sedangmeminjamtahunan') ? 'menu-open' : '' }} {{ Request::is('selesaimeminjamtahunan') ? 'menu-open' : '' }}">
                                   <a href="#" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
+                                      <i class="nav-icon far fa-folder"></i>
                                       <p>
-                                          Login & Register v2
+                                          Tahunan
                                           <i class="fas fa-angle-left right"></i>
                                       </p>
                                   </a>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="pages/examples/login-v2.html" class="nav-link">
+                                          <a href="/sedangmeminjamtahunan"
+                                              class="nav-link {{ Request::is('sedangmeminjamtahunan') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
-                                              <p>Login v2</p>
+                                              <p>Sedang Meminjam</p>
                                           </a>
                                       </li>
+                                  </ul>
+                                  <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="pages/examples/register-v2.html" class="nav-link">
+                                          <a href="/selesaimeminjamtahunan"
+                                              class="nav-link {{ Request::is('selesaimeminjamtahunan') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
-                                              <p>Register v2</p>
-                                          </a>
-                                      </li>
-                                      <li class="nav-item">
-                                          <a href="pages/examples/forgot-password-v2.html" class="nav-link">
-                                              <i class="far fa-circle nav-icon"></i>
-                                              <p>Forgot Password v2</p>
-                                          </a>
-                                      </li>
-                                      <li class="nav-item">
-                                          <a href="pages/examples/recover-password-v2.html" class="nav-link">
-                                              <i class="far fa-circle nav-icon"></i>
-                                              <p>Recover Password v2</p>
+                                              <p>Selesai Meminjam</p>
                                           </a>
                                       </li>
                                   </ul>
                               </li>
-                              <li class="nav-item">
-                                  <a href="pages/examples/lockscreen.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Lockscreen</p>
+                          </ul>
+                      </li>
+                      <li
+                          class="nav-item {{ Request::is('kelas/viia') ? 'menu-open' : '' }} {{ Request::is('kelas/viib') ? 'menu-open' : '' }} {{ Request::is('kelas/viic') ? 'menu-open' : '' }} {{ Request::is('kelas/viid') ? 'menu-open' : '' }} {{ Request::is('kelas/viie') ? 'menu-open' : '' }} {{ Request::is('kelas/viif') ? 'menu-open' : '' }} {{ Request::is('kelas/viig') ? 'menu-open' : '' }}
+            {{ Request::is('kelas/viiia') ? 'menu-open' : '' }} {{ Request::is('kelas/viiib') ? 'menu-open' : '' }} {{ Request::is('kelas/viiic') ? 'menu-open' : '' }} {{ Request::is('kelas/viiid') ? 'menu-open' : '' }} {{ Request::is('kelas/viiie') ? 'menu-open' : '' }} {{ Request::is('kelas/viiif') ? 'menu-open' : '' }} {{ Request::is('kelas/viiig') ? 'menu-open' : '' }}
+            {{ Request::is('kelas/ixa') ? 'menu-open' : '' }} {{ Request::is('kelas/ixb') ? 'menu-open' : '' }} {{ Request::is('kelas/ixc') ? 'menu-open' : '' }} {{ Request::is('kelas/ixd') ? 'menu-open' : '' }} {{ Request::is('kelas/ixe') ? 'menu-open' : '' }} {{ Request::is('kelas/ixf') ? 'menu-open' : '' }} {{ Request::is('kelas/ixg') ? 'menu-open' : '' }}">
+                          <a href="#"
+                              class="nav-link {{ Request::is('kelas/viia') ? 'active' : '' }} {{ Request::is('kelas/viib') ? 'active' : '' }} {{ Request::is('kelas/viic') ? 'active' : '' }} {{ Request::is('kelas/viid') ? 'active' : '' }} {{ Request::is('kelas/viie') ? 'active' : '' }} {{ Request::is('kelas/viif') ? 'active' : '' }} {{ Request::is('kelas/viig') ? 'active' : '' }}
+                {{ Request::is('kelas/viiia') ? 'active' : '' }} {{ Request::is('kelas/viiib') ? 'active' : '' }} {{ Request::is('kelas/viiic') ? 'active' : '' }} {{ Request::is('kelas/viiid') ? 'active' : '' }} {{ Request::is('kelas/viiie') ? 'active' : '' }} {{ Request::is('kelas/viiif') ? 'active' : '' }} {{ Request::is('kelas/viiig') ? 'active' : '' }}
+                {{ Request::is('kelas/ixa') ? 'active' : '' }} {{ Request::is('kelas/ixb') ? 'active' : '' }} {{ Request::is('kelas/ixc') ? 'active' : '' }} {{ Request::is('kelas/ixd') ? 'active' : '' }} {{ Request::is('kelas/ixe') ? 'active' : '' }} {{ Request::is('kelas/ixf') ? 'active' : '' }} {{ Request::is('kelas/ixg') ? 'active' : '' }}">
+                              <i class="nav-icon fas fa-school"></i>
+                              <p>
+                                  Kelas
+                                  <i class="fas fa-angle-left right"></i>
+                              </p>
+                          </a>
+                          <ul class="nav nav-treeview">
+                              <li
+                                  class="nav-item {{ Request::is('kelas/viia') ? 'menu-open' : '' }} {{ Request::is('kelas/viib') ? 'menu-open' : '' }} {{ Request::is('kelas/viic') ? 'menu-open' : '' }} {{ Request::is('kelas/viid') ? 'menu-open' : '' }} {{ Request::is('kelas/viie') ? 'menu-open' : '' }} {{ Request::is('kelas/viif') ? 'menu-open' : '' }} {{ Request::is('kelas/viig') ? 'menu-open' : '' }}">
+                                  <a href="#" class="nav-link">
+                                      <i class="nav-icon far fa-folder"></i>
+                                      <p>
+                                          VII
+                                          <i class="fas fa-angle-left right"></i>
+                                      </p>
                                   </a>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/viia"
+                                              class="nav-link  {{ Request::is('kelas/viia') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas A</p>
+                                          </a>
+                                      </li>
+                                  </ul>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/viib"
+                                              class="nav-link {{ Request::is('kelas/viib') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas B</p>
+                                          </a>
+                                      </li>
+                                  </ul>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/viic"
+                                              class="nav-link {{ Request::is('kelas/viic') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas C</p>
+                                          </a>
+                                      </li>
+                                  </ul>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/viid"
+                                              class="nav-link {{ Request::is('kelas/viid') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas D</p>
+                                          </a>
+                                      </li>
+                                  </ul>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/viie"
+                                              class="nav-link {{ Request::is('kelas/viie') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas E</p>
+                                          </a>
+                                      </li>
+                                  </ul>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/viif"
+                                              class="nav-link {{ Request::is('kelas/viif') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas F</p>
+                                          </a>
+                                      </li>
+                                  </ul>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/viig"
+                                              class="nav-link {{ Request::is('kelas/viig') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas G</p>
+                                          </a>
+                                      </li>
+                                  </ul>
                               </li>
-                              <li class="nav-item">
-                                  <a href="pages/examples/legacy-user-menu.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Legacy User Menu</p>
+                          </ul>
+                          <ul class="nav nav-treeview">
+                              <li
+                                  class="nav-item {{ Request::is('kelas/viiia') ? 'menu-open' : '' }} {{ Request::is('kelas/viiib') ? 'menu-open' : '' }} {{ Request::is('kelas/viiic') ? 'menu-open' : '' }} {{ Request::is('kelas/viiid') ? 'menu-open' : '' }} {{ Request::is('kelas/viiie') ? 'menu-open' : '' }} {{ Request::is('kelas/viiif') ? 'menu-open' : '' }} {{ Request::is('kelas/viiig') ? 'menu-open' : '' }}">
+                                  <a href="#" class="nav-link">
+                                      <i class="nav-icon far fa-folder"></i>
+                                      <p>
+                                          VIII
+                                          <i class="fas fa-angle-left right"></i>
+                                      </p>
                                   </a>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/viiia"
+                                              class="nav-link {{ Request::is('kelas/viiia') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas A</p>
+                                          </a>
+                                      </li>
+                                  </ul>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/viiib"
+                                              class="nav-link {{ Request::is('kelas/viiib') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas B</p>
+                                          </a>
+                                      </li>
+                                  </ul>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/viiic"
+                                              class="nav-link {{ Request::is('kelas/viiic') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas C</p>
+                                          </a>
+                                      </li>
+                                  </ul>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/viiid"
+                                              class="nav-link {{ Request::is('kelas/viiid') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas D</p>
+                                          </a>
+                                      </li>
+                                  </ul>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/viiie"
+                                              class="nav-link {{ Request::is('kelas/viiie') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas E</p>
+                                          </a>
+                                      </li>
+                                  </ul>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/viiif"
+                                              class="nav-link {{ Request::is('kelas/viiif') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas F</p>
+                                          </a>
+                                      </li>
+                                  </ul>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/viiig"
+                                              class="nav-link {{ Request::is('kelas/viiig') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas G</p>
+                                          </a>
+                                      </li>
+                                  </ul>
                               </li>
-                              <li class="nav-item">
-                                  <a href="pages/examples/language-menu.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Language Menu</p>
+                          </ul>
+                          <ul class="nav nav-treeview">
+                              <li
+                                  class="nav-item {{ Request::is('kelas/ixa') ? 'menu-open' : '' }} {{ Request::is('kelas/ixb') ? 'menu-open' : '' }} {{ Request::is('kelas/ixc') ? 'menu-open' : '' }} {{ Request::is('kelas/ixd') ? 'menu-open' : '' }} {{ Request::is('kelas/ixe') ? 'menu-open' : '' }} {{ Request::is('kelas/ixf') ? 'menu-open' : '' }} {{ Request::is('kelas/ixg') ? 'menu-open' : '' }}">
+                                  <a href="#" class="nav-link">
+                                      <i class="nav-icon far fa-folder"></i>
+                                      <p>
+                                          IX
+                                          <i class="fas fa-angle-left right"></i>
+                                      </p>
                                   </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/examples/404.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Error 404</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/examples/500.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Error 500</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/examples/pace.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Pace</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/examples/blank.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Blank Page</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="starter.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Starter Page</p>
-                                  </a>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/ixa"
+                                              class="nav-link {{ Request::is('kelas/ixa') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas A</p>
+                                          </a>
+                                      </li>
+                                  </ul>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/ixb"
+                                              class="nav-link {{ Request::is('kelas/ixb') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas B</p>
+                                          </a>
+                                      </li>
+                                  </ul>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/ixc"
+                                              class="nav-link {{ Request::is('kelas/ixc') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas C</p>
+                                          </a>
+                                      </li>
+                                  </ul>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/ixd"
+                                              class="nav-link {{ Request::is('kelas/ixd') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas D</p>
+                                          </a>
+                                      </li>
+                                  </ul>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/ixe"
+                                              class="nav-link {{ Request::is('kelas/ixe') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas E</p>
+                                          </a>
+                                      </li>
+                                  </ul>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/ixf"
+                                              class="nav-link {{ Request::is('kelas/ixf') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas F</p>
+                                          </a>
+                                      </li>
+                                  </ul>
+                                  <ul class="nav nav-treeview">
+                                      <li class="nav-item">
+                                          <a href="/kelas/ixg"
+                                              class="nav-link {{ Request::is('kelas/ixg') ? 'active' : '' }}">
+                                              <i class="far fa-circle nav-icon"></i>
+                                              <p>Kelas G</p>
+                                          </a>
+                                      </li>
+                                  </ul>
                               </li>
                           </ul>
                       </li>
-                      <li class="nav-item">
-                          <a href="#" class="nav-link">
-                              <i class="nav-icon fas fa-search"></i>
+                      <li
+                          class="nav-item {{ Request::is('catatanharian') ? 'menu-open' : '' }} {{ Request::is('catatantahunan') ? 'menu-open' : '' }}">
+                          <a href="#"
+                              class="nav-link  {{ Request::is('catatanharian') ? 'active' : '' }} {{ Request::is('catatantahunan') ? 'active' : '' }}">
+                              <i class="nav-icon fas fa-pencil-alt"></i>
                               <p>
-                                  Search
+                                  Catatan Denda
                                   <i class="fas fa-angle-left right"></i>
                               </p>
                           </a>
                           <ul class="nav nav-treeview">
                               <li class="nav-item">
-                                  <a href="pages/search/simple.html" class="nav-link">
+                                  <a href="#"
+                                      class="nav-link {{ Request::is('catatanharian') ? 'active' : '' }}">
                                       <i class="far fa-circle nav-icon"></i>
-                                      <p>Simple Search</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="pages/search/enhanced.html" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Enhanced</p>
+                                      <p>Harian</p>
                                   </a>
                               </li>
                           </ul>
-                      </li>
-                      <li class="nav-header">MISCELLANEOUS</li>
-                      <li class="nav-item">
-                          <a href="iframe.html" class="nav-link">
-                              <i class="nav-icon fas fa-ellipsis-h"></i>
-                              <p>Tabbed IFrame Plugin</p>
-                          </a>
-                      </li>
-                      <li class="nav-item">
-                          <a href="https://adminlte.io/docs/3.1/" class="nav-link">
-                              <i class="nav-icon fas fa-file"></i>
-                              <p>Documentation</p>
-                          </a>
-                      </li>
-                      <li class="nav-header">MULTI LEVEL EXAMPLE</li>
-                      <li class="nav-item">
-                          <a href="#" class="nav-link">
-                              <i class="fas fa-circle nav-icon"></i>
-                              <p>Level 1</p>
-                          </a>
-                      </li>
-                      <li class="nav-item">
-                          <a href="#" class="nav-link">
-                              <i class="nav-icon fas fa-circle"></i>
-                              <p>
-                                  Level 1
-                                  <i class="right fas fa-angle-left"></i>
-                              </p>
-                          </a>
                           <ul class="nav nav-treeview">
                               <li class="nav-item">
-                                  <a href="#" class="nav-link">
+                                  <a href="#"
+                                      class="nav-link {{ Request::is('catatantahunan') ? 'active' : '' }}">
                                       <i class="far fa-circle nav-icon"></i>
-                                      <p>Level 2</p>
-                                  </a>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="#" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>
-                                          Level 2
-                                          <i class="right fas fa-angle-left"></i>
-                                      </p>
-                                  </a>
-                                  <ul class="nav nav-treeview">
-                                      <li class="nav-item">
-                                          <a href="#" class="nav-link">
-                                              <i class="far fa-dot-circle nav-icon"></i>
-                                              <p>Level 3</p>
-                                          </a>
-                                      </li>
-                                      <li class="nav-item">
-                                          <a href="#" class="nav-link">
-                                              <i class="far fa-dot-circle nav-icon"></i>
-                                              <p>Level 3</p>
-                                          </a>
-                                      </li>
-                                      <li class="nav-item">
-                                          <a href="#" class="nav-link">
-                                              <i class="far fa-dot-circle nav-icon"></i>
-                                              <p>Level 3</p>
-                                          </a>
-                                      </li>
-                                  </ul>
-                              </li>
-                              <li class="nav-item">
-                                  <a href="#" class="nav-link">
-                                      <i class="far fa-circle nav-icon"></i>
-                                      <p>Level 2</p>
+                                      <p>Tahunan</p>
                                   </a>
                               </li>
                           </ul>
-                      </li>
-                      <li class="nav-item">
-                          <a href="#" class="nav-link">
-                              <i class="fas fa-circle nav-icon"></i>
-                              <p>Level 1</p>
-                          </a>
-                      </li>
-                      <li class="nav-header">LABELS</li>
-                      <li class="nav-item">
-                          <a href="#" class="nav-link">
-                              <i class="nav-icon far fa-circle text-danger"></i>
-                              <p class="text">Important</p>
-                          </a>
-                      </li>
-                      <li class="nav-item">
-                          <a href="#" class="nav-link">
-                              <i class="nav-icon far fa-circle text-warning"></i>
-                              <p>Warning</p>
-                          </a>
-                      </li>
-                      <li class="nav-item">
-                          <a href="#" class="nav-link">
-                              <i class="nav-icon far fa-circle text-info"></i>
-                              <p>Informational</p>
-                          </a>
                       </li>
                   </ul>
               </nav>

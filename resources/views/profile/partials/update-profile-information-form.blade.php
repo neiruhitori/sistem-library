@@ -18,6 +18,16 @@
         @method('patch')
 
         <div class="form-group mb-3">
+            <label for="nip">{{ __('NIP') }}</label>
+            <input id="nip" name="nip" type="text"
+                class="form-control @error('nip') is-invalid @enderror"
+                value="{{ old('nip', Auth::user()->nip) }}" required autofocus autocomplete="nip" placeholder="Nomor Induk Pegawai"/>
+            @error('nip')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="form-group mb-3">
             <label for="name">{{ __('Name') }}</label>
             <input id="name" name="name" type="text"
                 class="form-control @error('name') is-invalid @enderror"

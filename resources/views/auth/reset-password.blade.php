@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="login-box">
         <div class="login-logo">
-            <a href="{{ asset('AdminLTE-3.2.0/index2.html') }}"><b>Admin</b>LTE</a>
+            <a href="{{ asset('AdminLTE-3.2.0/index2.html') }}"><b>Reset Password</b>LTE</a>
         </div>
         <!-- /.login-logo -->
         <div class="card">
