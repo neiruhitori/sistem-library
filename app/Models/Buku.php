@@ -22,4 +22,10 @@ class Buku extends Model
     {
         return $this->hasMany(PeminjamanTahunanDetail::class);
     }
+
+    
+    public function kodeBuku()
+    {
+        return $this->hasMany(KodeBuku::class, 'bukus_id');
+    }
 }

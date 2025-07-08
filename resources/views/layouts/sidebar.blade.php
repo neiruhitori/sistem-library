@@ -63,9 +63,9 @@
                           </a>
                       </li>
                       <li
-                          class="nav-item {{ Request::is('buku') ? 'menu-open' : '' }} {{ Request::is('bukuharian') ? 'menu-open' : '' }}">
+                          class="nav-item {{ Request::is('bukutahunan') ? 'menu-open' : '' }} {{ Request::is('bukuharian') ? 'menu-open' : '' }}">
                           <a href="#"
-                              class="nav-link {{ Request::is('buku') ? 'active' : '' }} {{ Request::is('bukuharian') ? 'active' : '' }}">
+                              class="nav-link {{ Request::is('bukutahunan') ? 'active' : '' }} {{ Request::is('bukuharian') ? 'active' : '' }}">
                               <i class="nav-icon fas fa-book"></i>
                               <p>
                                   Buku
@@ -83,7 +83,7 @@
                           </ul>
                           <ul class="nav nav-treeview">
                               <li class="nav-item">
-                                  <a href="/buku" class="nav-link {{ Request::is('buku') ? 'active' : '' }}">
+                                  <a href="/bukutahunan" class="nav-link {{ Request::is('bukutahunan') ? 'active' : '' }}">
                                       <i class="far fa-circle nav-icon"></i>
                                       <p>Buku Tahunan</p>
                                   </a>

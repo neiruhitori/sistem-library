@@ -34,7 +34,8 @@ Route::middleware('auth')->group(function () {
 
     // Buku
     Route::get('/bukuharian', [BukuController::class, 'indexHarian'])->name('buku.harian');
-    Route::get('/buku', [BukuController::class, 'indexTahunan'])->name('buku.tahunan');
+    Route::get('/bukutahunan', [BukuController::class, 'indexTahunan'])->name('buku.tahunan');
+    Route::delete('/hapussemua', [BukuController::class, 'hapussemua'])->name('buku.hapussemua');
     Route::resource('buku', BukuController::class)->except(['index']);
 
     // Peminjaman Harian
