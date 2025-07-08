@@ -29,13 +29,13 @@ Route::middleware('auth')->group(function () {
     // routes/web.php
     Route::get('/siswa/export-pdf', [SiswaController::class, 'exportPDF'])->name('siswa.export.pdf');
     Route::post('/siswa/import', [SiswaController::class, 'import'])->name('siswa.import');
-    Route::delete('/hapussemua', [SiswaController::class, 'hapussemua'])->name('siswa.hapussemua');
+    Route::delete('/siswa/hapussemua', [SiswaController::class, 'hapussemua'])->name('siswa.hapussemua');
     Route::resource('siswa', SiswaController::class);
 
     // Buku
     Route::get('/bukuharian', [BukuController::class, 'indexHarian'])->name('buku.harian');
     Route::get('/bukutahunan', [BukuController::class, 'indexTahunan'])->name('buku.tahunan');
-    Route::delete('/hapussemua', [BukuController::class, 'hapussemua'])->name('buku.hapussemua');
+    Route::delete('/buku/hapussemua', [BukuController::class, 'hapussemua'])->name('buku.hapussemua');
     Route::resource('buku', BukuController::class)->except(['index']);
 
     // Peminjaman Harian

@@ -92,7 +92,10 @@ class BukuController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $buku = Buku::with('kodeBuku')->findOrFail($id);
+        $tipe = $buku->tipe;
+
+        return view('buku.show', compact('buku', 'tipe'));
     }
 
     /**
