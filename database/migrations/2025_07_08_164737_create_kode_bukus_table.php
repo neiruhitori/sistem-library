@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bukus', function (Blueprint $table) {
+        Schema::create('kode_bukus', function (Blueprint $table) {
             $table->id();
-            $table->string('judul');
-            $table->string('penulis')->nullable();
-            $table->enum('tipe', ['harian', 'tahunan']);
-            $table->year('tahun_terbit')->nullable();
-            $table->text('description')->nullable();
-            $table->string('foto')->nullable();
+            $table->foreignId('bukus_id')->constrained('bukus')->onUpdate('cascade')->onDelete('cascade');
+            $table->string('kode_buku')->unique();
+            $table->enum('status', ['tersedia', 'dipinjam'])->default('tersedia');
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bukus');
+        Schema::dropIfExists('kode_bukus');
     }
 };
