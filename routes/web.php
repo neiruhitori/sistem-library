@@ -39,11 +39,12 @@ Route::middleware('auth')->group(function () {
     Route::resource('buku', BukuController::class)->except(['index']);
 
     // Peminjaman Harian
-    Route::resource('peminjaman', PeminjamanHarianController::class);
+    Route::delete('/peminjamanharian/hapussemua', [PeminjamanHarianController::class, 'hapussemua'])->name('peminjamanharian.hapussemua');
+    Route::resource('peminjamanharian', PeminjamanHarianController::class);
 
     // Pengembalian Harian
-    Route::get('/pengembalian', [PengembalianHarianController::class, 'index'])->name('pengembalian.index');
-    Route::post('/pengembalian/{detail}/update', [PengembalianHarianController::class, 'update'])->name('pengembalian.update');
+    Route::get('/pengembalianharian', [PengembalianHarianController::class, 'index'])->name('pengembalianharian.index');
+    Route::post('/pengembalianharian/{detail}/update', [PengembalianHarianController::class, 'update'])->name('pengembalianharian.update');
 
     // Peminjaman Tahunan
     Route::resource('peminjamantahunan', PeminjamanTahunanController::class);

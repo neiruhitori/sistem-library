@@ -92,9 +92,9 @@
                       </li>
                       {{-- <div class="user-panel d-flex"></div> --}}
                       <li
-                          class="nav-item {{ Request::is('peminjaman') ? 'menu-open' : '' }} {{ Request::is('pengembalian') ? 'menu-open' : '' }}">
+                          class="nav-item {{ Request::is('peminjamanharian') ? 'menu-open' : '' }} {{ Request::is('pengembalianharian') ? 'menu-open' : '' }}">
                           <a href="#"
-                              class="nav-link {{ Request::is('peminjaman') ? 'active' : '' }} {{ Request::is('pengembalian') ? 'active' : '' }}">
+                              class="nav-link {{ Request::is('peminjamanharian') ? 'active' : '' }} {{ Request::is('pengembalianharian') ? 'active' : '' }}">
                               <i class="nav-icon fas fa-table"></i>
                               <p>
                                   Data Harian
@@ -103,8 +103,8 @@
                           </a>
                           <ul class="nav nav-treeview">
                               <li class="nav-item">
-                                  <a href="/peminjaman"
-                                      class="nav-link {{ Request::is('peminjaman') ? 'active' : '' }}">
+                                  <a href="/peminjamanharian"
+                                      class="nav-link {{ Request::is('peminjamanharian') ? 'active' : '' }}">
                                       <i class="far fa-circle nav-icon"></i>
                                       <p>Data Peminjaman</p>
                                   </a>
@@ -112,8 +112,8 @@
                           </ul>
                           <ul class="nav nav-treeview">
                               <li class="nav-item">
-                                  <a href="/pengembalian"
-                                      class="nav-link {{ Request::is('pengembalian') ? 'active' : '' }}">
+                                  <a href="/pengembalianharian"
+                                      class="nav-link {{ Request::is('pengembalianharian') ? 'active' : '' }}">
                                       <i class="far fa-circle nav-icon"></i>
                                       <p>Data Pengembalian</p>
                                   </a>
@@ -471,7 +471,7 @@
                           </a>
                           <ul class="nav nav-treeview">
                               <li class="nav-item">
-                                  <a href="#"
+                                  <a href="/catatanharian"
                                       class="nav-link {{ Request::is('catatanharian') ? 'active' : '' }}">
                                       <i class="far fa-circle nav-icon"></i>
                                       <p>Harian</p>

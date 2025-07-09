@@ -12,4 +12,9 @@ class KodeBuku extends Model
     protected $primaryKey = 'id';
     protected $fillable = [];
     protected $guarded = [];
+
+    public function buku()
+    {
+        return $this->belongsTo(Buku::class, 'bukus_id');
+    }
 }
