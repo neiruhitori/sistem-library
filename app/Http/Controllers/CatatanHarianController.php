@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CatatanDenda;
 use Illuminate\Http\Request;
 
 class CatatanHarianController extends Controller
@@ -11,7 +12,12 @@ class CatatanHarianController extends Controller
      */
     public function index()
     {
-        //
+        $catatans = CatatanDenda::with('siswa')
+            ->where('tipe_peminjaman', 'harian')
+            ->latest()
+            ->get();
+
+        return view('catatanharian.index', compact('catatans'));
     }
 
     /**

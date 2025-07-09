@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class PeminjamanHarianDetail extends Model
 {
     use HasFactory;
-    protected $table ='peminjaman_harian_details';
+    protected $table = 'peminjaman_harian_details';
     protected $primaryKey = 'id';
     protected $fillable = [];
     protected $guarded = [];
@@ -18,8 +18,8 @@ class PeminjamanHarianDetail extends Model
         return $this->belongsTo(PeminjamanHarian::class, 'peminjaman_harians_id');
     }
 
-    public function buku()
+    public function kodeBuku()
     {
-        return $this->belongsTo(Buku::class);
+        return $this->belongsTo(KodeBuku::class, 'kode_bukus_id');
     }
 }

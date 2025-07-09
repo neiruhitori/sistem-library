@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('peminjaman_harian_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('peminjaman_harians_id')->constrained('peminjaman_harians')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('bukus_id')->constrained('bukus')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('kode_bukus_id')->constrained('kode_bukus')->onUpdate('cascade')->onDelete('cascade');
             $table->date('tanggal_dikembalikan')->nullable();
             $table->enum('status', ['dipinjam', 'dikembalikan', 'hilang'])->default('dipinjam');
             $table->timestamps();
