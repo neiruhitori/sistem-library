@@ -51,35 +51,50 @@
                     setTimeout(() => document.getElementById('alert-success').classList.remove('show'), 4000);
                 </script>
             @endif
-
             <div class="card shadow mt-3">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="card-title"><i class="fas fa-table"></i> Tabel Pengembalian Harian</h3>
+                    <h3 class="card-title"><i class="fas fa-table"></i> Tabel Catatan Harian</h3>
                 </div>
                 <div class="card-body">
                     <table id="example1" class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
+                                <th>No</th>
                                 <th>Nama Siswa</th>
                                 <th>Jenis Denda</th>
                                 <th>Jumlah</th>
                                 <th>Keterangan</th>
                                 <th>Tanggal</th>
+                                <th>status</th>
+                                <th>Aksi</th> {{-- Tambahkan ini --}}
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($catatans as $catatan)
+                            @foreach ($catatans as $key => $catatan)
                                 <tr>
+                                    <td>{{ $key + 1 }}</td>
                                     <td>{{ $catatan->siswa->name }}</td>
                                     <td>{{ ucfirst($catatan->jenis_denda) }}</td>
                                     <td>Rp{{ number_format($catatan->jumlah, 0, ',', '.') }}</td>
                                     <td>{{ $catatan->keterangan }}</td>
                                     <td>{{ $catatan->tanggal_denda }}</td>
+                                    <td>
+                                        <span
+                                            class="badge badge-{{ $catatan->status === 'dibayar' ? 'success' : 'danger' }}">
+                                            {{ $catatan->status === 'dibayar' ? 'Lunas' : 'Belum Bayar' }}
+                                        </span>
+
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('catatanharian.show', $catatan->id) }}"
+                                            class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye"></i> Lihat
+                                        </a>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-
                 </div>
             </div>
         </div>

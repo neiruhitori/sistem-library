@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class CatatanDenda extends Model
 {
     use HasFactory;
-    protected $table ='catatan_dendas';
+    protected $table = 'catatan_dendas';
     protected $primaryKey = 'id';
     protected $fillable = [];
     protected $guarded = [];
@@ -16,5 +16,10 @@ class CatatanDenda extends Model
     public function siswa()
     {
         return $this->belongsTo(Siswa::class, 'siswas_id');
+    }
+
+    public function peminjaman()
+    {
+        return $this->belongsTo(PeminjamanHarian::class, 'peminjaman_harians_id');
     }
 }

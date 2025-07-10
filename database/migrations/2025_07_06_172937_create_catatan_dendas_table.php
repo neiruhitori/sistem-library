@@ -14,12 +14,16 @@ return new class extends Migration
         Schema::create('catatan_dendas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('siswas_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('peminjaman_harians_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('peminjaman_tahunans_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->enum('tipe_peminjaman', ['harian', 'tahunan']);
-            $table->unsignedBigInteger('referensi_id'); // ID dari detail pinjam
+            $table->unsignedBigInteger('referensi_id');
             $table->enum('jenis_denda', ['terlambat', 'hilang']);
             $table->integer('jumlah');
             $table->text('keterangan')->nullable();
             $table->date('tanggal_denda');
+            $table->enum('status', ['belum_dibayar', 'dibayar'])->default('belum_dibayar');
+            $table->date('tanggal_bayar')->nullable();
             $table->timestamps();
         });
     }

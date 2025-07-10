@@ -151,12 +151,34 @@
                                     </td>
                                     <td>
                                         @foreach ($buku->kodeBuku as $kode)
-                                            <span
-                                                class="badge {{ $kode->status === 'dipinjam' ? 'badge-danger' : 'badge-info' }} mb-1 d-block">
+                                            @php
+                                                // Ambil status default
+                                                $status = $kode->status;
+
+                                                // Cek apakah pernah dipinjam dan status terakhirnya hilang
+                                                $detailTerakhir = $kode
+                                                    ->detailPeminjamanHarian()
+                                                    ->latest('updated_at')
+                                                    ->first();
+                                                $hilang = $detailTerakhir && $detailTerakhir->status === 'hilang';
+
+                                                // Tentukan badge class
+                                                $badgeClass = $hilang
+                                                    ? 'badge-secondary'
+                                                    : ($status === 'dipinjam'
+                                                        ? 'badge-danger'
+                                                        : 'badge-info');
+                                            @endphp
+
+                                            <span class="badge {{ $badgeClass }} mb-1 d-block">
                                                 {{ $kode->kode_buku }}
+                                                @if ($hilang)
+                                                    <br><small class="text-white fst-italic">(Hilang)</small>
+                                                @endif
                                             </span>
                                         @endforeach
                                     </td>
+
 
                                     <td>{{ $buku->penulis }}</td>
                                     <td>{{ $buku->tahun_terbit }}</td>

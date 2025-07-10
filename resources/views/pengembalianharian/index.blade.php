@@ -75,18 +75,44 @@
                                     <td>{{ $detail->kodeBuku->buku->judul ?? '-' }}</td>
                                     <td>{{ $detail->peminjaman->tanggal_pinjam }}</td>
                                     <td>
-                                        <form action="{{ route('pengembalianharian.update', $detail->id) }}" method="POST"
-                                            onsubmit="return confirm('Yakin ingin mengembalikan buku ini?')">
-                                            @csrf
-                                            <button type="submit" class="btn btn-sm btn-success">
-                                                <i class="fas fa-check"></i> Kembalikan
-                                            </button>
-                                        </form>
+                                        <button type="button" class="btn btn-sm btn-success"
+                                            onclick="openModalPengembalian('{{ route('pengembalianharian.update', $detail->id) }}')">
+                                            <i class="fas fa-check"></i> Kembalikan
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
+                    <!-- Tambahkan di paling bawah halaman, sebelum </body> -->
+                    <div class="modal fade" id="modalKondisiBuku" tabindex="-1" aria-labelledby="modalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form method="POST" id="formPengembalian">
+                                @csrf
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Konfirmasi Pengembalian Buku</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close">×</button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Pilih kondisi buku saat dikembalikan:</p>
+                                        <select name="kondisi_buku" id="kondisiBukuSelect" class="form-control" required>
+                                            <option value="">-- Pilih Kondisi --</option>
+                                            <option value="baik">Baik</option>
+                                            <option value="terlambat">Terlambat</option>
+                                            <option value="hilang">Hilang</option>
+                                        </select>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-success" id="submitPengembalian"
+                                            disabled>Kembalikan</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
 
                 </div>
             </div>
@@ -103,6 +129,28 @@
                 responsive: true,
                 lengthChange: false,
                 autoWidth: false,
+            });
+        });
+    </script>
+    <script>
+        function openModalPengembalian(url) {
+            const form = document.getElementById('formPengembalian');
+            form.action = url;
+            const modal = new bootstrap.Modal(document.getElementById('modalKondisiBuku'));
+            modal.show();
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const select = document.getElementById('kondisiBukuSelect');
+            const submitButton = document.getElementById('submitPengembalian');
+
+            select.addEventListener('change', function() {
+                if (select.value !== '') {
+                    submitButton.removeAttribute('disabled');
+                } else {
+                    submitButton.setAttribute('disabled', true);
+                }
             });
         });
     </script>
