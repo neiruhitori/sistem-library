@@ -85,6 +85,13 @@
                                                     {{ $detail->kodeBuku->buku->tahun_terbit ?? '-' }}
                                                 </small>
                                             </p>
+
+                                            <p class="card-text">
+                                                <small class="text-muted">
+                                                    <strong>Keterangan:</strong>
+                                                    {{ $detail->kodeBuku->buku->description ?? '-' }}
+                                                </small>
+                                            </p>
                                         </div>
                                     </div>
 

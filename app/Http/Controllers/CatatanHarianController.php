@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\CatatanDenda;
+use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CatatanHarianController extends Controller
 {
@@ -39,10 +42,18 @@ class CatatanHarianController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $catatan = CatatanDenda::with([
+            'siswa',
+            'peminjaman.details.kodeBuku.buku'
+        ])->findOrFail($id);
+
+        return view('catatanharian.show', compact('catatan'));
     }
+
+
+
 
     /**
      * Show the form for editing the specified resource.
@@ -66,5 +77,46 @@ class CatatanHarianController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function pay($id)
+    {
+        $catatan = CatatanDenda::findOrFail($id);
+
+        if ($catatan->status === 'dibayar') {
+            return back()->with('info', 'Catatan ini sudah dibayar.');
+        }
+
+        return view('catatanharian.payment', compact('catatan'));
+    }
+
+    public function processPayment($id)
+    {
+        $catatan = CatatanDenda::findOrFail($id);
+
+        if ($catatan->status === 'belum_dibayar') {
+            $catatan->update([
+                'status' => 'dibayar',
+                'tanggal_bayar' => now(),
+            ]);
+        }
+
+        return redirect()->route('catatanharian.show', $catatan->id)->with('success', 'Pembayaran cash berhasil dicatat.');
+    }
+
+    public function export($id)
+    {
+        $iduser = Auth::id();
+        $profile = User::where('id', $iduser)->first();
+
+        $catatan = CatatanDenda::with([
+            'siswa',
+            'peminjaman.details.kodeBuku.buku'
+        ])->findOrFail($id);
+
+        $pdf = Pdf::loadView('catatanharian.pdf', compact('catatan'))
+            ->setPaper('A4', 'portrait');
+
+        return $pdf->stream('catatan_denda_' . $catatan->id . '.pdf', compact('profile'));
     }
 }

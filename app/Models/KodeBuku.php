@@ -17,4 +17,9 @@ class KodeBuku extends Model
     {
         return $this->belongsTo(Buku::class, 'bukus_id');
     }
+
+    public function detailPeminjamanHarian()
+    {
+        return $this->hasMany(\App\Models\PeminjamanHarianDetail::class, 'kode_bukus_id');
+    }
 }
