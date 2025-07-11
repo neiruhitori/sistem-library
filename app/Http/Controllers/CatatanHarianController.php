@@ -7,6 +7,8 @@ use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Midtrans\Config;
+use Midtrans\Snap;
 
 class CatatanHarianController extends Controller
 {
@@ -87,8 +89,32 @@ class CatatanHarianController extends Controller
             return back()->with('info', 'Catatan ini sudah dibayar.');
         }
 
+        // Konfigurasi Midtrans dari config/services.php
+        Config::$serverKey = config('services.midtrans.server_key');
+        Config::$isProduction = config('services.midtrans.is_production');
+        Config::$isSanitized = config('services.midtrans.is_sanitized');
+        Config::$is3ds = config('services.midtrans.is_3ds');
+
+        $params = [
+            'transaction_details' => [
+                'order_id' => 'DENDA-' . $catatan->id . '-' . time(),
+                'gross_amount' => $catatan->jumlah,
+            ],
+            'customer_details' => [
+                'first_name' => $catatan->siswa->name,
+                'email' => $catatan->siswa->email ?? 'dummy@email.com',
+                'phone' => $catatan->siswa->telepon ?? '081234567890',
+            ],
+        ];
+
+        $snapToken = Snap::getSnapToken($params);
+
+        $catatan->snap_token = $snapToken;
+        $catatan->save();
+
         return view('catatanharian.payment', compact('catatan'));
     }
+
 
     public function processPayment($id)
     {

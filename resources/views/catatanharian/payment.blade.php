@@ -45,16 +45,18 @@
                     </span>
                 </p>
 
+                {{-- Tambahkan di dalam card-body --}}
                 @if ($catatan->status === 'belum_dibayar')
                     <div class="text-center mt-4">
+                        {{-- Tombol Bayar Cash (lama) --}}
                         <button class="btn btn-success" data-toggle="modal" data-target="#confirmModal">
-                            <i class="fas fa-check-circle"></i> Tandai Sudah Bayar
+                            <i class="fas fa-check-circle"></i> Bayar via Cash
                         </button>
-                    </div>
-                @else
-                    <div class="alert alert-success text-center mt-4">
-                        Pembayaran sudah dilakukan pada
-                        <strong>{{ \Carbon\Carbon::parse($catatan->tanggal_bayar)->translatedFormat('d F Y') }}</strong>.
+
+                        {{-- Tombol Bayar via Midtrans --}}
+                        <button id="pay-button" class="btn btn-primary">
+                            <i class="fas fa-credit-card"></i> Bayar via Mbanking
+                        </button>
                     </div>
                 @endif
 
@@ -95,3 +97,27 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script src="https://app.{{ config('services.midtrans.is_production') ? '' : 'sandbox.' }}midtrans.com/snap/snap.js"
+        data-client-key="{{ config('services.midtrans.client_key') }}"></script>
+
+    <button id="pay-button" class="btn btn-primary">Bayar dengan Midtrans</button>
+
+    <script>
+        document.getElementById('pay-button').addEventListener('click', function(e) {
+            e.preventDefault();
+            snap.pay('{{ $catatan->snap_token }}', {
+                onSuccess: function(result) {
+                    alert("Pembayaran berhasil!");
+                    window.location.href = "{{ route('catatanharian.show', $catatan->id) }}";
+                },
+                onPending: function(result) {
+                    alert("Menunggu pembayaran selesai.");
+                },
+                onError: function(result) {
+                    alert("Pembayaran gagal: " + result.status_message);
+                }
+            });
+        });
+    </script>
+@endpush

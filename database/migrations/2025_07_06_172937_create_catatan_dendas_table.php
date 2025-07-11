@@ -23,6 +23,7 @@ return new class extends Migration
             $table->text('keterangan')->nullable();
             $table->date('tanggal_denda');
             $table->enum('status', ['belum_dibayar', 'dibayar'])->default('belum_dibayar');
+            $table->string('snap_token', 36)->nullable();
             $table->date('tanggal_bayar')->nullable();
             $table->timestamps();
         });
