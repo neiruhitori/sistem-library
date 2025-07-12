@@ -8,34 +8,39 @@ use Illuminate\Support\Facades\Log;
 
 class MidtransCallbackController extends Controller
 {
-    // setiap ingin mengguanakan Midtrans, pastikan buka ngrok "ngrok http 8000"
-    // dan linknya sesuaikan di Midtrans Payment Notification URL "https://BerubahUbahSetiapRunNgrok.app/api/midtrans/callback"
-    // php artisan serve --host=127.0.0.1 --port=8000
+    /**
+     * Menerima notifikasi (webhook) dari server Midtrans.
+     * URL ini harus diatur di Dashboard Midtrans > Settings > Payment Notification URL.
+     * Untuk testing di localhost, gunakan Ngrok: `ngrok http 8000` dan atur URL-nya menjadi `https://[ngrok_url]/api/midtrans/callback`.
+     */
     public function receive(Request $request)
     {
-        $data = json_decode($request->getContent());
+        $data = $request->all();
 
         Log::info('📩 Callback diterima dari Midtrans', ['body' => $data]);
 
-        if (!$data || !isset($data->order_id)) {
+        if (!$data || !isset($data['order_id'])) {
             return response()->json(['message' => 'Invalid request'], 400);
         }
 
-        $parts = explode('-', $data->order_id);
-        $catatanId = $parts[1] ?? null;
+        // Validasi Signature Key untuk keamanan
+        $signatureKey = hash('sha512', $data['order_id'] . $data['status_code'] . $data['gross_amount'] . config('services.midtrans.server_key'));
 
-        if (!$catatanId) {
-            return response()->json(['message' => 'Invalid ID'], 400);
+        if ($data['signature_key'] !== $signatureKey) {
+            Log::warning('❌ Invalid Signature Key.', ['request' => $data]);
+            return response()->json(['message' => 'Invalid signature'], 403);
         }
 
-        $catatan = CatatanDenda::find($catatanId);
+        Log::info('✅ Signature Key Valid.');
+
+        $catatan = CatatanDenda::where('order_id', $data['order_id'])->first();
 
         if (!$catatan) {
-            return response()->json(['message' => 'Data not found'], 404);
+            return response()->json(['message' => 'Order ID not found in database'], 404);
         }
 
         // PROSES berdasarkan status transaksi Midtrans
-        switch ($data->transaction_status) {
+        switch ($data['transaction_status']) {
             case 'capture':
             case 'settlement':
                 if ($catatan->status === 'belum_dibayar') {
@@ -54,11 +59,11 @@ class MidtransCallbackController extends Controller
             case 'deny':
             case 'expire':
             case 'cancel':
-                Log::warning("❌ Pembayaran gagal atau dibatalkan untuk Catatan ID {$catatan->id}. Status: {$data->transaction_status}");
+                Log::warning("❌ Pembayaran gagal atau dibatalkan untuk Catatan ID {$catatan->id}. Status: {$data['transaction_status']}");
                 break;
 
             default:
-                Log::warning("⚠️ Status tidak dikenali: {$data->transaction_status}");
+                Log::warning("⚠️ Status tidak dikenali: {$data['transaction_status']}");
                 break;
         }
 

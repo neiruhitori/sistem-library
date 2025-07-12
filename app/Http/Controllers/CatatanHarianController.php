@@ -7,6 +7,7 @@ use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Midtrans\Config;
 use Midtrans\Snap;
 
@@ -95,9 +96,13 @@ class CatatanHarianController extends Controller
         Config::$isSanitized = config('services.midtrans.is_sanitized');
         Config::$is3ds = config('services.midtrans.is_3ds');
 
+        // Generate a unique order_id and save it to the record
+        $orderId = 'DENDA-' . $catatan->id . '-' . time();
+        $catatan->order_id = $orderId;
+
         $params = [
             'transaction_details' => [
-                'order_id' => 'DENDA-' . $catatan->id . '-' . time(),
+                'order_id' => $orderId,
                 'gross_amount' => $catatan->jumlah,
             ],
             'customer_details' => [
@@ -119,15 +124,31 @@ class CatatanHarianController extends Controller
     public function processPayment($id)
     {
         $catatan = CatatanDenda::findOrFail($id);
-
-        if ($catatan->status === 'belum_dibayar') {
-            $catatan->update([
-                'status' => 'dibayar',
-                'tanggal_bayar' => now(),
-            ]);
-        }
+        $this->markAsPaid($catatan);
 
         return redirect()->route('catatanharian.show', $catatan->id)->with('success', 'Pembayaran cash berhasil dicatat.');
+    }
+
+    public function midtransSuccess(Request $request, $id)
+    {
+        $catatan = CatatanDenda::findOrFail($id);
+        $this->markAsPaid($catatan);
+        Log::info("✅ Catatan ID {$catatan->id} dibayar via Midtrans (Client-side confirmation).");
+
+        // Redirect with a specific success message for Midtrans payment
+        return redirect()->route('catatanharian.show', $catatan->id)->with('success', 'Pembayaran via Mbanking berhasil.');
+    }
+
+    /**
+     * privasi method to mark a CatatanDenda as paid.
+     * This method updates the status of the CatatanDenda to 'dibayar' and
+     * sets the payment date to the current date.
+     */
+    private function markAsPaid(CatatanDenda $catatan)
+    {
+        if ($catatan->status === 'belum_dibayar') {
+            $catatan->update(['status' => 'dibayar', 'tanggal_bayar' => now()]);
+        }
     }
 
     public function export($id)

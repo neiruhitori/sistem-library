@@ -5,26 +5,20 @@
 @section('contents')
     <div class="container mt-5" style="max-width: 700px;">
         <div class="card shadow">
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show mt-2" role="alert" id="alert-success">
-                    <i class="fas fa-check-circle"></i> {{ session('success') }}
+            @if (session('success') || session('info'))
+                @php
+                    $alertType = session('success') ? 'success' : 'info';
+                    $alertMessage = session('success') ?: session('info');
+                    $alertIcon = session('success') ? 'check-circle' : 'info-circle';
+                @endphp
+                <div class="alert alert-{{ $alertType }} alert-dismissible fade show mt-2" role="alert" id="alert-session">
+                    <i class="fas fa-{{ $alertIcon }}"></i> {{ $alertMessage }}
                     <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <script>
-                    setTimeout(() => document.getElementById('alert-success').classList.remove('show'), 4000);
-                </script>
-            @endif
-            @if (session('info'))
-                <div class="alert alert-success alert-dismissible fade show mt-2" role="alert" id="alert-success">
-                    <i class="fas fa-check-circle"></i> {{ session('info') }}
-                    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <script>
-                    setTimeout(() => document.getElementById('alert-success').classList.remove('show'), 4000);
+                    setTimeout(() => document.getElementById('alert-session')?.classList.remove('show'), 4000);
                 </script>
             @endif
             <div class="card-header bg-info text-white">
@@ -100,21 +94,34 @@
 @push('scripts')
     <script src="https://app.{{ config('services.midtrans.is_production') ? '' : 'sandbox.' }}midtrans.com/snap/snap.js"
         data-client-key="{{ config('services.midtrans.client_key') }}"></script>
-
-    <button id="pay-button" class="btn btn-primary">Bayar dengan Midtrans</button>
-
+ 
     <script>
         document.getElementById('pay-button').addEventListener('click', function(e) {
             e.preventDefault();
             snap.pay('{{ $catatan->snap_token }}', {
                 onSuccess: function(result) {
-                    alert("Pembayaran berhasil!");
-                    window.location.href = "{{ route('catatanharian.show', $catatan->id) }}";
+                    console.log('Success:', result);
+                    // Create a form dynamically and submit it to our new endpoint
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = "{{ route('catatanharian.midtrans.success', $catatan->id) }}";
+ 
+                    const csrfToken = document.createElement('input');
+                    csrfToken.type = 'hidden';
+                    csrfToken.name = '_token';
+                    csrfToken.value = '{{ csrf_token() }}';
+                    form.appendChild(csrfToken);
+ 
+                    document.body.appendChild(form);
+                    form.submit();
                 },
                 onPending: function(result) {
-                    alert("Menunggu pembayaran selesai.");
+                    console.log('Pending:', result);
+                    alert("Menunggu pembayaran selesai. Status akan diperbarui setelah pembayaran berhasil.");
+                    window.location.href = "{{ route('catatanharian.show', $catatan->id) }}";
                 },
                 onError: function(result) {
+                    console.log('Error:', result);
                     alert("Pembayaran gagal: " + result.status_message);
                 }
             });
