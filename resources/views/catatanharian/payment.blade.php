@@ -5,26 +5,20 @@
 @section('contents')
     <div class="container mt-5" style="max-width: 700px;">
         <div class="card shadow">
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show mt-2" role="alert" id="alert-success">
-                    <i class="fas fa-check-circle"></i> {{ session('success') }}
+            @if (session('success') || session('info'))
+                @php
+                    $alertType = session('success') ? 'success' : 'info';
+                    $alertMessage = session('success') ?: session('info');
+                    $alertIcon = session('success') ? 'check-circle' : 'info-circle';
+                @endphp
+                <div class="alert alert-{{ $alertType }} alert-dismissible fade show mt-2" role="alert" id="alert-session">
+                    <i class="fas fa-{{ $alertIcon }}"></i> {{ $alertMessage }}
                     <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <script>
-                    setTimeout(() => document.getElementById('alert-success').classList.remove('show'), 4000);
-                </script>
-            @endif
-            @if (session('info'))
-                <div class="alert alert-success alert-dismissible fade show mt-2" role="alert" id="alert-success">
-                    <i class="fas fa-check-circle"></i> {{ session('info') }}
-                    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <script>
-                    setTimeout(() => document.getElementById('alert-success').classList.remove('show'), 4000);
+                    setTimeout(() => document.getElementById('alert-session')?.classList.remove('show'), 4000);
                 </script>
             @endif
             <div class="card-header bg-info text-white">
@@ -45,16 +39,18 @@
                     </span>
                 </p>
 
+                {{-- Tambahkan di dalam card-body --}}
                 @if ($catatan->status === 'belum_dibayar')
                     <div class="text-center mt-4">
+                        {{-- Tombol Bayar Cash (lama) --}}
                         <button class="btn btn-success" data-toggle="modal" data-target="#confirmModal">
-                            <i class="fas fa-check-circle"></i> Tandai Sudah Bayar
+                            <i class="fas fa-check-circle"></i> Bayar via Cash
                         </button>
-                    </div>
-                @else
-                    <div class="alert alert-success text-center mt-4">
-                        Pembayaran sudah dilakukan pada
-                        <strong>{{ \Carbon\Carbon::parse($catatan->tanggal_bayar)->translatedFormat('d F Y') }}</strong>.
+
+                        {{-- Tombol Bayar via Midtrans --}}
+                        <button id="pay-button" class="btn btn-primary">
+                            <i class="fas fa-credit-card"></i> Bayar via Mbanking
+                        </button>
                     </div>
                 @endif
 
@@ -95,3 +91,40 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script src="https://app.{{ config('services.midtrans.is_production') ? '' : 'sandbox.' }}midtrans.com/snap/snap.js"
+        data-client-key="{{ config('services.midtrans.client_key') }}"></script>
+ 
+    <script>
+        document.getElementById('pay-button').addEventListener('click', function(e) {
+            e.preventDefault();
+            snap.pay('{{ $catatan->snap_token }}', {
+                onSuccess: function(result) {
+                    console.log('Success:', result);
+                    // Create a form dynamically and submit it to our new endpoint
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = "{{ route('catatanharian.midtrans.success', $catatan->id) }}";
+ 
+                    const csrfToken = document.createElement('input');
+                    csrfToken.type = 'hidden';
+                    csrfToken.name = '_token';
+                    csrfToken.value = '{{ csrf_token() }}';
+                    form.appendChild(csrfToken);
+ 
+                    document.body.appendChild(form);
+                    form.submit();
+                },
+                onPending: function(result) {
+                    console.log('Pending:', result);
+                    alert("Menunggu pembayaran selesai. Status akan diperbarui setelah pembayaran berhasil.");
+                    window.location.href = "{{ route('catatanharian.show', $catatan->id) }}";
+                },
+                onError: function(result) {
+                    console.log('Error:', result);
+                    alert("Pembayaran gagal: " + result.status_message);
+                }
+            });
+        });
+    </script>
+@endpush

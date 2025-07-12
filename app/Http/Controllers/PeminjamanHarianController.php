@@ -20,7 +20,7 @@ class PeminjamanHarianController extends Controller
         $peminjamans = PeminjamanHarian::with([
             'siswa',
             'details.kodeBuku.buku' // ← ini akan bekerja jika relasi benar dan data benar
-        ])->orderBy('tanggal_pinjam', 'desc')->get();
+        ])->orderBy('created_at', 'desc')->get();
 
         return view('peminjamanharian.index', compact('peminjamans'));
     }

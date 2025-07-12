@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\MidtransWebhookController;
+use App\Http\Controllers\MidtransCallbackController;
 use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -9,5 +9,4 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-// Route::post('/midtrans/webhook', [MidtransWebhookController::class, 'handle'])
-//     ->withoutMiddleware([VerifyCsrfToken::class]);
+Route::post('/midtrans/callback', [MidtransCallbackController::class, 'receive']);

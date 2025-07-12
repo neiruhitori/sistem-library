@@ -10,6 +10,7 @@ use App\Http\Controllers\PeminjamanTahunanController;
 use App\Http\Controllers\PengembalianTahunanController;
 use App\Http\Controllers\CatatanHarianController;
 use App\Http\Controllers\CatatanTahunanController;
+use App\Http\Controllers\MidtransCallbackController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -58,6 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/catatanharian/{id}', [CatatanHarianController::class, 'show'])->name('catatanharian.show');
     Route::get('/catatanharian/{id}/pay', [CatatanHarianController::class, 'pay'])->name('catatanharian.pay');
     Route::post('/catatanharian/{id}/process-payment', [CatatanHarianController::class, 'processPayment'])->name('catatanharian.processPayment');
+    Route::post('/catatanharian/{id}/midtrans-success', [CatatanHarianController::class, 'midtransSuccess'])->name('catatanharian.midtrans.success');
     Route::get('/catatanharian/{id}/export', [CatatanHarianController::class, 'export'])->name('catatanharian.export');
 
     Route::get('/catatantahunan', [CatatanTahunanController::class, 'index'])->name('catatantahunan.index');
