@@ -152,23 +152,29 @@
                                     <td>
                                         @foreach ($buku->kodeBuku as $kode)
                                             @php
-                                                // Ambil status default
-                                                $status = $kode->status;
-
-                                                // Cek apakah pernah dipinjam dan status terakhirnya hilang
-                                                $detailTerakhir = $kode
+                                                $detailHarian = $kode
                                                     ->detailPeminjamanHarian()
                                                     ->latest('updated_at')
                                                     ->first();
-                                                $hilang = $detailTerakhir && $detailTerakhir->status === 'hilang';
+                                                $detailTahunan = $kode
+                                                    ->detailPeminjamanTahunan()
+                                                    ->latest('updated_at')
+                                                    ->first();
 
-                                                // Tentukan badge class
+                                                $last = collect([$detailHarian, $detailTahunan])
+                                                    ->filter()
+                                                    ->sortByDesc('updated_at')
+                                                    ->first();
+
+                                                $hilang = $last && $last->status === 'hilang';
+
                                                 $badgeClass = $hilang
                                                     ? 'badge-secondary'
-                                                    : ($status === 'dipinjam'
+                                                    : ($kode->status === 'dipinjam'
                                                         ? 'badge-danger'
                                                         : 'badge-info');
                                             @endphp
+
 
                                             <span class="badge {{ $badgeClass }} mb-1 d-block">
                                                 {{ $kode->kode_buku }}

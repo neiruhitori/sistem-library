@@ -22,4 +22,9 @@ class CatatanDenda extends Model
     {
         return $this->belongsTo(PeminjamanHarian::class, 'peminjaman_harians_id');
     }
+
+    public function peminjamantahunan()
+    {
+        return $this->belongsTo(PeminjamanTahunan::class, 'peminjaman_tahunans_id');
+    }
 }

@@ -48,13 +48,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/pengembalianharian/{detail}/update', [PengembalianHarianController::class, 'update'])->name('pengembalianharian.update');
 
     // Peminjaman Tahunan
+    Route::delete('/peminjamantahunan/hapussemua', [PeminjamanTahunanController::class, 'hapussemua'])->name('peminjamantahunan.hapussemua');
     Route::resource('peminjamantahunan', PeminjamanTahunanController::class);
 
     // Pengembalian Tahunan
     Route::get('/pengembaliantahunan', [PengembalianTahunanController::class, 'index'])->name('pengembaliantahunan.index');
     Route::post('/pengembaliantahunan/{detail}/update', [PengembalianTahunanController::class, 'update'])->name('pengembaliantahunan.update');
 
-    // Catatan Denda
+    // Catatan Denda Harian
     Route::get('/catatanharian', [CatatanHarianController::class, 'index'])->name('catatanharian.index');
     Route::get('/catatanharian/{id}', [CatatanHarianController::class, 'show'])->name('catatanharian.show');
     Route::get('/catatanharian/{id}/pay', [CatatanHarianController::class, 'pay'])->name('catatanharian.pay');
@@ -62,7 +63,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/catatanharian/{id}/midtrans-success', [CatatanHarianController::class, 'midtransSuccess'])->name('catatanharian.midtrans.success');
     Route::get('/catatanharian/{id}/export', [CatatanHarianController::class, 'export'])->name('catatanharian.export');
 
+    // Catatan Denda Tahunan
     Route::get('/catatantahunan', [CatatanTahunanController::class, 'index'])->name('catatantahunan.index');
+    Route::get('/catatantahunan/{id}', [CatatanTahunanController::class, 'show'])->name('catatantahunan.show');
+    Route::get('/catatantahunan/{id}/pay', [CatatanTahunanController::class, 'pay'])->name('catatantahunan.pay');
+    Route::post('/catatantahunan/{id}/process-payment', [CatatanTahunanController::class, 'processPayment'])->name('catatantahunan.processPayment');
+    Route::post('/catatantahunan/{id}/midtrans-success', [CatatanTahunanController::class, 'midtransSuccess'])->name('catatantahunan.midtrans.success');
+    Route::get('/catatantahunan/{id}/export', [CatatanTahunanController::class, 'export'])->name('catatantahunan.export');
 
     // Laporan
     Route::get('/sedangmeminjam', [PeminjamanHarianController::class, 'laporanSedang'])->name('laporan.harian.sedang');

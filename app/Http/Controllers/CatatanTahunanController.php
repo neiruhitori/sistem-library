@@ -2,7 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CatatanDenda;
+use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Midtrans\Config;
+use Midtrans\Snap;
 
 class CatatanTahunanController extends Controller
 {
@@ -11,7 +18,12 @@ class CatatanTahunanController extends Controller
      */
     public function index()
     {
-        //
+        $catatans = CatatanDenda::with('siswa')
+            ->where('tipe_peminjaman', 'tahunan')
+            ->latest()
+            ->get();
+
+        return view('catatantahunan.index', compact('catatans'));
     }
 
     /**
@@ -35,7 +47,12 @@ class CatatanTahunanController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $catatan = CatatanDenda::with([
+            'siswa',
+            'peminjamantahunan.details.kodeBuku.buku'
+        ])->findOrFail($id);
+
+        return view('catatantahunan.show', compact('catatan'));
     }
 
     /**
@@ -60,5 +77,90 @@ class CatatanTahunanController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function pay($id)
+    {
+        $catatan = CatatanDenda::findOrFail($id);
+
+        if ($catatan->status === 'dibayar') {
+            return back()->with('info', 'Catatan ini sudah dibayar.');
+        }
+
+        // Konfigurasi Midtrans dari config/services.php
+        Config::$serverKey = config('services.midtrans.server_key');
+        Config::$isProduction = config('services.midtrans.is_production');
+        Config::$isSanitized = config('services.midtrans.is_sanitized');
+        Config::$is3ds = config('services.midtrans.is_3ds');
+
+        // Generate a unique order_id and save it to the record
+        $orderId = 'DENDA-' . $catatan->id . '-' . time();
+        $catatan->order_id = $orderId;
+
+        $params = [
+            'transaction_details' => [
+                'order_id' => $orderId,
+                'gross_amount' => $catatan->jumlah,
+            ],
+            'customer_details' => [
+                'first_name' => $catatan->siswa->name,
+                'email' => $catatan->siswa->email ?? 'dummy@email.com',
+                'phone' => $catatan->siswa->telepon ?? '081234567890',
+            ],
+        ];
+
+        $snapToken = Snap::getSnapToken($params);
+
+        $catatan->snap_token = $snapToken;
+        $catatan->save();
+
+        return view('catatantahunan.payment', compact('catatan'));
+    }
+
+
+    public function processPayment($id)
+    {
+        $catatan = CatatanDenda::findOrFail($id);
+        $this->markAsPaid($catatan);
+
+        return redirect()->route('catatantahunan.show', $catatan->id)->with('success', 'Pembayaran cash berhasil dicatat.');
+    }
+
+    public function midtransSuccess(Request $request, $id)
+    {
+        $catatan = CatatanDenda::findOrFail($id);
+        $this->markAsPaid($catatan);
+        Log::info("✅ Catatan ID {$catatan->id} dibayar via Midtrans (Client-side confirmation).");
+
+        // Redirect with a specific success message for Midtrans payment
+        return redirect()->route('catatantahunan.show', $catatan->id)->with('success', 'Pembayaran via Mbanking berhasil.');
+    }
+
+    /**
+     * privasi method to mark a CatatanDenda as paid.
+     * This method updates the status of the CatatanDenda to 'dibayar' and
+     * sets the payment date to the current date.
+     */
+    private function markAsPaid(CatatanDenda $catatan)
+    {
+        if ($catatan->status === 'belum_dibayar') {
+            $catatan->update(['status' => 'dibayar', 'tanggal_bayar' => now()]);
+        }
+    }
+
+    public function export($id)
+    {
+        $iduser = Auth::id();
+        $profile = User::where('id', $iduser)->first();
+
+        $catatan = CatatanDenda::with([
+            'siswa',
+            'peminjamantahunan.details.kodeBuku.buku'
+        ])->findOrFail($id);
+
+        $pdf = Pdf::loadView('catatantahunan.pdf', compact('catatan'))
+            ->setPaper('A4', 'portrait');
+
+        return $pdf->stream('catatan_denda_' . $catatan->id . '.pdf', compact('profile'));
     }
 }

@@ -22,4 +22,9 @@ class KodeBuku extends Model
     {
         return $this->hasMany(\App\Models\PeminjamanHarianDetail::class, 'kode_bukus_id');
     }
+
+    public function detailPeminjamanTahunan()
+    {
+        return $this->hasMany(\App\Models\PeminjamanTahunanDetail::class, 'kode_bukus_id');
+    }
 }
