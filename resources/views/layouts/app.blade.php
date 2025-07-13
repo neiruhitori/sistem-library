@@ -89,7 +89,7 @@
             <strong>Copyright &copy; 2024-2025 Perpustakaan <a href="https://smpn2klakah-lmj.sch.id/">SMPN 02 Klakah</a>.</strong>
             All rights reserved.
             <div class="float-right d-none d-sm-inline-block">
-                <b>Version</b> 3.2.0
+                <b>Version</b> 2.0.0
             </div>
         </footer>
     </div>
