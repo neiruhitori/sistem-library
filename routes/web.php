@@ -12,6 +12,7 @@ use App\Http\Controllers\CatatanHarianController;
 use App\Http\Controllers\CatatanTahunanController;
 use App\Http\Controllers\MidtransCallbackController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\KelasController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -72,11 +73,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/catatantahunan/{id}/midtrans-success', [CatatanTahunanController::class, 'midtransSuccess'])->name('catatantahunan.midtrans.success');
     Route::get('/catatantahunan/{id}/export', [CatatanTahunanController::class, 'export'])->name('catatantahunan.export');
 
-    // Laporan
-    Route::get('/sedangmeminjam', [PeminjamanHarianController::class, 'laporanSedang'])->name('laporan.harian.sedang');
-    Route::get('/selesaimeminjam', [PeminjamanHarianController::class, 'laporanSelesai'])->name('laporan.harian.selesai');
-    Route::get('/sedangmeminjamtahunan', [PeminjamanTahunanController::class, 'laporanSedang'])->name('laporan.tahunan.sedang');
-    Route::get('/selesaimeminjamtahunan', [PeminjamanTahunanController::class, 'laporanSelesai'])->name('laporan.tahunan.selesai');
+    // Kelas Routes
+    Route::get('/kelas/{kelas}/cetak-pdf', [KelasController::class, 'cetakPDF'])->name('kelas.cetak-pdf');
+    Route::get('/kelas/{kelas}/{id}/cetak-detail-pdf', [KelasController::class, 'cetakDetailPDF'])->name('kelas.cetak-detail-pdf');
+    Route::get('/kelas/{kelas}/{id}', [KelasController::class, 'show'])->name('kelas.show');
+    Route::get('/kelas/{kelas}', [KelasController::class, 'index'])->name('kelas.index');
 
     // Notifications
     Route::get('/notifications', [NotificationController::class, 'getNotifications'])->name('notifications.get');
