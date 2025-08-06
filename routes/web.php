@@ -11,6 +11,7 @@ use App\Http\Controllers\PengembalianTahunanController;
 use App\Http\Controllers\CatatanHarianController;
 use App\Http\Controllers\CatatanTahunanController;
 use App\Http\Controllers\MidtransCallbackController;
+use App\Http\Controllers\NotificationController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -76,6 +77,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/selesaimeminjam', [PeminjamanHarianController::class, 'laporanSelesai'])->name('laporan.harian.selesai');
     Route::get('/sedangmeminjamtahunan', [PeminjamanTahunanController::class, 'laporanSedang'])->name('laporan.tahunan.sedang');
     Route::get('/selesaimeminjamtahunan', [PeminjamanTahunanController::class, 'laporanSelesai'])->name('laporan.tahunan.selesai');
+
+    // Notifications
+    Route::get('/notifications', [NotificationController::class, 'getNotifications'])->name('notifications.get');
+    Route::get('/notifications/{id}/read', [NotificationController::class, 'markAsReadAndRedirect'])->name('notifications.read');
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
+    Route::post('/notifications/clear-all', [NotificationController::class, 'clearAll'])->name('notifications.clearAll');
+    Route::delete('/notifications/{id}', [NotificationController::class, 'delete'])->name('notifications.delete');
 });
 
 require __DIR__ . '/auth.php';
