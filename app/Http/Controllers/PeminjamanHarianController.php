@@ -6,6 +6,7 @@ use App\Models\KodeBuku;
 use App\Models\PeminjamanHarian;
 use App\Models\PeminjamanHarianDetail;
 use App\Models\Siswa;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -117,6 +118,9 @@ class PeminjamanHarianController extends Controller
                 // Update status kode buku
                 $kode->update(['status' => 'dipinjam']);
             }
+
+            // Buat notifikasi setelah peminjaman berhasil
+            NotificationService::createPeminjamanHarianNotification($peminjaman->id);
 
             DB::commit();
             return redirect()->route('peminjamanharian.index')->with('success', 'Peminjaman berhasil disimpan.');

@@ -6,6 +6,7 @@ use App\Models\KodeBuku;
 use App\Models\PeminjamanTahunan;
 use App\Models\PeminjamanTahunanDetail;
 use App\Models\Siswa;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
@@ -115,6 +116,9 @@ class PeminjamanTahunanController extends Controller
                 // Update status kode buku
                 $kode->update(['status' => 'dipinjam']);
             }
+
+            // Buat notifikasi setelah peminjaman berhasil
+            NotificationService::createPeminjamanTahunanNotification($peminjaman->id);
 
             DB::commit();
             return redirect()->route('peminjamantahunan.index')->with('success', 'Peminjaman berhasil disimpan.');
