@@ -8,20 +8,57 @@ use App\Models\PeminjamanTahunanDetail;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
 
 class PeminjamanTahunanController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $peminjamans = PeminjamanTahunan::with([
-            'siswa',
-            'details.kodeBuku.buku' // ← ini akan bekerja jika relasi benar dan data benar
-        ])->orderBy('created_at', 'desc')->get();
+        if ($request->ajax()) {
+            $peminjamans = PeminjamanTahunan::with([
+                'siswa:id,name',
+                'details.kodeBuku:id,kode_buku,bukus_id',
+                'details.kodeBuku.buku:id,judul'
+            ])->select(['id', 'siswas_id', 'tanggal_pinjam', 'tanggal_kembali', 'status', 'created_at'])
+                ->orderBy('created_at', 'desc');
 
-        return view('peminjamantahunan.index', compact('peminjamans'));
+            return DataTables::of($peminjamans)
+                ->addIndexColumn()
+                ->addColumn('nama_siswa', function ($row) {
+                    return $row->siswa->name ?? '-';
+                })
+                ->addColumn('status_badge', function ($row) {
+                    $class = $row->status === 'dipinjam' ? 'warning' : 'success';
+                    return '<span class="badge badge-' . $class . '">' . ucfirst($row->status) . '</span>';
+                })
+                ->addColumn('buku_list', function ($row) {
+                    $html = '<ul class="mb-0 pl-3">';
+                    foreach ($row->details as $detail) {
+                        $kode = $detail->kodeBuku->kode_buku ?? '???';
+                        $judul = $detail->kodeBuku->buku->judul ?? '-';
+                        $html .= '<li><div class="mb-1">[' . $kode . '] ' . $judul . '</div></li>';
+                    }
+                    $html .= '</ul>';
+                    return $html;
+                })
+                ->addColumn('action', function ($row) {
+                    $viewBtn = '<a href="' . route('peminjamantahunan.show', $row->id) . '" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></a>';
+                    $editBtn = '<a href="' . route('peminjamantahunan.edit', $row->id) . '" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>';
+                    $deleteBtn = '<form action="' . route('peminjamantahunan.destroy', $row->id) . '" method="POST" onsubmit="return confirm(\'Yakin hapus data ini?\')" class="d-inline">
+                                    ' . csrf_field() . method_field('DELETE') . '
+                                    <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                  </form>';
+
+                    return '<div class="btn-group" role="group">' . $viewBtn . ' ' . $editBtn . ' ' . $deleteBtn . '</div>';
+                })
+                ->rawColumns(['status_badge', 'buku_list', 'action'])
+                ->make(true);
+        }
+
+        return view('peminjamantahunan.index');
     }
 
     /**
