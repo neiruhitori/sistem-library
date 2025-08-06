@@ -83,7 +83,8 @@
                           </ul>
                           <ul class="nav nav-treeview">
                               <li class="nav-item">
-                                  <a href="/bukutahunan" class="nav-link {{ Request::is('bukutahunan') ? 'active' : '' }}">
+                                  <a href="/bukutahunan"
+                                      class="nav-link {{ Request::is('bukutahunan') ? 'active' : '' }}">
                                       <i class="far fa-circle nav-icon"></i>
                                       <p>Buku Tahunan</p>
                                   </a>
@@ -148,77 +149,6 @@
                                   </a>
                               </li>
                           </ul>
-                      <li
-                          class="nav-item {{ Request::is('sedangmeminjam') ? 'menu-open' : '' }} {{ Request::is('selesaimeminjam') ? 'menu-open' : '' }} {{ Request::is('sedangmeminjamtahunan') ? 'menu-open' : '' }} {{ Request::is('selesaimeminjamtahunan') ? 'menu-open' : '' }}">
-                          <a href="#"
-                              class="nav-link  {{ Request::is('sedangmeminjam') ? 'active' : '' }} {{ Request::is('selesaimeminjam') ? 'active' : '' }} {{ Request::is('sedangmeminjamtahunan') ? 'active' : '' }} {{ Request::is('selesaimeminjamtahunan') ? 'active' : '' }}">
-                              <i class="nav-icon fas fa-info-circle"></i>
-                              <p>
-                                  Laporan
-                                  <i class="fas fa-angle-left right"></i>
-                              </p>
-                          </a>
-                          <ul class="nav nav-treeview">
-                              <li
-                                  class="nav-item  {{ Request::is('sedangmeminjam') ? 'menu-open' : '' }} {{ Request::is('selesaimeminjam') ? 'menu-open' : '' }}">
-                                  <a href="#" class="nav-link">
-                                      <i class="nav-icon far fa-folder"></i>
-                                      <p>
-                                          Harian
-                                          <i class="fas fa-angle-left right"></i>
-                                      </p>
-                                  </a>
-                                  <ul class="nav nav-treeview">
-                                      <li class="nav-item">
-                                          <a href="/sedangmeminjam"
-                                              class="nav-link {{ Request::is('sedangmeminjam') ? 'active' : '' }}">
-                                              <i class="far fa-circle nav-icon"></i>
-                                              <p>Sedang Meminjam</p>
-                                          </a>
-                                      </li>
-                                  </ul>
-                                  <ul class="nav nav-treeview">
-                                      <li class="nav-item">
-                                          <a href="/selesaimeminjam"
-                                              class="nav-link {{ Request::is('selesaimeminjam') ? 'active' : '' }}">
-                                              <i class="far fa-circle nav-icon"></i>
-                                              <p>Selesai Meminjam</p>
-                                          </a>
-                                      </li>
-                                  </ul>
-                              </li>
-                          </ul>
-                          <ul class="nav nav-treeview">
-                              <li
-                                  class="nav-item {{ Request::is('sedangmeminjamtahunan') ? 'menu-open' : '' }} {{ Request::is('selesaimeminjamtahunan') ? 'menu-open' : '' }}">
-                                  <a href="#" class="nav-link">
-                                      <i class="nav-icon far fa-folder"></i>
-                                      <p>
-                                          Tahunan
-                                          <i class="fas fa-angle-left right"></i>
-                                      </p>
-                                  </a>
-                                  <ul class="nav nav-treeview">
-                                      <li class="nav-item">
-                                          <a href="/sedangmeminjamtahunan"
-                                              class="nav-link {{ Request::is('sedangmeminjamtahunan') ? 'active' : '' }}">
-                                              <i class="far fa-circle nav-icon"></i>
-                                              <p>Sedang Meminjam</p>
-                                          </a>
-                                      </li>
-                                  </ul>
-                                  <ul class="nav nav-treeview">
-                                      <li class="nav-item">
-                                          <a href="/selesaimeminjamtahunan"
-                                              class="nav-link {{ Request::is('selesaimeminjamtahunan') ? 'active' : '' }}">
-                                              <i class="far fa-circle nav-icon"></i>
-                                              <p>Selesai Meminjam</p>
-                                          </a>
-                                      </li>
-                                  </ul>
-                              </li>
-                          </ul>
-                      </li>
                       <li
                           class="nav-item {{ Request::is('kelas/viia') ? 'menu-open' : '' }} {{ Request::is('kelas/viib') ? 'menu-open' : '' }} {{ Request::is('kelas/viic') ? 'menu-open' : '' }} {{ Request::is('kelas/viid') ? 'menu-open' : '' }} {{ Request::is('kelas/viie') ? 'menu-open' : '' }} {{ Request::is('kelas/viif') ? 'menu-open' : '' }} {{ Request::is('kelas/viig') ? 'menu-open' : '' }}
             {{ Request::is('kelas/viiia') ? 'menu-open' : '' }} {{ Request::is('kelas/viiib') ? 'menu-open' : '' }} {{ Request::is('kelas/viiic') ? 'menu-open' : '' }} {{ Request::is('kelas/viiid') ? 'menu-open' : '' }} {{ Request::is('kelas/viiie') ? 'menu-open' : '' }} {{ Request::is('kelas/viiif') ? 'menu-open' : '' }} {{ Request::is('kelas/viiig') ? 'menu-open' : '' }}
