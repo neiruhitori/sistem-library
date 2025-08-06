@@ -83,54 +83,6 @@
                                 <th>Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @forelse ($peminjamans as $key => $peminjaman)
-                                <tr>
-                                    <td>{{ $key + 1 }}</td>
-                                    <td>{{ $peminjaman->siswa->name }}</td>
-                                    <td>{{ $peminjaman->tanggal_pinjam }}</td>
-                                    <td>{{ $peminjaman->tanggal_kembali }}</td>
-                                    <td>
-                                        <span
-                                            class="badge badge-{{ $peminjaman->status === 'dipinjam' ? 'warning' : 'success' }}">
-                                            {{ ucfirst($peminjaman->status) }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <ul class="mb-0 pl-3">
-                                            @foreach ($peminjaman->details as $detail)
-                                            <li>
-                                                <div class="mb-1">
-                                                    [{{ $detail->kodeBuku->kode_buku ?? '???' }}]
-                                                    {{ $detail->kodeBuku->buku->judul ?? '-' }}
-                                                </div>
-                                            </li>
-                                            @endforeach
-
-                                        </ul>
-                                    </td>
-                                    <td>
-                                        <div class="btn-group" role="group">
-                                            <a href="{{ route('peminjamanharian.show', $peminjaman->id) }}"
-                                                class="btn btn-secondary"><i class="fas fa-eye"></i></a>
-                                            <a href="{{ route('peminjamanharian.edit', $peminjaman->id) }}"
-                                                class="btn btn-warning"><i class="fas fa-edit"></i></a>
-                                            <form action="{{ route('peminjamanharian.destroy', $peminjaman->id) }}"
-                                                method="POST" onsubmit="return confirm('Yakin hapus data ini?')"
-                                                class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn btn-danger"><i class="fas fa-trash"></i></button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7" class="text-center text-danger">Belum ada data peminjaman.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
                     </table>
                 </div>
             </div>
@@ -144,9 +96,51 @@
     <script>
         $(function() {
             $('#example1').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: '{{ route('peminjamanharian.index') }}',
+                    type: 'GET',
+                    error: function(xhr, error, thrown) {
+                        console.error('Error loading data:', error);
+                        alert('Terjadi kesalahan saat memuat data. Silakan refresh halaman.');
+                    }
+                },
+                columns: [
+                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false, width: '5%' },
+                    { data: 'nama_siswa', name: 'siswa.name', width: '15%' },
+                    { data: 'tanggal_pinjam', name: 'tanggal_pinjam', width: '12%' },
+                    { data: 'tanggal_kembali', name: 'tanggal_kembali', width: '12%' },
+                    { data: 'status_badge', name: 'status', orderable: false, width: '10%' },
+                    { data: 'buku_list', name: 'buku_list', orderable: false, searchable: false, width: '31%' },
+                    { data: 'action', name: 'action', orderable: false, searchable: false, width: '15%' }
+                ],
                 responsive: true,
-                lengthChange: false,
+                lengthChange: true,
                 autoWidth: false,
+                pageLength: 25,
+                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Semua"]],
+                order: [[2, 'desc']], // Default sort by tanggal_pinjam descending
+                language: {
+                    processing: '<i class="fas fa-spinner fa-spin"></i> Memproses...',
+                    search: "Cari:",
+                    lengthMenu: "Tampilkan _MENU_ data per halaman",
+                    info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                    infoEmpty: "Menampilkan 0 sampai 0 dari 0 data",
+                    infoFiltered: "(disaring dari _MAX_ total data)",
+                    paginate: {
+                        first: "Pertama",
+                        last: "Terakhir",
+                        next: "Selanjutnya",
+                        previous: "Sebelumnya"
+                    },
+                    emptyTable: "Belum ada data peminjaman",
+                    zeroRecords: "Data tidak ditemukan"
+                },
+                drawCallback: function(settings) {
+                    // Re-initialize any tooltips or popovers if needed
+                    $('[data-toggle="tooltip"]').tooltip();
+                }
             });
         });
     </script>
