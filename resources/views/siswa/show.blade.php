@@ -26,8 +26,18 @@
     <div class="content">
         <div class="container-fluid">
             <div class="card mx-auto shadow" style="max-width: 700px;">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="card-title"><i class="fas fa-user-plus"></i> Form Detail Siswa</h3>
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h3 class="card-title mb-0"><i class="fas fa-user-plus"></i> Form Detail Siswa</h3>
+                    <div>
+                        <a href="{{ route('siswa.print.card', $siswa->id) }}" 
+                           class="btn btn-success btn-sm" 
+                           target="_blank">
+                            <i class="fas fa-id-card"></i> Cetak Card ID
+                        </a>
+                        <a href="{{ route('siswa.edit', $siswa->id) }}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                    </div>
                 </div>
                 <form method="post" action="#" autocomplete="off">
                     <div class="card-body">

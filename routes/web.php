@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/siswa/export-pdf', [SiswaController::class, 'exportPDF'])->name('siswa.export.pdf');
     Route::post('/siswa/import', [SiswaController::class, 'import'])->name('siswa.import');
     Route::delete('/siswa/hapussemua', [SiswaController::class, 'hapussemua'])->name('siswa.hapussemua');
+    Route::get('/siswa/{id}/print-card', [SiswaController::class, 'printCard'])->name('siswa.print.card');
     Route::resource('siswa', SiswaController::class);
 
     // Buku
