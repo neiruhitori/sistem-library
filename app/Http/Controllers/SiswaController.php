@@ -9,6 +9,8 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\SvgWriter;
 
 class SiswaController extends Controller
 {
@@ -131,5 +133,46 @@ class SiswaController extends Controller
     {
         Siswa::query()->forceDelete();
         return redirect()->back()->with('removeAll', 'Hapus semua data Siswa successfully');
+    }
+
+    /**
+     * Generate and print student ID card
+     */
+    public function printCard($id)
+    {
+        $siswa = Siswa::findOrFail($id);
+
+        // Generate QR Code menggunakan Endroid library
+        $qrData = json_encode([
+            // 'nama' => $siswa->name,
+            // 'nisn' => $siswa->nisn,
+            'id' => $siswa->id
+        ]);
+
+        $qr = new QrCode($qrData);
+        $writer = new SvgWriter();
+        $result = $writer->write($qr);
+
+        $qrCode = base64_encode($result->getString());
+
+        // Encode logo sebagai base64 untuk PDF
+        $logoPath = public_path('AdminLTE-3.2.0/dist/img/smp2.png');
+        $logoBase64 = '';
+        if (file_exists($logoPath)) {
+            $logoData = file_get_contents($logoPath);
+            $logoBase64 = base64_encode($logoData);
+        }
+
+        // Load view ke PDF dengan setting yang sama seperti file lama
+        $pdf = PDF::loadView('siswa.card_fixed', compact('siswa', 'qrCode', 'logoBase64'))
+            ->setPaper('a4', 'portrait')
+            ->setOptions([
+                'dpi' => 150,
+                'defaultFont' => 'sans-serif',
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true
+            ]);
+
+        return $pdf->stream('kartu-siswa-' . $siswa->name . '.pdf');
     }
 }
