@@ -28,7 +28,7 @@
             <div class="card mx-auto shadow" style="max-width: 700px;">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                     <h3 class="card-title mb-0"><i class="fas fa-user-plus"></i> Form Detail Siswa</h3>
-                    <div>
+                    {{-- <div>
                         <a href="{{ route('siswa.print.card', $siswa->id) }}" 
                            class="btn btn-success btn-sm" 
                            target="_blank">
@@ -37,7 +37,7 @@
                         <a href="{{ route('siswa.edit', $siswa->id) }}" class="btn btn-warning btn-sm">
                             <i class="fas fa-edit"></i> Edit
                         </a>
-                    </div>
+                    </div> --}}
                 </div>
                 <form method="post" action="#" autocomplete="off">
                     <div class="card-body">
