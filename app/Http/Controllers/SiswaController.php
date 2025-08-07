@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\SvgWriter;
+use Endroid\QrCode\Writer\PngWriter;
 
 class SiswaController extends Controller
 {
@@ -174,5 +175,53 @@ class SiswaController extends Controller
             ]);
 
         return $pdf->stream('kartu-siswa-' . $siswa->name . '.pdf');
+    }
+
+    /**
+     * Generate and export student ID card as PNG with 300 DPI
+     */
+    public function printCardPNG($id)
+    {
+        $siswa = Siswa::findOrFail($id);
+
+        // Generate QR Code menggunakan Endroid library untuk PNG
+        $qrData = json_encode([
+            'id' => $siswa->id
+        ]);
+
+        $qr = new QrCode($qrData);
+        $writer = new PngWriter();
+        $result = $writer->write($qr);
+        $qrCode = base64_encode($result->getString());
+
+        // Encode logo sebagai base64
+        $logoPath = public_path('AdminLTE-3.2.0/dist/img/smp2.png');
+        $logoBase64 = '';
+        if (file_exists($logoPath)) {
+            $logoData = file_get_contents($logoPath);
+            $logoBase64 = base64_encode($logoData);
+        }
+
+        // Create PNG template dengan DPI 300
+        // Ukuran: 85.6mm x 53.98mm = 1012 x 640 pixels @ 300 DPI
+        $width = 1012;
+        $height = 640;
+
+        // Load view untuk konversi ke PNG
+        $html = view('siswa.card_png', compact('siswa', 'qrCode', 'logoBase64', 'width', 'height'))->render();
+
+        // Convert HTML ke PDF dengan ukuran yang tepat untuk 300 DPI
+        $pdf = PDF::loadHTML($html)
+            ->setPaper([0, 0, $width * 0.75, $height * 0.75], 'portrait')
+            ->setOptions([
+                'dpi' => 300,
+                'defaultFont' => 'sans-serif',
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'enable_font_subsetting' => true
+            ]);
+
+        // Return PDF dengan resolusi tinggi untuk printing
+        return $pdf->download('kartu-siswa-' . $siswa->name . '-300dpi.pdf');
     }
 }

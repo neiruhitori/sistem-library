@@ -193,15 +193,19 @@
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Basic example">
-                                            <a href="{{ route('siswa.show', $p->id) }}" type="button" class="btn btn-secondary"><i
+                                            <a href="{{ route('siswa.show', $p->id) }}" type="button" class="btn btn-secondary" title="Lihat Detail"><i
                                                     class="fas fa-eye"></i></a>
-                                            <a href="{{ route('siswa.edit', $p->id) }}" type="button" class="btn btn-warning"><i
+                                            <a href="{{ route('siswa.edit', $p->id) }}" type="button" class="btn btn-warning" title="Edit Data"><i
                                                     class="fas fa-edit"></i></a>
+                                            <a href="{{ route('siswa.print.card', $p->id) }}" type="button" class="btn btn-info" title="Print Card PDF"><i
+                                                    class="fas fa-id-card"></i></a>
+                                            <a href="{{ route('siswa.print.card.png', $p->id) }}" type="button" class="btn btn-success" title="Download Card PNG (300 DPI)"><i
+                                                    class="fas fa-image"></i></a>
                                             <form action="{{ route('siswa.destroy', $p->id) }}" method="POST" class="d-inline"
                                                 onsubmit="return confirm('Apakah kamu yakin ingin hapus?')">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button class="btn btn-danger m-0"><i class="fas fa-trash"></i></button>
+                                                <button class="btn btn-danger m-0" title="Hapus Data"><i class="fas fa-trash"></i></button>
                                             </form>
                                         </div>
 

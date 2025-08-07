@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/siswa/import', [SiswaController::class, 'import'])->name('siswa.import');
     Route::delete('/siswa/hapussemua', [SiswaController::class, 'hapussemua'])->name('siswa.hapussemua');
     Route::get('/siswa/{id}/print-card', [SiswaController::class, 'printCard'])->name('siswa.print.card');
+    Route::get('/siswa/{id}/print-card-png', [SiswaController::class, 'printCardPNG'])->name('siswa.print.card.png');
     Route::resource('siswa', SiswaController::class);
 
     // Buku
