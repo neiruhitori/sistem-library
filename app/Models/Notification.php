@@ -8,6 +8,7 @@ use Carbon\Carbon;
 class Notification extends Model
 {
     protected $fillable = [
+        'user_id',
         'type',
         'reference_id',
         'title',
@@ -21,6 +22,12 @@ class Notification extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
+
+    // Relasi dengan User
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     // Scope untuk notifikasi yang belum dibaca
     public function scopeUnread($query)

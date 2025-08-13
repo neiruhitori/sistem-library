@@ -243,8 +243,25 @@
         $(function() {
             $("#example1").DataTable({
                 "responsive": true,
-                "lengthChange": false,
+                "lengthChange": true, // Aktifkan dropdown untuk mengubah jumlah data per halaman
                 "autoWidth": false,
+                "paging": true, // Aktifkan pagination
+                "pageLength": 25, // Tampilkan 25 data per halaman (default)
+                "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Semua"]], // Opsi jumlah data per halaman
+                "language": {
+                    "lengthMenu": "Tampilkan _MENU_ data per halaman",
+                    "zeroRecords": "Data tidak ditemukan",
+                    "info": "Menampilkan halaman _PAGE_ dari _PAGES_",
+                    "infoEmpty": "Tidak ada data yang tersedia",
+                    "infoFiltered": "(difilter dari _MAX_ total data)",
+                    "search": "Cari:",
+                    "paginate": {
+                        "first": "Pertama",
+                        "last": "Terakhir", 
+                        "next": "Selanjutnya",
+                        "previous": "Sebelumnya"
+                    }
+                },
                 "buttons": [{
                         extend: 'print',
                         text: 'Print',

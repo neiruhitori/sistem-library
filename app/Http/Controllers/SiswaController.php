@@ -23,10 +23,14 @@ class SiswaController extends Controller
         $iduser = Auth::id();
         $profile = User::where('id', $iduser)->first();
 
+        // Untuk DataTables, kirim semua data - pagination akan dihandle oleh DataTables
         if ($request->has('search')) {
-            $siswa = Siswa::where('name', 'LIKE', '%' . $request->search . '%')->paginate(5);
+            $siswa = Siswa::where('name', 'LIKE', '%' . $request->search . '%')
+                ->orderBy('created_at', 'DESC')
+                ->get(); // Ubah dari paginate(5) ke get()
         } else {
-            $siswa = Siswa::orderBy('created_at', 'DESC')->get();
+            $siswa = Siswa::orderBy('created_at', 'DESC')
+                ->get(); // Ubah dari paginate(5) ke get()
         }
         return view('siswa.index', compact('siswa', 'profile'));
     }

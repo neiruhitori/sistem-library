@@ -10,17 +10,15 @@ use App\Http\Controllers\PeminjamanTahunanController;
 use App\Http\Controllers\PengembalianTahunanController;
 use App\Http\Controllers\CatatanHarianController;
 use App\Http\Controllers\CatatanTahunanController;
-use App\Http\Controllers\MidtransCallbackController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KelasController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     // Profile (Breeze default)

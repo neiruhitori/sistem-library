@@ -46,4 +46,24 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function siswas()
+    {
+        return $this->hasMany(Siswa::class);
+    }
+
+    public function bukus()
+    {
+        return $this->hasMany(Buku::class);
+    }
+
+    public function peminjamanHarians()
+    {
+        return $this->hasMany(PeminjamanHarian::class);
+    }
+
+    public function peminjamanTahunans()
+    {
+        return $this->hasMany(PeminjamanTahunan::class);
+    }
 }

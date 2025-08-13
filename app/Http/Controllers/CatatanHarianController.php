@@ -49,7 +49,8 @@ class CatatanHarianController extends Controller
     {
         $catatan = CatatanDenda::with([
             'siswa',
-            'peminjaman.details.kodeBuku.buku'
+            'peminjaman.details.kodeBuku.buku',
+            'handledByUser' // Tambahkan relasi untuk user yang menangani
         ])->findOrFail($id);
 
         return view('catatanharian.show', compact('catatan'));
@@ -158,7 +159,8 @@ class CatatanHarianController extends Controller
 
         $catatan = CatatanDenda::with([
             'siswa',
-            'peminjaman.details.kodeBuku.buku'
+            'peminjaman.details.kodeBuku.buku',
+            'handledByUser' // Tambahkan relasi untuk user yang menangani
         ])->findOrFail($id);
 
         $pdf = Pdf::loadView('catatanharian.pdf', compact('catatan'))

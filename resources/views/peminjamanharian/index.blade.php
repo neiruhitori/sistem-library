@@ -66,8 +66,13 @@
                             class="d-inline">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-danger">
+                            <button type="submit" class="btn btn-danger" 
+                                {{ $userPeminjamanCount == 0 ? 'disabled' : '' }}
+                                {{ $userPeminjamanCount == 0 ? 'title="Tidak ada data peminjaman untuk dihapus"' : '' }}>
                                 <i class="fas fa-trash-alt"></i> Hapus Semua Peminjaman
+                                @if($userPeminjamanCount > 0)
+                                    <span class="badge badge-light ml-1">{{ $userPeminjamanCount }}</span>
+                                @endif
                             </button>
                         </form>
                     </div>

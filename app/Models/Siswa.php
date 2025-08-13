@@ -10,8 +10,10 @@ class Siswa extends Model
     use HasFactory;
     protected $table ='siswas';
     protected $primaryKey = 'id';
-    protected $fillable = [];
+    protected $fillable = ['nisn', 'name', 'kelas'];
     protected $guarded = [];
+
+    // Hapus user relationship - siswa jadi global untuk semua user
 
     public function peminjamanHarian()
     {

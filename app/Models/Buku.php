@@ -10,8 +10,10 @@ class Buku extends Model
     use HasFactory;
     protected $table ='bukus';
     protected $primaryKey = 'id';
-    protected $fillable = [];
+    protected $fillable = ['judul', 'penulis', 'tipe', 'tahun_terbit', 'description', 'foto'];
     protected $guarded = [];
+
+    // Hapus user relationship - buku jadi global untuk semua user
 
     public function peminjamanHarianDetails()
     {

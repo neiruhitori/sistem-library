@@ -157,7 +157,10 @@
     <div class="ttd">
         <p>Kepala Perpustakaan<br>SMPN 02 Klakah</p>
         <br><br><br>
-        <p><strong><u>{{ auth()->user()->name }}</u></strong><br>NIP. {{ auth()->user()->nip ?? '-' }}</p>
+        <p>
+            <strong><u>{{ $catatan->handledByUser->name ?? 'Tidak diketahui' }}</u></strong><br>
+            NIP. {{ $catatan->handledByUser->nip ?? '-' }}
+        </p>
     </div>
 </body>
 

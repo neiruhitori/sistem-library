@@ -7,6 +7,7 @@ use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class SiswaImport implements ToModel, WithHeadingRow, WithValidation
 {
@@ -23,6 +24,7 @@ class SiswaImport implements ToModel, WithHeadingRow, WithValidation
         }
 
         return new Siswa([
+            'user_id' => Auth::id(),
             'nisn'  => $nisn,
             'name'  => trim($row['name']),
             'kelas' => trim($row['kelas']),

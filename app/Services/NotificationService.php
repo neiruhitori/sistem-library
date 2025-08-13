@@ -13,7 +13,7 @@ class NotificationService
      */
     public static function createPeminjamanHarianNotification($peminjamanId)
     {
-        $peminjaman = PeminjamanHarian::with(['siswa', 'details.kodeBuku.buku'])->find($peminjamanId);
+        $peminjaman = PeminjamanHarian::with(['siswa', 'details.kodeBuku.buku', 'user'])->find($peminjamanId);
         
         if (!$peminjaman) {
             return false;
@@ -27,6 +27,7 @@ class NotificationService
                   $peminjaman->tanggal_pinjam . " (kembali: " . $peminjaman->tanggal_kembali . ")";
 
         return Notification::create([
+            'user_id' => $peminjaman->user_id, // Tambahkan user_id
             'type' => 'peminjaman_harian',
             'reference_id' => $peminjamanId,
             'title' => $title,
@@ -40,7 +41,7 @@ class NotificationService
      */
     public static function createPeminjamanTahunanNotification($peminjamanId)
     {
-        $peminjaman = PeminjamanTahunan::with(['siswa', 'details.kodeBuku.buku'])->find($peminjamanId);
+        $peminjaman = PeminjamanTahunan::with(['siswa', 'details.kodeBuku.buku', 'user'])->find($peminjamanId);
         
         if (!$peminjaman) {
             return false;
@@ -54,6 +55,7 @@ class NotificationService
                   $peminjaman->tanggal_pinjam . " (kembali: " . $peminjaman->tanggal_kembali . ")";
 
         return Notification::create([
+            'user_id' => $peminjaman->user_id, // Tambahkan user_id
             'type' => 'peminjaman_tahunan',
             'reference_id' => $peminjamanId,
             'title' => $title,
