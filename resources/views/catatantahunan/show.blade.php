@@ -77,6 +77,13 @@
                     <li class="list-group-item"><strong>Tanggal Denda:</strong>
                         {{ \Carbon\Carbon::parse($catatan->tanggal_denda)->translatedFormat('d F Y') }}</li>
                     <li class="list-group-item"><strong>Keterangan:</strong> {{ $catatan->keterangan ?? '-' }}</li>
+                    <li class="list-group-item">
+                        <strong>Ditangani oleh:</strong> 
+                        {{ $catatan->handledByUser->name ?? 'Tidak diketahui' }}
+                        @if($catatan->handledByUser && $catatan->handledByUser->nip)
+                            (NIP: {{ $catatan->handledByUser->nip }})
+                        @endif
+                    </li>
                     @if ($catatan->status === 'dibayar')
                         <li class="list-group-item">
                             <strong>Tanggal Bayar:</strong>

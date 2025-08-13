@@ -9,6 +9,7 @@ use App\Models\Siswa;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class PeminjamanTahunanController extends Controller
@@ -23,7 +24,8 @@ class PeminjamanTahunanController extends Controller
                 'siswa:id,name',
                 'details.kodeBuku:id,kode_buku,bukus_id',
                 'details.kodeBuku.buku:id,judul'
-            ])->select(['id', 'siswas_id', 'tanggal_pinjam', 'tanggal_kembali', 'status', 'created_at'])
+            ])->where('user_id', Auth::id())
+                ->select(['id', 'siswas_id', 'tanggal_pinjam', 'tanggal_kembali', 'status', 'created_at'])
                 ->orderBy('created_at', 'desc');
 
             return DataTables::of($peminjamans)
@@ -59,7 +61,10 @@ class PeminjamanTahunanController extends Controller
                 ->make(true);
         }
 
-        return view('peminjamantahunan.index');
+        // Hitung jumlah peminjaman user untuk menentukan apakah button hapus semua di-disable
+        $userPeminjamanCount = PeminjamanTahunan::where('user_id', Auth::id())->count();
+
+        return view('peminjamantahunan.index', compact('userPeminjamanCount'));
     }
 
     /**
@@ -92,6 +97,7 @@ class PeminjamanTahunanController extends Controller
 
         try {
             $peminjaman = PeminjamanTahunan::create([
+                'user_id' => Auth::id(),
                 'siswas_id' => $request->siswas_id,
                 'tanggal_pinjam' => $request->tanggal_pinjam,
                 'tanggal_kembali' => $request->tanggal_kembali,
@@ -136,7 +142,7 @@ class PeminjamanTahunanController extends Controller
         $peminjaman = PeminjamanTahunan::with([
             'siswa',
             'details.kodeBuku.buku' // nested relasi
-        ])->findOrFail($id);
+        ])->where('user_id', Auth::id())->findOrFail($id);
 
         return view('peminjamantahunan.show', compact('peminjaman'));
     }
@@ -146,7 +152,7 @@ class PeminjamanTahunanController extends Controller
      */
     public function edit(string $id)
     {
-        $peminjaman = PeminjamanTahunan::with('details.kodeBuku.buku', 'siswa')->findOrFail($id);
+        $peminjaman = PeminjamanTahunan::with('details.kodeBuku.buku', 'siswa')->where('user_id', Auth::id())->findOrFail($id);
         $siswas = Siswa::all();
         $kode_bukus = KodeBuku::whereHas('buku', function ($q) {
             $q->where('tipe', 'tahunan');
@@ -169,7 +175,7 @@ class PeminjamanTahunanController extends Controller
 
         DB::beginTransaction();
         try {
-            $peminjaman = PeminjamanTahunan::findOrFail($id);
+            $peminjaman = PeminjamanTahunan::where('user_id', Auth::id())->findOrFail($id);
 
             // Kembalikan semua kode buku sebelumnya
             foreach ($peminjaman->details as $detail) {
@@ -216,7 +222,7 @@ class PeminjamanTahunanController extends Controller
 
         try {
             // Ambil data peminjaman
-            $peminjaman = PeminjamanTahunan::with('details.kodeBuku')->findOrFail($id);
+            $peminjaman = PeminjamanTahunan::with('details.kodeBuku')->where('user_id', Auth::id())->findOrFail($id);
 
             // Ubah status kode buku menjadi tersedia
             foreach ($peminjaman->details as $detail) {
@@ -242,8 +248,8 @@ class PeminjamanTahunanController extends Controller
     {
         DB::beginTransaction();
         try {
-            // Ambil semua data peminjaman
-            $peminjaman = PeminjamanTahunan::with('details')->get();
+            // Ambil semua data peminjaman milik user yang sedang login
+            $peminjaman = PeminjamanTahunan::with('details')->where('user_id', Auth::id())->get();
 
             foreach ($peminjaman as $p) {
                 foreach ($p->details as $detail) {
@@ -257,8 +263,8 @@ class PeminjamanTahunanController extends Controller
                 $p->details()->delete();
             }
 
-            // Hapus semua peminjaman utama
-            PeminjamanTahunan::query()->delete();
+            // Hapus semua peminjaman milik user yang sedang login
+            PeminjamanTahunan::where('user_id', Auth::id())->delete();
 
             DB::commit();
             return redirect()->back()->with('removeAll', 'Semua data peminjaman tahunan berhasil dihapus');

@@ -10,8 +10,13 @@ class PeminjamanHarian extends Model
     use HasFactory;
     protected $table ='peminjaman_harians';
     protected $primaryKey = 'id';
-    protected $fillable = [];
+    protected $fillable = ['user_id', 'siswas_id', 'tanggal_pinjam', 'tanggal_kembali', 'status'];
     protected $guarded = [];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function siswa()
     {

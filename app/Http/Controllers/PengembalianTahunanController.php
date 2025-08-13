@@ -6,6 +6,7 @@ use App\Models\CatatanDenda;
 use App\Models\PeminjamanTahunanDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class PengembalianTahunanController extends Controller
 {
@@ -116,6 +117,7 @@ class PengembalianTahunanController extends Controller
                     'keterangan' => $item['keterangan'],
                     'tanggal_denda' => $tglSekarang->toDateString(),
                     'status' => 'belum_dibayar',
+                    'handled_by_user_id' => Auth::id(), // User yang menangani pengembalian
                 ]);
             }
 

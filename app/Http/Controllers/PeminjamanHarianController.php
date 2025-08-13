@@ -9,7 +9,7 @@ use App\Models\Siswa;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class PeminjamanHarianController extends Controller
@@ -24,7 +24,8 @@ class PeminjamanHarianController extends Controller
                 'siswa:id,name',
                 'details.kodeBuku:id,kode_buku,bukus_id',
                 'details.kodeBuku.buku:id,judul'
-            ])->select(['id', 'siswas_id', 'tanggal_pinjam', 'tanggal_kembali', 'status', 'created_at'])
+            ])->select(['id', 'siswas_id', 'tanggal_pinjam', 'tanggal_kembali', 'status', 'created_at', 'user_id'])
+                ->where('user_id', Auth::id())
                 ->orderBy('created_at', 'desc');
 
             return DataTables::of($peminjamans)
@@ -60,7 +61,10 @@ class PeminjamanHarianController extends Controller
                 ->make(true);
         }
 
-        return view('peminjamanharian.index');
+        // Hitung jumlah peminjaman user untuk menentukan apakah button hapus semua di-disable
+        $userPeminjamanCount = PeminjamanHarian::where('user_id', Auth::id())->count();
+
+        return view('peminjamanharian.index', compact('userPeminjamanCount'));
     }
 
 
@@ -69,7 +73,7 @@ class PeminjamanHarianController extends Controller
      */
     public function create()
     {
-        $siswas = Siswa::all(); // pastikan model Siswa sudah disiapkan
+        $siswas = Siswa::orderBy('name', 'asc')->get(); // Siswa sekarang global untuk semua user
         $kode_bukus = KodeBuku::whereHas('buku', function ($q) {
             $q->where('tipe', 'harian');
         })->where('status', '!=', 'dipinjam')->get();
@@ -94,6 +98,7 @@ class PeminjamanHarianController extends Controller
 
         try {
             $peminjaman = PeminjamanHarian::create([
+                'user_id' => Auth::id(),
                 'siswas_id' => $request->siswas_id,
                 'tanggal_pinjam' => $request->tanggal_pinjam,
                 'tanggal_kembali' => $request->tanggal_kembali,
@@ -152,7 +157,7 @@ class PeminjamanHarianController extends Controller
     public function edit($id)
     {
         $peminjaman = PeminjamanHarian::with('details.kodeBuku.buku', 'siswa')->findOrFail($id);
-        $siswas = Siswa::all();
+        $siswas = Siswa::orderBy('name', 'asc')->get(); // Siswa sekarang global untuk semua user
         $kode_bukus = KodeBuku::whereHas('buku', function ($q) {
             $q->where('tipe', 'harian');
         })->where('status', '!=', 'dipinjam')->get();

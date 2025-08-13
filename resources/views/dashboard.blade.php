@@ -49,7 +49,7 @@
                     </span>
                     <div class="info-box-content">
                         <span class="info-box-text">Total Buku</span>
-                        <span class="info-box-number">{{ \App\Models\Buku::count() }}</span>
+                        <span class="info-box-number">{{ $data['totalBuku'] }}</span>
                     </div>
                 </div>
             </div>
@@ -61,7 +61,7 @@
                     </span>
                     <div class="info-box-content">
                         <span class="info-box-text">Peminjaman Hari Ini</span>
-                        <span class="info-box-number">{{ \App\Models\PeminjamanHarianDetail::whereDate('created_at', today())->count() }}</span>
+                        <span class="info-box-number">{{ $data['peminjamanHariIni'] }}</span>
                     </div>
                 </div>
             </div>
@@ -73,7 +73,7 @@
                     </span>
                     <div class="info-box-content">
                         <span class="info-box-text">Denda Aktif</span>
-                        <span class="info-box-number">{{ \App\Models\CatatanDenda::where('status', 'belum_lunas')->count() }}</span>
+                        <span class="info-box-number">{{ $data['dendaAktif'] }}</span>
                     </div>
                 </div>
             </div>
@@ -143,32 +143,33 @@
                             @php
                                 $recentActivities = collect();
                                 
-                                // Ambil peminjaman terbaru
-                                $recentPeminjaman = \App\Models\PeminjamanHarian::with(['siswa', 'details.kodeBuku.buku'])
-                                    ->latest()
-                                    ->take(3)
-                                    ->get()
-                                    ->map(function($item) {
+                                // Ambil peminjaman terbaru dari controller
+                                if($recentPeminjaman && $recentPeminjaman->count() > 0) {
+                                    $recentPeminjamanData = $recentPeminjaman->map(function($item) {
                                         $bukuTitles = $item->details->map(function($detail) {
                                             return $detail->kodeBuku->buku->judul ?? 'Buku tidak ditemukan';
                                         })->join(', ');
                                         
+                                        // Tentukan tipe peminjaman berdasarkan class model
+                                        $tipePeminjaman = class_basename($item) === 'PeminjamanHarian' ? 'Harian' : 'Tahunan';
+                                        
                                         return [
                                             'type' => 'peminjaman',
                                             'icon' => 'fas fa-hand-holding',
-                                            'color' => 'bg-success',
-                                            'title' => 'Peminjaman Buku',
-                                            'description' => $item->siswa->name . ' meminjam buku: ' . ($bukuTitles ?: 'Tidak ada buku'),
+                                            'color' => class_basename($item) === 'PeminjamanHarian' ? 'bg-success' : 'bg-primary',
+                                            'title' => 'Peminjaman ' . $tipePeminjaman,
+                                            'description' => $item->siswa->name . ' meminjam buku ' . $tipePeminjaman . ': ' . ($bukuTitles ?: 'Tidak ada buku'),
                                             'time' => $item->created_at->diffForHumans(),
                                             'created_at' => $item->created_at
                                         ];
                                     });
+                                } else {
+                                    $recentPeminjamanData = collect();
+                                }
                                 
-                                // Ambil siswa baru
-                                $newSiswa = \App\Models\Siswa::latest()
-                                    ->take(2)
-                                    ->get()
-                                    ->map(function($item) {
+                                // Ambil siswa baru dari controller (yang aman untuk di-map)
+                                if($newSiswa && $newSiswa->count() > 0) {
+                                    $newSiswaData = $newSiswa->map(function($item) {
                                         return [
                                             'type' => 'siswa',
                                             'icon' => 'fas fa-user-plus',
@@ -179,10 +180,12 @@
                                             'created_at' => $item->created_at
                                         ];
                                     });
+                                } else {
+                                    $newSiswaData = collect();
+                                }
                                 
-                                $recentActivities = $recentPeminjaman->merge($newSiswa)
-                                    ->sortByDesc('created_at')
-                                    ->take(5);
+                                $recentActivities = $recentPeminjamanData->merge($newSiswaData)
+                                    ->sortByDesc('created_at')->take(5);
                             @endphp
 
                             @forelse($recentActivities as $activity)
@@ -233,17 +236,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php
-                                        $topBorrowers = \App\Models\PeminjamanHarian::with('siswa')
-                                            ->whereMonth('created_at', now()->month)
-                                            ->whereYear('created_at', now()->year)
-                                            ->selectRaw('siswas_id, COUNT(*) as total_peminjaman')
-                                            ->groupBy('siswas_id')
-                                            ->orderByDesc('total_peminjaman')
-                                            ->limit(5)
-                                            ->get();
-                                    @endphp
-                                    
                                     @forelse($topBorrowers as $index => $borrower)
                                         <tr>
                                             <td>
@@ -333,14 +325,6 @@
                         </div>
                     </div>
                     <div class="card-body p-0">
-                        @php
-                            $overdueBooks = \App\Models\PeminjamanHarian::with(['siswa', 'details.kodeBuku.buku'])
-                                ->whereDate('tanggal_kembali', '<', now())
-                                ->where('status', 'dipinjam')
-                                ->limit(5)
-                                ->get();
-                        @endphp
-
                         @forelse($overdueBooks as $overdue)
                             <div class="p-3 border-bottom">
                                 <div class="d-flex justify-content-between">
@@ -354,7 +338,12 @@
                                         <small class="text-muted">{{ $overdue->siswa->name ?? 'Siswa tidak ditemukan' }} - {{ $overdue->siswa->kelas ?? '' }}</small><br>
                                         <small class="text-danger">
                                             <i class="fas fa-clock"></i>
-                                            Terlambat {{ now()->diffInDays($overdue->tanggal_kembali) }} hari
+                                            @php
+                                                $tglKembali = \Carbon\Carbon::parse($overdue->tanggal_kembali);
+                                                $tglSekarang = now();
+                                                $selisihHari = $tglKembali->copy()->startOfDay()->diffInDays($tglSekarang->copy()->startOfDay());
+                                            @endphp
+                                            (Terlambat {{ $selisihHari }} Hari)
                                         </small>
                                     </div>
                                     <span class="badge badge-danger">Overdue</span>
@@ -390,15 +379,6 @@
                         </div>
                     </div>
                     <div class="card-body p-0">
-                        @php
-                            $popularBooks = \App\Models\PeminjamanHarianDetail::with('kodeBuku.buku')
-                                ->selectRaw('kode_bukus_id, COUNT(*) as total_peminjaman')
-                                ->groupBy('kode_bukus_id')
-                                ->orderByDesc('total_peminjaman')
-                                ->limit(5)
-                                ->get();
-                        @endphp
-
                         <ul class="products-list product-list-in-card pl-2 pr-2">
                             @forelse($popularBooks as $popular)
                                 <li class="item">
@@ -543,6 +523,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Kelas Chart
     const kelasCtx = document.getElementById('kelasChart');
     if (kelasCtx) {
+        @if(isset($kelasStats) && count($kelasStats) > 0)
         new Chart(kelasCtx, {
             type: 'doughnut',
             data: {
@@ -551,11 +532,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     data: {!! json_encode(array_values($kelasStats)) !!},
                     backgroundColor: [
                         '#FF6384',
-                        '#36A2EB',
+                        '#36A2EB', 
                         '#FFCE56',
                         '#4BC0C0',
                         '#9966FF',
-                        '#FF9F40'
+                        '#FF9F40',
+                        '#FF6384',
+                        '#C9CBCF',
+                        '#4BC0C0',
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56'
                     ]
                 }]
             },
@@ -568,6 +555,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
+        @else
+        // Tampilkan pesan jika tidak ada data
+        kelasCtx.getContext('2d').font = '16px Arial';
+        kelasCtx.getContext('2d').fillText('Belum ada data siswa', 10, 50);
+        @endif
     }
 });
 </script>
