@@ -45,6 +45,12 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        // Check if location restriction is enabled
+        if (!config('app.location_bypass', false)) {
+            // Redirect to location check first for new user
+            return redirect()->route('location.check');
+        }
+
         return redirect(route('dashboard', absolute: false));
     }
 }
