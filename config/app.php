@@ -123,4 +123,16 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Location Restriction Bypass
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, location restriction middleware will be bypassed.
+    | Useful for development and testing purposes.
+    |
+    */
+
+    'location_bypass' => env('LOCATION_BYPASS', false),
+
 ];
