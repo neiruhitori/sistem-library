@@ -288,18 +288,18 @@
                                 </a>
                             </div>
                             <div class="col-6">
-                                <a href="{{ route('buku.create') }}" class="btn btn-success btn-block">
+                                <button type="button" class="btn btn-success btn-block" data-toggle="modal" data-target="#bukuModal">
                                     <i class="fas fa-book-medical"></i><br>
                                     Tambah Buku
-                                </a>
+                                </button>
                             </div>
                         </div>
                         <div class="row mt-2">
                             <div class="col-6">
-                                <a href="{{ route('peminjamanharian.create') }}" class="btn btn-warning btn-block">
+                                <button type="button" class="btn btn-warning btn-block" data-toggle="modal" data-target="#peminjamanModal">
                                     <i class="fas fa-hand-holding"></i><br>
                                     Peminjaman
-                                </a>
+                                </button>
                             </div>
                             <div class="col-6">
                                 <a href="{{ route('siswa.export.pdf') }}" class="btn btn-danger btn-block">
@@ -458,6 +458,90 @@
         <!-- /.row -->
     </div><!--/. container-fluid -->
 </section>
+
+<!-- Modal Tambah Buku -->
+<div class="modal fade" id="bukuModal" tabindex="-1" role="dialog" aria-labelledby="bukuModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bukuModalLabel">
+                    <i class="fas fa-book-medical text-success mr-2"></i>
+                    Pilih Jenis Buku
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted mb-3">Pilih jenis buku yang ingin ditambahkan:</p>
+                <div class="row">
+                    <div class="col-6">
+                        <a href="{{ route('buku.create') }}?tipe=harian" class="btn btn-success btn-block btn-lg">
+                            <i class="fas fa-calendar-day fa-2x mb-2"></i><br>
+                            <strong>Buku Harian</strong><br>
+                            <small>Peminjaman per hari</small>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="{{ route('buku.create') }}?tipe=tahunan" class="btn btn-primary btn-block btn-lg">
+                            <i class="fas fa-calendar-alt fa-2x mb-2"></i><br>
+                            <strong>Buku Tahunan</strong><br>
+                            <small>Peminjaman per tahun</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fas fa-times mr-1"></i>
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Peminjaman -->
+<div class="modal fade" id="peminjamanModal" tabindex="-1" role="dialog" aria-labelledby="peminjamanModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="peminjamanModalLabel">
+                    <i class="fas fa-hand-holding text-warning mr-2"></i>
+                    Pilih Jenis Peminjaman
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted mb-3">Pilih jenis peminjaman yang ingin dilakukan:</p>
+                <div class="row">
+                    <div class="col-6">
+                        <a href="{{ route('peminjamanharian.create') }}" class="btn btn-warning btn-block btn-lg">
+                            <i class="fas fa-calendar-day fa-2x mb-2"></i><br>
+                            <strong>Peminjaman Harian</strong><br>
+                            <small>Untuk peminjaman harian</small>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="{{ route('peminjamantahunan.create') }}" class="btn btn-info btn-block btn-lg">
+                            <i class="fas fa-calendar-alt fa-2x mb-2"></i><br>
+                            <strong>Peminjaman Tahunan</strong><br>
+                            <small>Untuk peminjaman tahunan</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fas fa-times mr-1"></i>
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @php
     // Prepare data for charts
