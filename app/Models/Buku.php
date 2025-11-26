@@ -17,12 +17,26 @@ class Buku extends Model
 
     public function peminjamanHarianDetails()
     {
-        return $this->hasMany(PeminjamanHarianDetail::class);
+        return $this->hasManyThrough(
+            PeminjamanHarianDetail::class,
+            KodeBuku::class,
+            'bukus_id', // Foreign key on kode_bukus table
+            'kode_bukus_id', // Foreign key on peminjaman_harian_details table
+            'id', // Local key on bukus table
+            'id' // Local key on kode_bukus table
+        );
     }
 
     public function peminjamanTahunanDetails()
     {
-        return $this->hasMany(PeminjamanTahunanDetail::class);
+        return $this->hasManyThrough(
+            PeminjamanTahunanDetail::class,
+            KodeBuku::class,
+            'bukus_id', // Foreign key on kode_bukus table
+            'kode_bukus_id', // Foreign key on peminjaman_tahunan_details table
+            'id', // Local key on bukus table
+            'id' // Local key on kode_bukus table
+        );
     }
 
     
