@@ -424,15 +424,7 @@
                           </ul>
                       </li>
                       <li class="nav-header" style="color: #6c757d; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Lainnya</li>
-                      <li class="nav-item <?php echo e(Request::is('admin/allowed-locations*') ? 'menu-open' : ''); ?>">
-                          <a href="<?php echo e(route('admin.allowed-locations.index')); ?>"
-                              class="nav-link <?php echo e(Request::is('admin/allowed-locations*') ? 'active' : ''); ?>">
-                              <i class="nav-icon fas fa-map-marker-alt"></i>
-                              <p>
-                                  Kelola Lokasi Akses
-                              </p>
-                          </a>
-                      </li>
+                      
                   </ul>
               </nav>
               <!-- /.sidebar-menu -->
