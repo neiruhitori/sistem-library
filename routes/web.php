@@ -13,18 +13,14 @@ use App\Http\Controllers\CatatanTahunanController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KelasController;
-// use App\Http\Controllers\LocationController;
-// use App\Http\Controllers\AllowedLocationController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
-// Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified', 'location.restrict'])->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
-// Route::middleware(['auth', 'location.restrict'])->group(function () {
     // Profile (Breeze default)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -91,37 +87,6 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/notifications/{id}', [NotificationController::class, 'delete'])->name('notifications.delete');
 });
 
-// // Admin routes - only require auth, not location restriction  
-// Route::middleware(['auth'])->group(function () {
-//     Route::prefix('admin/allowed-locations')->name('admin.allowed-locations.')->group(function () {
-//         Route::get('/', [AllowedLocationController::class, 'index'])->name('index');
-//         Route::get('/create', [AllowedLocationController::class, 'create'])->name('create');
-//         Route::post('/', [AllowedLocationController::class, 'store'])->name('store');
-//         Route::get('/{allowedLocation}/edit', [AllowedLocationController::class, 'edit'])->name('edit');
-//         Route::put('/{allowedLocation}', [AllowedLocationController::class, 'update'])->name('update');
-//         Route::delete('/{allowedLocation}', [AllowedLocationController::class, 'destroy'])->name('destroy');
-//         Route::post('/{allowedLocation}/toggle-status', [AllowedLocationController::class, 'toggleStatus'])->name('toggle-status');
-//         Route::post('/test', [AllowedLocationController::class, 'testLocation'])->name('test');
-//     });
-// });
 
-// // Location restriction routes (tidak perlu auth)
-// Route::get('/location/check', [LocationController::class, 'checkLocation'])->name('location.check');
-// Route::post('/location/store', [LocationController::class, 'storeLocation'])->name('location.store');
-// Route::get('/location/denied', [LocationController::class, 'denied'])->name('location.denied');
-// Route::get('/location/allowed', [LocationController::class, 'getAllowedLocations'])->name('location.allowed');
-
-// // Debug route untuk test lokasi
-// Route::post('/location/debug', [LocationController::class, 'debugLocation'])->name('location.debug');
-
-// // Force clear session untuk debug
-// Route::get('/location/clear-session', function () {
-//     session()->forget(['user_latitude', 'user_longitude']);
-//     session()->flush();
-//     return response()->json([
-//         'message' => 'Session cleared',
-//         'session_data' => session()->all()
-//     ]);
-// })->name('location.clear-session');
 
 require __DIR__ . '/auth.php';

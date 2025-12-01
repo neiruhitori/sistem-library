@@ -12,10 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-    $middleware->alias([
-        'location.restrict' => \App\Http\Middleware\LocationRestriction::class,
-    ]);
-    })
+    // Middleware aliases (if needed)
+})
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

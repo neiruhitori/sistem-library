@@ -57,15 +57,6 @@ Route::middleware('guest')->group(function () {
 
         Auth::login($user);
 
-        // // Clear any existing location session data for new login
-        // session()->forget(['user_latitude', 'user_longitude']);
-
-        // // Check if location restriction is enabled
-        // if (!config('app.location_bypass', false)) {
-        //     // Redirect to location check first for Google login
-        //     return redirect()->route('location.check');
-        // }
-
         return redirect()->intended('/dashboard');
     });
 });
