@@ -424,7 +424,6 @@
                           </ul>
                       </li>
                       <li class="nav-header" style="color: #6c757d; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Lainnya</li>
-                      
                   </ul>
               </nav>
               <!-- /.sidebar-menu -->

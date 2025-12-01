@@ -28,14 +28,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // Clear any existing location session data for new login
-        $request->session()->forget(['user_latitude', 'user_longitude']);
-
-        // Check if location restriction is enabled
-        if (!config('app.location_bypass', false)) {
-            // Redirect to location check first, then intended destination will be handled by middleware
-            return redirect()->route('location.check');
-        }
+        // (Removed location-based session handling and redirects)
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
