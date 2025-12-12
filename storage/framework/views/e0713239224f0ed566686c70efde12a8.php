@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Pengembalian Harian'); ?>
 
-@section('title', 'Pengembalian Harian')
-
-@section('contents')
+<?php $__env->startSection('contents'); ?>
     <div class="content-header mx-auto mt-3" style="max-width: 98%;">
         <div class="container-fluid">
             <div class="row mb-2 align-items-center">
@@ -40,9 +38,10 @@
     <div class="content">
         <div class="container-fluid">
 
-            @if (session('success'))
+            <?php if(session('success')): ?>
                 <div class="alert alert-success alert-dismissible fade show mt-2" role="alert" id="alert-success">
-                    <i class="fas fa-check-circle"></i> {{ session('success') }}
+                    <i class="fas fa-check-circle"></i> <?php echo e(session('success')); ?>
+
                     <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -50,7 +49,7 @@
                 <script>
                     setTimeout(() => document.getElementById('alert-success').classList.remove('show'), 4000);
                 </script>
-            @endif
+            <?php endif; ?>
 
             <div class="card shadow mt-3">
                 <div class="card-header bg-primary text-white">
@@ -68,20 +67,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($details as $detail)
+                            <?php $__currentLoopData = $details; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $detail): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr>
-                                    <td>{{ $detail->peminjaman->siswa->name }}</td>
-                                    <td>{{ $detail->kodeBuku->kode_buku ?? '-' }}</td>
-                                    <td>{{ $detail->kodeBuku->buku->judul ?? '-' }}</td>
-                                    <td>{{ $detail->peminjaman->tanggal_pinjam }}</td>
+                                    <td><?php echo e($detail->peminjaman->siswa->name); ?></td>
+                                    <td><?php echo e($detail->kodeBuku->kode_buku ?? '-'); ?></td>
+                                    <td><?php echo e($detail->kodeBuku->buku->judul ?? '-'); ?></td>
+                                    <td><?php echo e($detail->peminjaman->tanggal_pinjam); ?></td>
                                     <td>
                                         <button type="button" class="btn btn-sm btn-success"
-                                            onclick="openModalPengembalian('{{ route('pengembalianharian.update', $detail->id) }}')">
+                                            onclick="openModalPengembalian('<?php echo e(route('pengembalianharian.update', $detail->id)); ?>')">
                                             <i class="fas fa-check"></i> Kembalikan
                                         </button>
                                     </td>
                                 </tr>
-                            @endforeach
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </tbody>
                     </table>
                     <!-- Tambahkan di paling bawah halaman, sebelum </body> -->
@@ -89,7 +88,7 @@
                         aria-hidden="true">
                         <div class="modal-dialog">
                             <form method="POST" id="formPengembalian">
-                                @csrf
+                                <?php echo csrf_field(); ?>
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title">Konfirmasi Pengembalian Buku</h5>
@@ -133,11 +132,11 @@
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
-    <script src="{{ asset('AdminLTE-3.2.0/plugins/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('AdminLTE-3.2.0/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+<?php $__env->startPush('scripts'); ?>
+    <script src="<?php echo e(asset('AdminLTE-3.2.0/plugins/datatables/jquery.dataTables.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('AdminLTE-3.2.0/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')); ?>"></script>
     <script>
         $(function() {
             $('#example1').DataTable({
@@ -192,4 +191,6 @@
             });
         });
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\sistem-library\resources\views/pengembalianharian/index.blade.php ENDPATH**/ ?>

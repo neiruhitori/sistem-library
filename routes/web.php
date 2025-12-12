@@ -60,17 +60,13 @@ Route::middleware(['auth'])->group(function () {
     // Catatan Denda Harian
     Route::get('/catatanharian', [CatatanHarianController::class, 'index'])->name('catatanharian.index');
     Route::get('/catatanharian/{id}', [CatatanHarianController::class, 'show'])->name('catatanharian.show');
-    Route::get('/catatanharian/{id}/pay', [CatatanHarianController::class, 'pay'])->name('catatanharian.pay');
     Route::post('/catatanharian/{id}/process-payment', [CatatanHarianController::class, 'processPayment'])->name('catatanharian.processPayment');
-    Route::post('/catatanharian/{id}/midtrans-success', [CatatanHarianController::class, 'midtransSuccess'])->name('catatanharian.midtrans.success');
     Route::get('/catatanharian/{id}/export', [CatatanHarianController::class, 'export'])->name('catatanharian.export');
 
     // Catatan Denda Tahunan
     Route::get('/catatantahunan', [CatatanTahunanController::class, 'index'])->name('catatantahunan.index');
     Route::get('/catatantahunan/{id}', [CatatanTahunanController::class, 'show'])->name('catatantahunan.show');
-    Route::get('/catatantahunan/{id}/pay', [CatatanTahunanController::class, 'pay'])->name('catatantahunan.pay');
     Route::post('/catatantahunan/{id}/process-payment', [CatatanTahunanController::class, 'processPayment'])->name('catatantahunan.processPayment');
-    Route::post('/catatantahunan/{id}/midtrans-success', [CatatanTahunanController::class, 'midtransSuccess'])->name('catatantahunan.midtrans.success');
     Route::get('/catatantahunan/{id}/export', [CatatanTahunanController::class, 'export'])->name('catatantahunan.export');
 
     // Kelas Routes

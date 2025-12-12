@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Data Siswa'); ?>
 
-@section('title', 'Data Siswa')
-
-@section('contents')
+<?php $__env->startSection('contents'); ?>
     <div class="content-header mx-auto mt-3" style="max-width: 98%;">
         <div class="container-fluid">
             <div class="row mb-2 align-items-center">
@@ -38,11 +36,12 @@
     </div>
     <div class="content">
         <div class="container-fluid">
-            {{-- Alert sukses --}}
-            @if (session('success'))
+            
+            <?php if(session('success')): ?>
                 <div class="alert alert-success alert-dismissible fade show mt-2" role="alert" id="alert-success">
                     <i class="fas fa-check-circle"></i>
-                    {{ session('success') }}
+                    <?php echo e(session('success')); ?>
+
                     <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -56,16 +55,16 @@
                         }
                     }, 4000);
                 </script>
-            @endif
+            <?php endif; ?>
 
-            {{-- Alert error --}}
-            @if ($errors->any())
+            
+            <?php if($errors->any()): ?>
                 <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert" id="alert-error">
                     <i class="fas fa-exclamation-triangle"></i>
                     <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
+                        <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <li><?php echo e($error); ?></li>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </ul>
                     <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -80,13 +79,14 @@
                         }
                     }, 4000);
                 </script>
-            @endif
+            <?php endif; ?>
 
-            {{-- Alert hapus semua --}}
-            @if (session('removeAll'))
+            
+            <?php if(session('removeAll')): ?>
                 <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert" id="alert-removeall">
                     <i class="fas fa-trash-alt"></i>
-                    {{ session('removeAll') }}
+                    <?php echo e(session('removeAll')); ?>
+
                     <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -100,22 +100,22 @@
                         }
                     }, 4000);
                 </script>
-            @endif
+            <?php endif; ?>
 
-            {{-- Card dan konten lainnya di bawah sini --}}
+            
             <div class="card mx-auto mt-3 shadow" style="max-width: 98%;">
                 <div class="card-header bg-primary text-white">
                     <h3 class="card-title"><i class="fas fa-table"></i> DataTable Siswa</h3>
                 </div>
                 <div class="card-body">
                     <div class="mb-3 d-flex flex-wrap gap-2">
-                        <a href="{{ route('siswa.create') }}" class="btn btn-success">
+                        <a href="<?php echo e(route('siswa.create')); ?>" class="btn btn-success">
                             <i class="fas fa-plus"></i> Tambah Siswa
                         </a>
-                        <form action="{{ route('siswa.hapussemua') }}" method="POST"
+                        <form action="<?php echo e(route('siswa.hapussemua')); ?>" method="POST"
                             onsubmit="return confirm('Yakin hapus semua data siswa?')" class="d-inline">
-                            @csrf
-                            @method('DELETE')
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('DELETE'); ?>
                             <button type="submit" class="btn btn-danger">
                                 <i class="fas fa-trash-alt"></i> Hapus Semua
                             </button>
@@ -137,9 +137,9 @@
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="{{ route('siswa.import') }}" method="POST"
+                                        <form action="<?php echo e(route('siswa.import')); ?>" method="POST"
                                             enctype="multipart/form-data">
-                                            @csrf
+                                            <?php echo csrf_field(); ?>
                                             <div class="form-group">
                                                 <label for="file">Pilih File Excel (.xls / .xlsx)</label>
                                                 <input type="file" class="form-control" name="file" id="file"
@@ -168,79 +168,79 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($siswa as $key => $p)
+                            <?php $__empty_1 = true; $__currentLoopData = $siswa; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $p): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <tr>
-                                    <td scope="row">{{ $key + 1 }}</td>
-                                    <td>{{ $p->nisn }}</td>
-                                    <td>{{ $p->name }}</td>
+                                    <td scope="row"><?php echo e($key + 1); ?></td>
+                                    <td><?php echo e($p->nisn); ?></td>
+                                    <td><?php echo e($p->name); ?></td>
                                     <td>
-                                        @php
+                                        <?php
                                             $kelas = strtoupper($p->kelas);
-                                        @endphp
-                                        @if (Str::startsWith($kelas, 'VII'))
+                                        ?>
+                                        <?php if(Str::startsWith($kelas, 'VII')): ?>
                                             <span class="badge badge-success"
-                                                style="font-size:1rem;">{{ $p->kelas }}</span>
-                                        @elseif(Str::startsWith($kelas, 'VIII'))
+                                                style="font-size:1rem;"><?php echo e($p->kelas); ?></span>
+                                        <?php elseif(Str::startsWith($kelas, 'VIII')): ?>
                                             <span class="badge badge-warning"
-                                                style="font-size:1rem;">{{ $p->kelas }}</span>
-                                        @elseif(Str::startsWith($kelas, 'IX'))
+                                                style="font-size:1rem;"><?php echo e($p->kelas); ?></span>
+                                        <?php elseif(Str::startsWith($kelas, 'IX')): ?>
                                             <span class="badge badge-danger"
-                                                style="font-size:1rem;">{{ $p->kelas }}</span>
-                                        @else
+                                                style="font-size:1rem;"><?php echo e($p->kelas); ?></span>
+                                        <?php else: ?>
                                             <span class="badge badge-secondary"
-                                                style="font-size:1rem;">{{ $p->kelas }}</span>
-                                        @endif
+                                                style="font-size:1rem;"><?php echo e($p->kelas); ?></span>
+                                        <?php endif; ?>
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Basic example">
-                                            <a href="{{ route('siswa.show', $p->id) }}" type="button" class="btn btn-secondary" title="Lihat Detail"><i
+                                            <a href="<?php echo e(route('siswa.show', $p->id)); ?>" type="button" class="btn btn-secondary" title="Lihat Detail"><i
                                                     class="fas fa-eye"></i></a>
-                                            <a href="{{ route('siswa.edit', $p->id) }}" type="button" class="btn btn-warning" title="Edit Data"><i
+                                            <a href="<?php echo e(route('siswa.edit', $p->id)); ?>" type="button" class="btn btn-warning" title="Edit Data"><i
                                                     class="fas fa-edit"></i></a>
-                                            @if(!empty($p->nisn))
-                                                <a href="{{ route('siswa.print.card', $p->id) }}" type="button" class="btn btn-info" title="Print Card PDF"><i
+                                            <?php if(!empty($p->nisn)): ?>
+                                                <a href="<?php echo e(route('siswa.print.card', $p->id)); ?>" type="button" class="btn btn-info" title="Print Card PDF"><i
                                                         class="fas fa-id-card"></i></a>
-                                                <a href="{{ route('siswa.print.card.png', $p->id) }}" type="button" class="btn btn-success" title="Download Card PNG (300 DPI)"><i
+                                                <a href="<?php echo e(route('siswa.print.card.png', $p->id)); ?>" type="button" class="btn btn-success" title="Download Card PNG (300 DPI)"><i
                                                         class="fas fa-image"></i></a>
-                                            @endif
-                                            <form action="{{ route('siswa.destroy', $p->id) }}" method="POST" class="d-inline"
+                                            <?php endif; ?>
+                                            <form action="<?php echo e(route('siswa.destroy', $p->id)); ?>" method="POST" class="d-inline"
                                                 onsubmit="return confirm('Apakah kamu yakin ingin hapus?')">
-                                                @csrf
-                                                @method('DELETE')
+                                                <?php echo csrf_field(); ?>
+                                                <?php echo method_field('DELETE'); ?>
                                                 <button class="btn btn-danger m-0" title="Hapus Data"><i class="fas fa-trash"></i></button>
                                             </form>
                                         </div>
 
                                     </td>
                                 </tr>
-                            @empty
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
                                     <td colspan="5" class="text-center text-danger">Data Siswa belum Tersedia.</td>
                                 </tr>
-                            @endforelse
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <!-- DataTables & Plugins -->
-    <script src="{{ asset('AdminLTE-3.2.0/plugins/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('AdminLTE-3.2.0/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('AdminLTE-3.2.0/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ asset('AdminLTE-3.2.0/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('AdminLTE-3.2.0/plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('AdminLTE-3.2.0/plugins/jszip/jszip.min.js') }}"></script>
-    <script src="{{ asset('AdminLTE-3.2.0/plugins/pdfmake/pdfmake.min.js') }}"></script>
-    <script src="{{ asset('AdminLTE-3.2.0/plugins/pdfmake/vfs_fonts.js') }}"></script>
-    <script src="{{ asset('AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
-    <script src="{{ asset('AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
-    {{-- EXPORT DATA WITH PRINT, PDF, EXCEL --}}
+    <script src="<?php echo e(asset('AdminLTE-3.2.0/plugins/datatables/jquery.dataTables.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('AdminLTE-3.2.0/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('AdminLTE-3.2.0/plugins/datatables-responsive/js/dataTables.responsive.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('AdminLTE-3.2.0/plugins/datatables-responsive/js/responsive.bootstrap4.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('AdminLTE-3.2.0/plugins/datatables-buttons/js/dataTables.buttons.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.bootstrap4.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('AdminLTE-3.2.0/plugins/jszip/jszip.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('AdminLTE-3.2.0/plugins/pdfmake/pdfmake.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('AdminLTE-3.2.0/plugins/pdfmake/vfs_fonts.js')); ?>"></script>
+    <script src="<?php echo e(asset('AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.html5.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.print.min.js')); ?>"></script>
+    <script src="<?php echo e(asset('AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.colVis.min.js')); ?>"></script>
+    
     <script>
         $(function() {
             $("#example1").DataTable({
@@ -275,13 +275,13 @@
                             // Kop surat
                             $(win.document.body).prepend(`
                                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                                    <img src="{{ asset('AdminLTE-3.2.0/dist/img/smp2.png') }}" style="height:90px;">
+                                    <img src="<?php echo e(asset('AdminLTE-3.2.0/dist/img/smp2.png')); ?>" style="height:90px;">
                                     <div style="text-align:center;flex:1;">
                                         <div style="font-size:18px;font-weight:bold;">PEMERINTAH KABUPATEN LUMAJANG<br>DINAS PENDIDIKAN</div>
                                         <div style="font-size:22px;font-weight:bold;">SMP NEGERI 02 KLAKAH</div>
                                         <div style="font-size:14px;">Jl. Ranu No.23, Linduboyo, Klakah, Kabupaten Lumajang, Jawa Timur 67356</div>
                                     </div>
-                                    <img src="{{ asset('AdminLTE-3.2.0/dist/img/lumajang.png') }}" style="height:90px;">
+                                    <img src="<?php echo e(asset('AdminLTE-3.2.0/dist/img/lumajang.png')); ?>" style="height:90px;">
                                 </div>
                                 <hr>
                                 <h3 class="text-center" style="margin-top:10px;">Daftar Siswa SMPN 02 Klakah</h3>
@@ -293,8 +293,8 @@
                                     <div style="text-align:center;">
                                         <div>Kepala Perpustakaan<br>SMPN 02 Klakah</div>
                                         <br><br><br>
-                                        <div style="font-weight:bold;text-decoration:underline;">{{ auth()->user()->name }}</div>
-                                        <div>NIP. {{ auth()->user()->nip }}</div>
+                                        <div style="font-weight:bold;text-decoration:underline;"><?php echo e(auth()->user()->name); ?></div>
+                                        <div>NIP. <?php echo e(auth()->user()->nip); ?></div>
                                     </div>
                                 </div>
                             `);
@@ -308,7 +308,7 @@
                     {
                         text: 'PDF',
                         action: function(e, dt, node, config) {
-                            window.open('{{ route('siswa.export.pdf') }}', '_blank');
+                            window.open('<?php echo e(route('siswa.export.pdf')); ?>', '_blank');
                         },
                         className: 'btn btn-secondary'
                     },
@@ -324,4 +324,6 @@
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\sistem-library\resources\views/siswa/index.blade.php ENDPATH**/ ?>

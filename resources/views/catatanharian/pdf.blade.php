@@ -128,31 +128,17 @@
     </table>
     @if ($catatan->peminjaman && $catatan->peminjaman->details->count())
         <h4 style="margin-top: 30px;">Detail Buku Terkait</h4>
-        <table>
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Judul</th>
-                    <th>Kode Buku</th>
-                    <th>Penulis</th>
-                    <th>Tahun</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php
-                    $detail = $catatan->peminjaman->details->where('id', $catatan->referensi_id)->first();
-                @endphp
-                @if ($detail)
-                    <tr>
-                        <td>1</td>
-                        <td>{{ $detail->kodeBuku->buku->judul ?? '-' }}</td>
-                        <td>{{ $detail->kodeBuku->kode_buku ?? '-' }}</td>
-                        <td>{{ $detail->kodeBuku->buku->penulis ?? '-' }}</td>
-                        <td>{{ $detail->kodeBuku->buku->tahun_terbit ?? '-' }}</td>
-                    </tr>
-                @endif
-            </tbody>
-        </table>
+        @php
+            $detail = $catatan->peminjaman->details->where('id', $catatan->referensi_id)->first();
+        @endphp
+        @if ($detail)
+            <div style="margin-top: 10px; padding: 15px; border: 1px solid #ddd; background-color: #f9f9f9;">
+                <p style="margin: 5px 0;"><strong>Judul</strong> : {{ $detail->kodeBuku->buku->judul ?? '-' }}</p>
+                <p style="margin: 5px 0;"><strong>Kode Buku</strong> : {{ $detail->kodeBuku->kode_buku ?? '-' }}</p>
+                <p style="margin: 5px 0;"><strong>Penulis</strong> : {{ $detail->kodeBuku->buku->penulis ?? '-' }}</p>
+                <p style="margin: 5px 0;"><strong>Tahun</strong> : {{ $detail->kodeBuku->buku->tahun_terbit ?? '-' }}</p>
+            </div>
+        @endif
     @endif
     <div class="ttd">
         <p>Kepala Perpustakaan<br>SMPN 02 Klakah</p>

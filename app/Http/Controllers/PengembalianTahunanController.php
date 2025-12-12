@@ -98,12 +98,41 @@ class PengembalianTahunanController extends Controller
                 $keteranganList[] = "Buku hilang";
             }
 
+            // ✅ 3. Denda karena rusak
+            if ($kondisi === 'rusak') {
+                $jenisKerusakan = $request->input('jenis_kerusakan', 'Tidak disebutkan');
+                $rusakParah = ($jenisKerusakan === 'Rusak parah (tidak bisa dipinjam)');
+
+                $dendaList[] = [
+                    'jenis_denda' => 'rusak',
+                    'jumlah' => 10000,
+                    'keterangan' => "Buku rusak saat pengembalian - Jenis: $jenisKerusakan",
+                ];
+                $dendaTotal += 10000;
+                $detail->status = 'rusak';
+                $keteranganList[] = "Buku rusak ($jenisKerusakan)";
+            }
+
             $detail->save();
 
-            // Kode buku kembali tersedia jika bukan hilang
-            if ($kondisi !== 'hilang') {
+            // Kode buku kembali tersedia:
+            // - Jika kondisi baik atau terlambat → tersedia
+            // - Jika hilang → tidak tersedia
+            // - Jika rusak ringan → tersedia
+            // - Jika rusak parah → tidak tersedia
+            if ($kondisi === 'baik' || $kondisi === 'terlambat') {
                 $detail->kodeBuku->update(['status' => 'tersedia']);
+            } elseif ($kondisi === 'rusak') {
+                $jenisKerusakan = $request->input('jenis_kerusakan', '');
+                $rusakParah = ($jenisKerusakan === 'Rusak parah (tidak bisa dipinjam)');
+
+                if (!$rusakParah) {
+                    // Rusak ringan, buku masih bisa dipinjam
+                    $detail->kodeBuku->update(['status' => 'tersedia']);
+                }
+                // Jika rusak parah, status tetap (tidak diupdate ke tersedia)
             }
+            // Jika hilang, status tidak diupdate (tetap dipinjam/tidak tersedia)
 
             // ✅ 3. Simpan catatan denda jika ada
             foreach ($dendaList as $item) {

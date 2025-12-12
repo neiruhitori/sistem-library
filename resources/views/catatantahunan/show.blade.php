@@ -160,9 +160,9 @@
                             <i class="fas fa-arrow-left"></i> Kembali
                         </a>
                         @if ($catatan->status === 'belum_dibayar')
-                            <a href="{{ route('catatantahunan.pay', $catatan->id) }}" class="btn btn-success">
+                            <button class="btn btn-success" data-toggle="modal" data-target="#confirmModal">
                                 <i class="fas fa-credit-card"></i> Bayar Sekarang
-                            </a>
+                            </button>
                         @endif
                     </div>
                     <div>
@@ -173,6 +173,34 @@
                     </div>
                 </div>
 
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi Pembayaran -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-white">
+                    <h5 class="modal-title" id="confirmModalLabel">
+                        <i class="fas fa-exclamation-circle"></i> Konfirmasi Pembayaran Cash
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Tutup">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    Apakah Anda yakin pembayaran <strong>tunai</strong> sebesar<br>
+                    <span class="text-primary">Rp{{ number_format($catatan->jumlah, 0, ',', '.') }}</span> sudah dilakukan?
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <form action="{{ route('catatantahunan.processPayment', $catatan->id) }}" method="POST">
+                        @csrf
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-success">Ya, Sudah Dibayar</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
