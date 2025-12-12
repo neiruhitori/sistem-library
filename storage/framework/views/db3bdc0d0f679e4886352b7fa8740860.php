@@ -197,10 +197,12 @@
                                                     class="fas fa-eye"></i></a>
                                             <a href="<?php echo e(route('siswa.edit', $p->id)); ?>" type="button" class="btn btn-warning" title="Edit Data"><i
                                                     class="fas fa-edit"></i></a>
-                                            <a href="<?php echo e(route('siswa.print.card', $p->id)); ?>" type="button" class="btn btn-info" title="Print Card PDF"><i
-                                                    class="fas fa-id-card"></i></a>
-                                            <a href="<?php echo e(route('siswa.print.card.png', $p->id)); ?>" type="button" class="btn btn-success" title="Download Card PNG (300 DPI)"><i
-                                                    class="fas fa-image"></i></a>
+                                            <?php if(!empty($p->nisn)): ?>
+                                                <a href="<?php echo e(route('siswa.print.card', $p->id)); ?>" type="button" class="btn btn-info" title="Print Card PDF"><i
+                                                        class="fas fa-id-card"></i></a>
+                                                <a href="<?php echo e(route('siswa.print.card.png', $p->id)); ?>" type="button" class="btn btn-success" title="Download Card PNG (300 DPI)"><i
+                                                        class="fas fa-image"></i></a>
+                                            <?php endif; ?>
                                             <form action="<?php echo e(route('siswa.destroy', $p->id)); ?>" method="POST" class="d-inline"
                                                 onsubmit="return confirm('Apakah kamu yakin ingin hapus?')">
                                                 <?php echo csrf_field(); ?>

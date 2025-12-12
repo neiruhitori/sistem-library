@@ -101,6 +101,7 @@
                                             <option value="">-- Pilih Kondisi --</option>
                                             <option value="baik">Baik</option>
                                             <option value="terlambat">Terlambat</option>
+                                            <option value="rusak">Rusak (Denda Rp 10.000)</option>
                                             <option value="hilang">Hilang</option>
                                         </select>
                                     </div>

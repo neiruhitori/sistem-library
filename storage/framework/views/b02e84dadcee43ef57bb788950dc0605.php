@@ -62,7 +62,7 @@
         <table width="100%" cellpadding="0" cellspacing="0" style="border: none;">
             <tr>
                 <td width="80" style="border: none;">
-                    <img src="{{ public_path('AdminLTE-3.2.0/dist/img/smp2.png') }}" alt="smp"
+                    <img src="<?php echo e(public_path('AdminLTE-3.2.0/dist/img/smp2.png')); ?>" alt="smp"
                         style="height: 80px;">
                 </td>
                 <td style="border: none; text-align: center; vertical-align: middle;">
@@ -74,7 +74,7 @@
                     </span>
                 </td>
                 <td width="80" style="border: none;">
-                    <img src="{{ public_path('AdminLTE-3.2.0/dist/img/lumajang.png') }}" alt="kabupaten"
+                    <img src="<?php echo e(public_path('AdminLTE-3.2.0/dist/img/lumajang.png')); ?>" alt="kabupaten"
                         style="height: 80px;">
                 </td>
             </tr>
@@ -87,67 +87,69 @@
     <table>
         <tr>
             <th width="30%">Nama Siswa</th>
-            <td>{{ $catatan->siswa->name }}</td>
+            <td><?php echo e($catatan->siswa->name); ?></td>
         </tr>
         <tr>
             <th>NISN</th>
-            <td>{{ $catatan->siswa->nisn }}</td>
+            <td><?php echo e($catatan->siswa->nisn); ?></td>
         </tr>
         <tr>
             <th>Kelas</th>
-            <td>{{ $catatan->siswa->kelas }}</td>
+            <td><?php echo e($catatan->siswa->kelas); ?></td>
         </tr>
         <tr>
             <th>Jenis Denda</th>
-            <td>{{ ucfirst($catatan->jenis_denda) }}</td>
+            <td><?php echo e(ucfirst($catatan->jenis_denda)); ?></td>
         </tr>
         <tr>
             <th>Jumlah Denda</th>
-            <td><b>Rp{{ number_format($catatan->jumlah, 0, ',', '.') }}</b></td>
+            <td><b>Rp<?php echo e(number_format($catatan->jumlah, 0, ',', '.')); ?></b></td>
         </tr>
         <tr>
             <th>Tanggal Denda</th>
-            <td>{{ \Carbon\Carbon::parse($catatan->tanggal_denda)->translatedFormat('d F Y') }}</td>
+            <td><?php echo e(\Carbon\Carbon::parse($catatan->tanggal_denda)->translatedFormat('d F Y')); ?></td>
         </tr>
-        @if ($catatan->status === 'dibayar')
+        <?php if($catatan->status === 'dibayar'): ?>
             <tr>
                 <th>Tanggal Bayar</th>
-                <td>{{ \Carbon\Carbon::parse($catatan->tanggal_bayar)->translatedFormat('d F Y') }}</td>
+                <td><?php echo e(\Carbon\Carbon::parse($catatan->tanggal_bayar)->translatedFormat('d F Y')); ?></td>
             </tr>
-        @endif
+        <?php endif; ?>
         <tr>
             <th>Status</th>
             <td>
-                <b>{{ $catatan->status === 'dibayar' ? 'Lunas' : 'Belum Bayar' }}</b>
+                <b><?php echo e($catatan->status === 'dibayar' ? 'Lunas' : 'Belum Bayar'); ?></b>
             </td>
         </tr>
         <tr>
             <th>Keterangan</th>
-            <td>{{ $catatan->keterangan ?? '-' }}</td>
+            <td><?php echo e($catatan->keterangan ?? '-'); ?></td>
         </tr>
     </table>
-    @if ($catatan->peminjamantahunan && $catatan->peminjamantahunan->details->count())
+    <?php if($catatan->peminjaman && $catatan->peminjaman->details->count()): ?>
         <h4 style="margin-top: 30px;">Detail Buku Terkait</h4>
-        @php
-            $detail = $catatan->peminjamantahunan->details->where('id', $catatan->referensi_id)->first();
-        @endphp
-        @if ($detail)
+        <?php
+            $detail = $catatan->peminjaman->details->where('id', $catatan->referensi_id)->first();
+        ?>
+        <?php if($detail): ?>
             <div style="margin-top: 10px; padding: 15px; border: 1px solid #ddd; background-color: #f9f9f9;">
-                <p style="margin: 5px 0;"><strong>Judul</strong> : {{ $detail->kodeBuku->buku->judul ?? '-' }}</p>
-                <p style="margin: 5px 0;"><strong>Kode Buku</strong> : {{ $detail->kodeBuku->kode_buku ?? '-' }}</p>
-                <p style="margin: 5px 0;"><strong>Penulis</strong> : {{ $detail->kodeBuku->buku->penulis ?? '-' }}</p>
-                <p style="margin: 5px 0;"><strong>Tahun</strong> : {{ $detail->kodeBuku->buku->tahun_terbit ?? '-' }}</p>
+                <p style="margin: 5px 0;"><strong>Judul</strong> : <?php echo e($detail->kodeBuku->buku->judul ?? '-'); ?></p>
+                <p style="margin: 5px 0;"><strong>Kode Buku</strong> : <?php echo e($detail->kodeBuku->kode_buku ?? '-'); ?></p>
+                <p style="margin: 5px 0;"><strong>Penulis</strong> : <?php echo e($detail->kodeBuku->buku->penulis ?? '-'); ?></p>
+                <p style="margin: 5px 0;"><strong>Tahun</strong> : <?php echo e($detail->kodeBuku->buku->tahun_terbit ?? '-'); ?></p>
             </div>
-        @endif
-    @endif
+        <?php endif; ?>
+    <?php endif; ?>
     <div class="ttd">
         <p>Kepala Perpustakaan<br>SMPN 02 Klakah</p>
         <br><br><br>
         <p>
-            <strong><u>{{ $catatan->handledByUser->name ?? 'Tidak diketahui' }}</u></strong><br>
-            NIP. {{ $catatan->handledByUser->nip ?? '-' }}
+            <strong><u><?php echo e($catatan->handledByUser->name ?? 'Tidak diketahui'); ?></u></strong><br>
+            NIP. <?php echo e($catatan->handledByUser->nip ?? '-'); ?>
+
         </p>
     </div>
 </body>
 
 </html>
+<?php /**PATH C:\laragon\www\sistem-library\resources\views/catatanharian/pdf.blade.php ENDPATH**/ ?>

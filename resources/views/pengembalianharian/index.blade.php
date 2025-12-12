@@ -100,10 +100,25 @@
                                         <p>Pilih kondisi buku saat dikembalikan:</p>
                                         <select name="kondisi_buku" id="kondisiBukuSelect" class="form-control" required>
                                             <option value="">-- Pilih Kondisi --</option>
-                                            <option value="baik">Baik</option>
-                                            <option value="terlambat">Terlambat</option>
-                                            <option value="hilang">Hilang</option>
+                                            <option value="baik">Baik (Tanpa Denda)</option>
+                                            <option value="terlambat">Terlambat (Denda Rp 1.000/hari)</option>
+                                            <option value="rusak">Rusak (Denda Rp 10.000)</option>
+                                            <option value="hilang">Hilang (Denda Rp 50.000)</option>
                                         </select>
+
+                                        <!-- Sub-pilihan untuk jenis kerusakan -->
+                                        <div id="jenisKerusakanWrapper" style="display: none; margin-top: 15px;">
+                                            <label for="jenisKerusakanSelect"><strong>Pilih Jenis Kerusakan:</strong></label>
+                                            <select name="jenis_kerusakan" id="jenisKerusakanSelect" class="form-control">
+                                                <option value="">-- Pilih Jenis Kerusakan --</option>
+                                                <option value="Corat-coret">Corat-coret</option>
+                                                <option value="Sobek halaman">Sobek halaman</option>
+                                                <option value="Cover rusak">Cover rusak</option>
+                                                <option value="Jilid lepas">Jilid lepas</option>
+                                                <option value="Basah/Terkena air">Basah/Terkena air</option>
+                                                <option value="Rusak parah (tidak bisa dipinjam)">Rusak parah (tidak bisa dipinjam)</option>
+                                            </select>
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="submit" class="btn btn-success" id="submitPengembalian"
@@ -144,9 +159,32 @@
         document.addEventListener('DOMContentLoaded', function() {
             const select = document.getElementById('kondisiBukuSelect');
             const submitButton = document.getElementById('submitPengembalian');
+            const jenisKerusakanWrapper = document.getElementById('jenisKerusakanWrapper');
+            const jenisKerusakanSelect = document.getElementById('jenisKerusakanSelect');
 
             select.addEventListener('change', function() {
-                if (select.value !== '') {
+                if (select.value === 'rusak') {
+                    // Tampilkan pilihan jenis kerusakan
+                    jenisKerusakanWrapper.style.display = 'block';
+                    jenisKerusakanSelect.required = true;
+                    submitButton.setAttribute('disabled', true);
+                } else {
+                    // Sembunyikan pilihan jenis kerusakan
+                    jenisKerusakanWrapper.style.display = 'none';
+                    jenisKerusakanSelect.required = false;
+                    jenisKerusakanSelect.value = '';
+                    
+                    if (select.value !== '') {
+                        submitButton.removeAttribute('disabled');
+                    } else {
+                        submitButton.setAttribute('disabled', true);
+                    }
+                }
+            });
+
+            // Validasi untuk jenis kerusakan
+            jenisKerusakanSelect.addEventListener('change', function() {
+                if (jenisKerusakanSelect.value !== '' && select.value === 'rusak') {
                     submitButton.removeAttribute('disabled');
                 } else {
                     submitButton.setAttribute('disabled', true);

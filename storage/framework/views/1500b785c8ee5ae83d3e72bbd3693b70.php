@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Detail Siswa - {{ $siswa->nama }}</title>
+    <title>Detail Siswa - <?php echo e($siswa->nama); ?></title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -10,19 +10,19 @@
       <!-- Statistik Peminjaman -->
     <div class="stats-box">
         <div class="stat-item">
-            <div class="stat-number">{{ $peminjamanHarian->sum(function($p) { return $p->details->count(); }) }}</div>
+            <div class="stat-number"><?php echo e($peminjamanHarian->sum(function($p) { return $p->details->count(); })); ?></div>
             <div class="stat-label">Peminjaman Harian</div>
         </div>
         <div class="stat-item">
-            <div class="stat-number">{{ $peminjamanTahunan->sum(function($p) { return $p->details->count(); }) }}</div>
+            <div class="stat-number"><?php echo e($peminjamanTahunan->sum(function($p) { return $p->details->count(); })); ?></div>
             <div class="stat-label">Peminjaman Tahunan</div>
         </div>
         <div class="stat-item">
-            <div class="stat-number">{{ $peminjamanHarian->sum(function($p) { return $p->details->count(); }) + $peminjamanTahunan->sum(function($p) { return $p->details->count(); }) }}</div>
+            <div class="stat-number"><?php echo e($peminjamanHarian->sum(function($p) { return $p->details->count(); }) + $peminjamanTahunan->sum(function($p) { return $p->details->count(); })); ?></div>
             <div class="stat-label">Total Peminjaman</div>
         </div>
         <div class="stat-item">
-            <div class="stat-number">{{ $catatanDenda->count() }}</div>
+            <div class="stat-number"><?php echo e($catatanDenda->count()); ?></div>
             <div class="stat-label">Aktivitas Denda</div>
         </div>
     </div>ng: 20px;
@@ -157,24 +157,24 @@
     
     <!-- Data Siswa -->
     <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ddd;">
-        <p style="margin: 3px 0;"><strong>Nama Lengkap</strong> : {{ $siswa->name }}</p>
-        <p style="margin: 3px 0;"><strong>NISN</strong> : {{ $siswa->nisn ?? 'N/A' }}</p>
-        <p style="margin: 3px 0;"><strong>Kelas</strong> : {{ $siswa->kelas }}</p>
-        <p style="margin: 3px 0;"><strong>Terdaftar</strong> : {{ $siswa->created_at->format('d F Y') }}</p>
-        <p style="margin: 3px 0;"><strong>Tanggal Cetak</strong> : {{ $tanggalCetak }}</p>
+        <p style="margin: 3px 0;"><strong>Nama Lengkap</strong> : <?php echo e($siswa->name); ?></p>
+        <p style="margin: 3px 0;"><strong>NISN</strong> : <?php echo e($siswa->nisn ?? 'N/A'); ?></p>
+        <p style="margin: 3px 0;"><strong>Kelas</strong> : <?php echo e($siswa->kelas); ?></p>
+        <p style="margin: 3px 0;"><strong>Terdaftar</strong> : <?php echo e($siswa->created_at->format('d F Y')); ?></p>
+        <p style="margin: 3px 0;"><strong>Tanggal Cetak</strong> : <?php echo e($tanggalCetak); ?></p>
     </div>
     
     <!-- Statistik Peminjaman -->
     <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ddd;">
-        <p style="margin: 3px 0;"><strong>Peminjaman Harian</strong> : {{ $peminjamanHarian->sum(function($p) { return $p->details->count(); }) }}</p>
-        <p style="margin: 3px 0;"><strong>Peminjaman Tahunan</strong> : {{ $peminjamanTahunan->sum(function($p) { return $p->details->count(); }) }}</p>
-        <p style="margin: 3px 0;"><strong>Total Peminjaman</strong> : {{ $peminjamanHarian->sum(function($p) { return $p->details->count(); }) + $peminjamanTahunan->sum(function($p) { return $p->details->count(); }) }}</p>
-        <p style="margin: 3px 0;"><strong>Aktivitas Denda</strong> : {{ $catatanDenda->count() }}</p>
+        <p style="margin: 3px 0;"><strong>Peminjaman Harian</strong> : <?php echo e($peminjamanHarian->sum(function($p) { return $p->details->count(); })); ?></p>
+        <p style="margin: 3px 0;"><strong>Peminjaman Tahunan</strong> : <?php echo e($peminjamanTahunan->sum(function($p) { return $p->details->count(); })); ?></p>
+        <p style="margin: 3px 0;"><strong>Total Peminjaman</strong> : <?php echo e($peminjamanHarian->sum(function($p) { return $p->details->count(); }) + $peminjamanTahunan->sum(function($p) { return $p->details->count(); })); ?></p>
+        <p style="margin: 3px 0;"><strong>Aktivitas Denda</strong> : <?php echo e($catatanDenda->count()); ?></p>
     </div>
     
     <!-- Riwayat Peminjaman Harian -->
     <div class="section-title">RIWAYAT PEMINJAMAN HARIAN</div>
-    @if($peminjamanHarian->count() > 0)
+    <?php if($peminjamanHarian->count() > 0): ?>
     <table>
         <thead>
             <tr>
@@ -187,40 +187,40 @@
             </tr>
         </thead>
         <tbody>
-            @php $no = 1; @endphp
-            @foreach($peminjamanHarian as $harian)
-                @foreach($harian->details as $detail)
+            <?php $no = 1; ?>
+            <?php $__currentLoopData = $peminjamanHarian; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $harian): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php $__currentLoopData = $harian->details; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $detail): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <tr>
-                    <td class="text-center">{{ $no++ }}</td>
-                    <td>{{ $harian->tanggal_pinjam }}</td>
-                    <td>{{ $harian->tanggal_kembali ?? 'Belum dikembalikan' }}</td>
-                    <td>{{ $detail->kodeBuku->buku->judul ?? 'N/A' }}</td>
+                    <td class="text-center"><?php echo e($no++); ?></td>
+                    <td><?php echo e($harian->tanggal_pinjam); ?></td>
+                    <td><?php echo e($harian->tanggal_kembali ?? 'Belum dikembalikan'); ?></td>
+                    <td><?php echo e($detail->kodeBuku->buku->judul ?? 'N/A'); ?></td>
                     <td>
-                        <span class="badge">{{ $detail->kodeBuku->kode_buku ?? 'N/A' }}</span>
+                        <span class="badge"><?php echo e($detail->kodeBuku->kode_buku ?? 'N/A'); ?></span>
                     </td>
                     <td>
-                        @if($harian->status == 'dipinjam')
+                        <?php if($harian->status == 'dipinjam'): ?>
                             <span class="badge badge-warning">Dipinjam</span>
-                        @elseif($harian->status == 'selesai')
+                        <?php elseif($harian->status == 'selesai'): ?>
                             <span class="badge badge-success">Selesai</span>
-                        @else
-                            <span class="badge badge-secondary">{{ ucfirst($harian->status) }}</span>
-                        @endif
+                        <?php else: ?>
+                            <span class="badge badge-secondary"><?php echo e(ucfirst($harian->status)); ?></span>
+                        <?php endif; ?>
                     </td>
                 </tr>
-                @endforeach
-            @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </tbody>
     </table>
-    @else
+    <?php else: ?>
     <div class="no-data">
         Belum ada riwayat peminjaman harian
     </div>
-    @endif
+    <?php endif; ?>
     
     <!-- Riwayat Peminjaman Tahunan -->
     <div class="section-title">RIWAYAT PEMINJAMAN TAHUNAN</div>
-    @if($peminjamanTahunan->count() > 0)
+    <?php if($peminjamanTahunan->count() > 0): ?>
     <table>
         <thead>
             <tr>
@@ -233,40 +233,40 @@
             </tr>
         </thead>
         <tbody>
-            @php $no = 1; @endphp
-            @foreach($peminjamanTahunan as $tahunan)
-                @foreach($tahunan->details as $detail)
+            <?php $no = 1; ?>
+            <?php $__currentLoopData = $peminjamanTahunan; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tahunan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php $__currentLoopData = $tahunan->details; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $detail): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <tr>
-                    <td class="text-center">{{ $no++ }}</td>
-                    <td>{{ $tahunan->tanggal_pinjam }}</td>
-                    <td>{{ $tahunan->tanggal_kembali ?? 'Belum dikembalikan' }}</td>
-                    <td>{{ $detail->kodeBuku->buku->judul ?? 'N/A' }}</td>
+                    <td class="text-center"><?php echo e($no++); ?></td>
+                    <td><?php echo e($tahunan->tanggal_pinjam); ?></td>
+                    <td><?php echo e($tahunan->tanggal_kembali ?? 'Belum dikembalikan'); ?></td>
+                    <td><?php echo e($detail->kodeBuku->buku->judul ?? 'N/A'); ?></td>
                     <td>
-                        <span class="badge">{{ $detail->kodeBuku->kode_buku ?? 'N/A' }}</span>
+                        <span class="badge"><?php echo e($detail->kodeBuku->kode_buku ?? 'N/A'); ?></span>
                     </td>
                     <td>
-                        @if($tahunan->status == 'dipinjam')
+                        <?php if($tahunan->status == 'dipinjam'): ?>
                             <span class="badge badge-warning">Dipinjam</span>
-                        @elseif($tahunan->status == 'selesai')
+                        <?php elseif($tahunan->status == 'selesai'): ?>
                             <span class="badge badge-success">Selesai</span>
-                        @else
-                            <span class="badge badge-secondary">{{ ucfirst($tahunan->status) }}</span>
-                        @endif
+                        <?php else: ?>
+                            <span class="badge badge-secondary"><?php echo e(ucfirst($tahunan->status)); ?></span>
+                        <?php endif; ?>
                     </td>
                 </tr>
-                @endforeach
-            @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </tbody>
     </table>
-    @else
+    <?php else: ?>
     <div class="no-data">
         Belum ada riwayat peminjaman tahunan
     </div>
-    @endif
+    <?php endif; ?>
     
     <!-- Aktivitas Denda -->
     <h3>Aktivitas Denda</h3>
-    @if($catatanDenda->count() > 0)
+    <?php if($catatanDenda->count() > 0): ?>
     <table class="table">
         <thead>
             <tr>
@@ -278,41 +278,43 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($catatanDenda as $index => $denda)
+            <?php $__currentLoopData = $catatanDenda; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $denda): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <tr>
-                <td class="text-center">{{ $index + 1 }}</td>
-                <td>{{ $denda->created_at->format('d/m/Y') }}</td>
-                <td>{{ $denda->keterangan ?? 'Denda keterlambatan' }}</td>
-                <td>Rp {{ number_format($denda->jumlah ?? 0, 0, ',', '.') }}</td>
+                <td class="text-center"><?php echo e($index + 1); ?></td>
+                <td><?php echo e($denda->created_at->format('d/m/Y')); ?></td>
+                <td><?php echo e($denda->keterangan ?? 'Denda keterlambatan'); ?></td>
+                <td>Rp <?php echo e(number_format($denda->jumlah ?? 0, 0, ',', '.')); ?></td>
                 <td>
-                    @if($denda->status == 'dibayar')
+                    <?php if($denda->status == 'dibayar'): ?>
                         <span class="badge badge-success">Lunas</span>
-                    @else
+                    <?php else: ?>
                         <span class="badge badge-warning">Belum Lunas</span>
-                    @endif
+                    <?php endif; ?>
                 </td>
             </tr>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </tbody>
     </table>
-    @else
+    <?php else: ?>
     <div class="no-data">
         Tidak ada aktivitas denda
     </div>
-    @endif
+    <?php endif; ?>
     
     <div class="signature">
         <div class="signature-box">
-            <p>Klakah, {{ $tanggalCetak }}</p>
+            <p>Klakah, <?php echo e($tanggalCetak); ?></p>
             <p>Pustakawan</p>
             <div class="signature-line">
-                <u>{{ auth()->user()->name }}</u></strong><br>NIP. {{ auth()->user()->nip }}
+                <u><?php echo e(auth()->user()->name); ?></u></strong><br>NIP. <?php echo e(auth()->user()->nip); ?>
+
             </div>
         </div>
     </div>
     
     <div class="footer">
-        <p>Dicetak pada: {{ now()->format('d F Y H:i:s') }} | Sistem Perpustakaan SMPN 02 Klakah</p>
+        <p>Dicetak pada: <?php echo e(now()->format('d F Y H:i:s')); ?> | Sistem Perpustakaan SMPN 02 Klakah</p>
     </div>
 </body>
 </html>
+<?php /**PATH C:\laragon\www\sistem-library\resources\views/kelas/detail-pdf.blade.php ENDPATH**/ ?>

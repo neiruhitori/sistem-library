@@ -197,10 +197,12 @@
                                                     class="fas fa-eye"></i></a>
                                             <a href="{{ route('siswa.edit', $p->id) }}" type="button" class="btn btn-warning" title="Edit Data"><i
                                                     class="fas fa-edit"></i></a>
-                                            <a href="{{ route('siswa.print.card', $p->id) }}" type="button" class="btn btn-info" title="Print Card PDF"><i
-                                                    class="fas fa-id-card"></i></a>
-                                            <a href="{{ route('siswa.print.card.png', $p->id) }}" type="button" class="btn btn-success" title="Download Card PNG (300 DPI)"><i
-                                                    class="fas fa-image"></i></a>
+                                            @if(!empty($p->nisn))
+                                                <a href="{{ route('siswa.print.card', $p->id) }}" type="button" class="btn btn-info" title="Print Card PDF"><i
+                                                        class="fas fa-id-card"></i></a>
+                                                <a href="{{ route('siswa.print.card.png', $p->id) }}" type="button" class="btn btn-success" title="Download Card PNG (300 DPI)"><i
+                                                        class="fas fa-image"></i></a>
+                                            @endif
                                             <form action="{{ route('siswa.destroy', $p->id) }}" method="POST" class="d-inline"
                                                 onsubmit="return confirm('Apakah kamu yakin ingin hapus?')">
                                                 @csrf
