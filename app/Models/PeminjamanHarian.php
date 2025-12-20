@@ -20,7 +20,7 @@ class PeminjamanHarian extends Model
 
     public function siswa()
     {
-        return $this->belongsTo(siswa::class, 'siswas_id');
+        return $this->belongsTo(Siswa::class, 'siswas_id');
     }
 
     public function details()

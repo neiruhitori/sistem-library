@@ -407,7 +407,8 @@
     <!-- AdminLTE App -->
     <script src="{{ asset('AdminLTE-3.2.0/dist/js/adminlte.js') }}"></script>
 
-    <!-- PAGE PLUGINS -->
+    <!-- PAGE PLUGINS (Only load on dashboard) -->
+    @if(request()->is('dashboard'))
     <!-- jQuery Mapael -->
     <script src="{{ asset('AdminLTE-3.2.0/plugins/jquery-mousewheel/jquery.mousewheel.js') }}"></script>
     <script src="{{ asset('AdminLTE-3.2.0/plugins/raphael/raphael.min.js') }}"></script>
@@ -415,11 +416,15 @@
     <script src="{{ asset('AdminLTE-3.2.0/plugins/jquery-mapael/maps/usa_states.min.js') }}"></script>
     <!-- ChartJS -->
     <script src="{{ asset('AdminLTE-3.2.0/plugins/chart.js/Chart.min.js') }}"></script>
+    @endif
 
     <!-- AdminLTE for demo purposes -->
     <script src="{{ asset('AdminLTE-3.2.0/dist/js/demo.js') }}"></script>
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+    
+    <!-- AdminLTE dashboard demo (Only load on dashboard page) -->
+    @if(request()->is('dashboard'))
     <script src="{{ asset('AdminLTE-3.2.0/dist/js/pages/dashboard2.js') }}"></script>
+    @endif
 
     <script>
         function toggleUserDropdown() {
@@ -510,9 +515,30 @@
                     updateNotificationUI(response);
                 },
                 error: function(xhr, status, error) {
-                    console.error('Error loading notifications:', status, error);
+                    console.error('Error loading notifications:');
+                    console.error('Status:', status);
+                    console.error('Error:', error);
+                    console.error('Response:', xhr.responseText);
+                    console.error('Status Code:', xhr.status);
+                    
                     hideNotificationLoading();
-                    showNotificationError();
+                    
+                    let errorMsg = 'Silakan coba lagi nanti';
+                    if (xhr.status === 404) {
+                        errorMsg = 'Route tidak ditemukan (404)';
+                    } else if (xhr.status === 500) {
+                        errorMsg = 'Server error (500)';
+                        try {
+                            const resp = JSON.parse(xhr.responseText);
+                            if (resp.message) {
+                                errorMsg = resp.message;
+                            }
+                        } catch(e) {}
+                    } else if (xhr.status === 0) {
+                        errorMsg = 'Tidak dapat terhubung ke server';
+                    }
+                    
+                    showNotificationError(errorMsg);
                 }
             });
         }
@@ -650,12 +676,13 @@
             $('#notificationEmpty').show();
         }
 
-        function showNotificationError() {
+        function showNotificationError(errorMsg) {
+            const errorText = errorMsg || 'Silakan coba lagi nanti';
             $('#notificationItems').html(`
                 <div class="text-center py-4 text-danger">
                     <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
                     <p class="mb-0">Gagal memuat notifikasi</p>
-                    <small>Silakan coba lagi nanti</small>
+                    <small>${errorText}</small>
                 </div>
             `).show();
         }

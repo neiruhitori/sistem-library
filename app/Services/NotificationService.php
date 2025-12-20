@@ -2,12 +2,41 @@
 
 namespace App\Services;
 
-use App\Models\Notification;
 use App\Models\PeminjamanHarian;
 use App\Models\PeminjamanTahunan;
+use Illuminate\Support\Facades\DB;
 
 class NotificationService
 {
+    /**
+     * Helper untuk membuat notifikasi - struktur custom table
+     */
+    private static function createNotification($data)
+    {
+        try {
+            $result = DB::table('notifications')->insert([
+                'user_id' => $data['user_id'],
+                'type' => $data['type'],
+                'reference_id' => $data['reference_id'] ?? null,
+                'title' => $data['title'],
+                'message' => $data['message'],
+                'icon' => $data['icon'] ?? 'fas fa-bell',
+                'is_read' => false,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+
+            \Log::info('Notification created', ['result' => $result, 'user_id' => $data['user_id']]);
+            return $result;
+        } catch (\Exception $e) {
+            \Log::error('Failed to create notification: ' . $e->getMessage(), [
+                'exception' => $e->getTraceAsString(),
+                'data' => $data
+            ]);
+            return false;
+        }
+    }
+
     /**
      * Buat notifikasi untuk peminjaman harian baru
      */
@@ -26,8 +55,8 @@ class NotificationService
         $message = "{$peminjaman->siswa->name} meminjam {$bukuText} pada " . 
                   $peminjaman->tanggal_pinjam . " (kembali: " . $peminjaman->tanggal_kembali . ")";
 
-        return Notification::create([
-            'user_id' => $peminjaman->user_id, // Tambahkan user_id
+        return self::createNotification([
+            'user_id' => $peminjaman->user_id,
             'type' => 'peminjaman_harian',
             'reference_id' => $peminjamanId,
             'title' => $title,
@@ -54,8 +83,8 @@ class NotificationService
         $message = "{$peminjaman->siswa->name} meminjam {$bukuText} pada " . 
                   $peminjaman->tanggal_pinjam . " (kembali: " . $peminjaman->tanggal_kembali . ")";
 
-        return Notification::create([
-            'user_id' => $peminjaman->user_id, // Tambahkan user_id
+        return self::createNotification([
+            'user_id' => $peminjaman->user_id,
             'type' => 'peminjaman_tahunan',
             'reference_id' => $peminjamanId,
             'title' => $title,
@@ -70,11 +99,11 @@ class NotificationService
     public static function createDueDateReminder($type, $peminjamanId)
     {
         if ($type === 'harian') {
-            $peminjaman = PeminjamanHarian::with('siswa')->find($peminjamanId);
+            $peminjaman = PeminjamanHarian::with('siswa', 'user')->find($peminjamanId);
             $routeType = 'peminjaman_harian';
             $icon = 'fas fa-exclamation-triangle';
         } else {
-            $peminjaman = PeminjamanTahunan::with('siswa')->find($peminjamanId);
+            $peminjaman = PeminjamanTahunan::with('siswa', 'user')->find($peminjamanId);
             $routeType = 'peminjaman_tahunan';
             $icon = 'fas fa-exclamation-triangle';
         }
@@ -86,7 +115,8 @@ class NotificationService
         $title = "Reminder Jatuh Tempo";
         $message = "Peminjaman {$peminjaman->siswa->name} akan jatuh tempo pada {$peminjaman->tanggal_kembali}";
 
-        return Notification::create([
+        return self::createNotification([
+            'user_id' => $peminjaman->user_id,
             'type' => $routeType,
             'reference_id' => $peminjamanId,
             'title' => $title,
