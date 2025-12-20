@@ -48,6 +48,9 @@
     <link rel="stylesheet"
         href="{{ asset('AdminLTE-3.2.0/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
     
+    <!-- Button Loading CSS -->
+    <link rel="stylesheet" href="{{ asset('css/button-loading.css') }}">
+    
     <!-- Custom Notification Styles -->
     <style>
         /* Notification Dropdown Styles */
@@ -756,6 +759,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
+    
+    <!-- Button Loading Handler -->
+    <script src="{{ asset('js/button-loading.js') }}"></script>
+    
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">

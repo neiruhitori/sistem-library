@@ -20,6 +20,11 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
 
+// Test Button Loading (for development only)
+Route::get('/test-button-loading', function () {
+    return view('test-button-loading');
+})->middleware(['auth'])->name('test.button.loading');
+
 Route::middleware(['auth'])->group(function () {
     // Profile (Breeze default)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
