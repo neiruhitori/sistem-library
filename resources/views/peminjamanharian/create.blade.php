@@ -32,6 +32,32 @@
                 <div class="card-header bg-primary text-white">
                     <h3 class="card-title"><i class="fas fa-edit"></i> Form Tambah Peminjaman Harian</h3>
                 </div>
+                
+                {{-- Error Messages --}}
+                @if ($errors->any())
+                    <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
+                        <h5><i class="icon fas fa-ban"></i> Error!</h5>
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                @endif
+                
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
+                        <h5><i class="icon fas fa-ban"></i> Error!</h5>
+                        {{ session('error') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                @endif
+                
                 <form method="POST" action="{{ route('peminjamanharian.store') }}">
                     @csrf
                     <div class="card-body">

@@ -125,10 +125,16 @@ class PeminjamanHarianController extends Controller
             }
 
             // Buat notifikasi setelah peminjaman berhasil
-            NotificationService::createPeminjamanHarianNotification($peminjaman->id);
+            $notifCreated = NotificationService::createPeminjamanHarianNotification($peminjaman->id);
 
             DB::commit();
-            return redirect()->route('peminjamanharian.index')->with('success', 'Peminjaman berhasil disimpan.');
+
+            $message = 'Peminjaman berhasil disimpan.';
+            if ($notifCreated) {
+                $message .= ' Notifikasi telah dibuat.';
+            }
+
+            return redirect()->route('peminjamanharian.index')->with('success', $message);
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['error' => $e->getMessage()])->withInput();

@@ -148,13 +148,24 @@ class DashboardController extends Controller
             }
                 
             $topBorrowers = $allBorrowers->sortByDesc('total_peminjaman')->values()->take(5);
-                
+
             // Popular books dari user ini (gabung harian dan tahunan)
-            $popularBooksHarian = PeminjamanHarianDetail::with('kodeBuku.buku')
+            $popularBooksHarianData = PeminjamanHarianDetail::with('kodeBuku.buku')
                 ->whereHas('peminjaman', function($query) use ($user) {
                     $query->where('user_id', $user->id);
                 })
-                ->get()
+                ->get();
+
+            $popularBooksTahunanData = PeminjamanTahunanDetail::with('kodeBuku.buku')
+                ->whereHas('peminjaman', function($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })
+                ->get();
+
+            // Gabungkan data terlebih dahulu, baru groupBy
+            $allPopularBooksData = $popularBooksHarianData->merge($popularBooksTahunanData);
+
+            $popularBooks = $allPopularBooksData
                 ->groupBy('kode_bukus_id')
                 ->map(function($group) {
                     return (object)[
@@ -162,35 +173,9 @@ class DashboardController extends Controller
                         'kode_bukus_id' => $group->first()->kode_bukus_id,
                         'total_peminjaman' => $group->count()
                     ];
-                });
-                
-            $popularBooksTahunan = PeminjamanTahunanDetail::with('kodeBuku.buku')
-                ->whereHas('peminjaman', function($query) use ($user) {
-                    $query->where('user_id', $user->id);
                 })
-                ->get()
-                ->groupBy('kode_bukus_id')
-                ->map(function($group) {
-                    return (object)[
-                        'kodeBuku' => $group->first()->kodeBuku,
-                        'kode_bukus_id' => $group->first()->kode_bukus_id,
-                        'total_peminjaman' => $group->count()
-                    ];
-                });
-                
-            // Gabungkan dan hitung total per buku
-            $allPopularBooks = $popularBooksHarian->merge($popularBooksTahunan)
-                ->groupBy('kode_bukus_id')
-                ->map(function($group) {
-                    $totalPeminjaman = $group->sum('total_peminjaman');
-                    return (object)[
-                        'kodeBuku' => $group->first()->kodeBuku,
-                        'kode_bukus_id' => $group->first()->kode_bukus_id,
-                        'total_peminjaman' => $totalPeminjaman
-                    ];
-                });
-                
-            $popularBooks = $allPopularBooks->sortByDesc('total_peminjaman')->take(5);
+                ->sortByDesc('total_peminjaman')
+                ->take(5);
                 
             // Overdue books dari user ini (gabung harian dan tahunan)
             $overdueBooksHarian = PeminjamanHarian::with(['siswa', 'details.kodeBuku.buku'])

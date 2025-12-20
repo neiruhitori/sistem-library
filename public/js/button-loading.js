@@ -111,26 +111,41 @@
      */
     function handleFormSubmit(event) {
         const form = event.target;
-        const submitButton = event.submitter || form.querySelector('button[type="submit"]:focus');
-        
-        // Jika button sudah loading, prevent submit
-        if (submitButton && submitButton.disabled) {
+        const submitButton =
+            event.submitter ||
+            form.querySelector('button[type="submit"]:focus') ||
+            form.querySelector('button[type="submit"]');
+
+        // Jika button sudah loading, prevent submit (double click prevention)
+        if (submitButton && submitButton.classList.contains("btn-loading")) {
+            console.warn("Form submit prevented - button already loading");
             event.preventDefault();
             return false;
         }
-        
+
+        // JANGAN prevent jika button disabled tapi tidak loading
+        // Ini bisa terjadi karena validasi HTML5
+
         // Set semua submit button ke loading
-        const submitButtons = form.querySelectorAll('button[type="submit"], .btn-submit');
-        submitButtons.forEach(button => {
+        const submitButtons = form.querySelectorAll(
+            'button[type="submit"], .btn-submit'
+        );
+        submitButtons.forEach((button) => {
             setButtonLoading(button);
         });
-        
+
         // Untuk form dengan method GET (search form), reset button setelah delay
-        if (form.method.toLowerCase() === 'get') {
+        if (form.method.toLowerCase() === "get") {
             setTimeout(() => {
                 resetFormButtons(form);
             }, 1000);
         }
+
+        // Log untuk debugging
+        console.log(
+            "Form submitting:",
+            form.action || form.getAttribute("action")
+        );
     }
 
     /**

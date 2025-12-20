@@ -124,10 +124,16 @@ class PeminjamanTahunanController extends Controller
             }
 
             // Buat notifikasi setelah peminjaman berhasil
-            NotificationService::createPeminjamanTahunanNotification($peminjaman->id);
+            $notifCreated = NotificationService::createPeminjamanTahunanNotification($peminjaman->id);
 
             DB::commit();
-            return redirect()->route('peminjamantahunan.index')->with('success', 'Peminjaman berhasil disimpan.');
+
+            $message = 'Peminjaman berhasil disimpan.';
+            if ($notifCreated) {
+                $message .= ' Notifikasi telah dibuat.';
+            }
+
+            return redirect()->route('peminjamantahunan.index')->with('success', $message);
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['error' => $e->getMessage()])->withInput();

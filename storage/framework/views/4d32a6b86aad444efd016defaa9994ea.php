@@ -1,4 +1,4 @@
-<?php $__env->startSection('title', 'Tambah Peminjaman Harian'); ?>
+<?php $__env->startSection('title', 'Tambah Peminjaman Tahunan'); ?>
 
 <?php $__env->startSection('contents'); ?>
     <div class="content-header mx-auto mt-3" style="max-width: 98%;">
@@ -7,15 +7,15 @@
                 <div class="col-sm-6">
                     <h1 class="m-0 text-primary" style="font-size: 2rem">
                         <i class="fas fa-book-reader"></i>
-                        Tambah Peminjaman Harian
+                        Tambah Peminjaman Tahunan
                     </h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right bg-light px-2 py-1 rounded shadow-sm">
                         <li class="breadcrumb-item"><a href="/dashboard"><span class="badge badge-primary"><i
                                         class="fas fa-home"></i> Beranda</span></a></li>
-                        <li class="breadcrumb-item"><a href="/peminjamanharian"><span class="badge badge-primary"><i
-                                        class="fas fa-book-reader"></i> Peminjaman Harian</span></a></li>
+                        <li class="breadcrumb-item"><a href="/peminjamantahunan"><span class="badge badge-primary"><i
+                                        class="fas fa-book-reader"></i> Peminjaman Tahunan</span></a></li>
                         <li class="breadcrumb-item active"><span class="badge badge-info"><i class="fas fa-plus"></i>
                                 Tambah</span></li>
                     </ol>
@@ -28,36 +28,9 @@
         <div class="container-fluid">
             <div class="card mx-auto shadow" style="max-width: 800px;">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="card-title"><i class="fas fa-edit"></i> Form Tambah Peminjaman Harian</h3>
+                    <h3 class="card-title"><i class="fas fa-edit"></i> Form Tambah Peminjaman Tahunan</h3>
                 </div>
-                
-                
-                <?php if($errors->any()): ?>
-                    <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
-                        <h5><i class="icon fas fa-ban"></i> Error!</h5>
-                        <ul class="mb-0">
-                            <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <li><?php echo e($error); ?></li>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        </ul>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                <?php endif; ?>
-                
-                <?php if(session('error')): ?>
-                    <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
-                        <h5><i class="icon fas fa-ban"></i> Error!</h5>
-                        <?php echo e(session('error')); ?>
-
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                <?php endif; ?>
-                
-                <form method="POST" action="<?php echo e(route('peminjamanharian.store')); ?>">
+                <form method="POST" action="<?php echo e(route('peminjamantahunan.store')); ?>">
                     <?php echo csrf_field(); ?>
                     <div class="card-body">
                         <div class="row g-3">
@@ -112,7 +85,7 @@
                     </div>
 
                     <div class="card-footer bg-light d-flex justify-content-between">
-                        <a href="<?php echo e(route('peminjamanharian.index')); ?>" class="btn btn-secondary">
+                        <a href="<?php echo e(route('peminjamantahunan.index')); ?>" class="btn btn-secondary">
                             <i class="fas fa-arrow-left"></i> Kembali
                         </a>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -197,4 +170,4 @@
     </div>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\sistem-library\resources\views/peminjamanharian/create.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\sistem-library\resources\views/peminjamantahunan/create.blade.php ENDPATH**/ ?>
