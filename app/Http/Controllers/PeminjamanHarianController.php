@@ -25,7 +25,10 @@ class PeminjamanHarianController extends Controller
                 'details.kodeBuku:id,kode_buku,bukus_id',
                 'details.kodeBuku.buku:id,judul'
             ])->select(['id', 'siswas_id', 'tanggal_pinjam', 'tanggal_kembali', 'status', 'created_at', 'user_id'])
-                ->where('user_id', Auth::id())
+                ->where(function ($query) {
+                    $query->where('user_id', Auth::id())
+                        ->orWhereNull('user_id'); // Tampilkan juga data dari Android
+                })
                 ->orderBy('created_at', 'desc');
 
             return DataTables::of($peminjamans)
@@ -152,7 +155,10 @@ class PeminjamanHarianController extends Controller
         $peminjaman = PeminjamanHarian::with([
             'siswa',
             'details.kodeBuku.buku' // nested relasi
-        ])->findOrFail($id);
+        ])->where(function ($query) {
+            $query->where('user_id', Auth::id())
+                ->orWhereNull('user_id'); // Bisa akses data dari Android
+        })->findOrFail($id);
 
         return view('peminjamanharian.show', compact('peminjaman'));
     }
@@ -162,7 +168,11 @@ class PeminjamanHarianController extends Controller
      */
     public function edit($id)
     {
-        $peminjaman = PeminjamanHarian::with('details.kodeBuku.buku', 'siswa')->findOrFail($id);
+        $peminjaman = PeminjamanHarian::with('details.kodeBuku.buku', 'siswa')
+            ->where(function ($query) {
+                $query->where('user_id', Auth::id())
+                    ->orWhereNull('user_id'); // Bisa akses data dari Android
+            })->findOrFail($id);
         $siswas = Siswa::orderBy('name', 'asc')->get(); // Siswa sekarang global untuk semua user
         $kode_bukus = KodeBuku::whereHas('buku', function ($q) {
             $q->where('tipe', 'harian');
@@ -185,7 +195,10 @@ class PeminjamanHarianController extends Controller
 
         DB::beginTransaction();
         try {
-            $peminjaman = PeminjamanHarian::findOrFail($id);
+            $peminjaman = PeminjamanHarian::where(function ($query) {
+                $query->where('user_id', Auth::id())
+                    ->orWhereNull('user_id'); // Bisa akses data dari Android
+            })->findOrFail($id);
 
             // Kembalikan semua kode buku sebelumnya
             foreach ($peminjaman->details as $detail) {
@@ -233,7 +246,11 @@ class PeminjamanHarianController extends Controller
 
         try {
             // Ambil data peminjaman
-            $peminjaman = PeminjamanHarian::with('details.kodeBuku')->findOrFail($id);
+            $peminjaman = PeminjamanHarian::with('details.kodeBuku')
+                ->where(function ($query) {
+                    $query->where('user_id', Auth::id())
+                        ->orWhereNull('user_id'); // Bisa akses data dari Android
+                })->findOrFail($id);
 
             // Ubah status kode buku menjadi tersedia
             foreach ($peminjaman->details as $detail) {
@@ -259,8 +276,8 @@ class PeminjamanHarianController extends Controller
     {
         DB::beginTransaction();
         try {
-            // Ambil semua data peminjaman
-            $peminjaman = PeminjamanHarian::with('details')->get();
+            // Ambil semua data peminjaman milik user yang sedang login (tidak termasuk data dari Android)
+            $peminjaman = PeminjamanHarian::with('details')->where('user_id', Auth::id())->get();
 
             foreach ($peminjaman as $p) {
                 foreach ($p->details as $detail) {
@@ -274,8 +291,8 @@ class PeminjamanHarianController extends Controller
                 $p->details()->delete();
             }
 
-            // Hapus semua peminjaman utama
-            PeminjamanHarian::query()->delete();
+            // Hapus semua peminjaman milik user yang sedang login
+            PeminjamanHarian::where('user_id', Auth::id())->delete();
 
             DB::commit();
             return redirect()->back()->with('removeAll', 'Semua data peminjaman harian berhasil dihapus');

@@ -21,14 +21,16 @@ class DashboardController extends Controller
         $user = Auth::user();
         
         try {
-            // Data yang dibatasi berdasarkan user yang login
+            // Data yang dibatasi berdasarkan user yang login + data dari Android
             // Hitung peminjaman hari ini dari harian + tahunan
             $peminjamanHarianHariIni = PeminjamanHarianDetail::whereHas('peminjaman', function($query) use ($user) {
-                $query->where('user_id', $user->id);
+                $query->where('user_id', $user->id)
+                    ->orWhereNull('user_id'); // Include data dari Android
             })->whereDate('created_at', today())->count();
             
             $peminjamanTahunanHariIni = PeminjamanTahunanDetail::whereHas('peminjaman', function($query) use ($user) {
-                $query->where('user_id', $user->id);
+                $query->where('user_id', $user->id)
+                    ->orWhereNull('user_id'); // Include data dari Android
             })->whereDate('created_at', today())->count();
             
             $data = [
@@ -37,20 +39,22 @@ class DashboardController extends Controller
                 'peminjamanHariIni' => $peminjamanHarianHariIni + $peminjamanTahunanHariIni, // Gabungan harian + tahunan
                 'dendaAktif' => CatatanDenda::where('status', 'belum_dibayar')->count() // Global untuk semua user
             ];
-            
-            // Chart data per user
+
+            // Chart data per user + data dari Android
             $peminjamanHarianData = [];
             $peminjamanTahunanData = [];
             
             for ($month = 1; $month <= 12; $month++) {
                 $peminjamanHarianData[] = PeminjamanHarianDetail::whereHas('peminjaman', function($query) use ($user) {
-                    $query->where('user_id', $user->id);
+                    $query->where('user_id', $user->id)
+                        ->orWhereNull('user_id'); // Include data dari Android
                 })->whereMonth('created_at', $month)
                   ->whereYear('created_at', now()->year)
                   ->count();
                   
                 $peminjamanTahunanData[] = PeminjamanTahunanDetail::whereHas('peminjaman', function($query) use ($user) {
-                    $query->where('user_id', $user->id);
+                    $query->where('user_id', $user->id)
+                        ->orWhereNull('user_id'); // Include data dari Android
                 })->whereMonth('created_at', $month)
                   ->whereYear('created_at', now()->year)
                   ->count();
@@ -66,11 +70,14 @@ class DashboardController extends Controller
             if (empty($kelasStats)) {
                 $kelasStats = [];
             }
-                
-            // Recent activities dari user ini (gabung harian dan tahunan dengan union query)
+
+            // Recent activities dari user ini + data dari Android (gabung harian dan tahunan dengan union query)
             // Ambil data dari kedua tabel dan gabungkan berdasarkan timestamp
             $recentPeminjamanHarian = PeminjamanHarian::with(['siswa', 'details.kodeBuku.buku'])
-                ->where('user_id', $user->id)
+                ->where(function ($query) use ($user) {
+                    $query->where('user_id', $user->id)
+                        ->orWhereNull('user_id'); // Include data dari Android
+                })
                 ->latest()
                 ->take(10) // Ambil 10 untuk memastikan cukup data
                 ->get()
@@ -80,7 +87,10 @@ class DashboardController extends Controller
                 });
                 
             $recentPeminjamanTahunan = PeminjamanTahunan::with(['siswa', 'details.kodeBuku.buku'])
-                ->where('user_id', $user->id)
+                ->where(function ($query) use ($user) {
+                    $query->where('user_id', $user->id)
+                        ->orWhereNull('user_id'); // Include data dari Android
+                })
                 ->latest()
                 ->take(10) // Ambil 10 untuk memastikan cukup data
                 ->get()
@@ -98,10 +108,13 @@ class DashboardController extends Controller
             $newSiswa = Siswa::latest()
                 ->take(2)
                 ->get();
-                
-            // Top borrowers dari user ini (gabung harian dan tahunan)
+
+            // Top borrowers dari user ini + data dari Android (gabung harian dan tahunan)
             $topBorrowersHarian = PeminjamanHarian::with('siswa')
-                ->where('user_id', $user->id)
+                ->where(function ($query) use ($user) {
+                    $query->where('user_id', $user->id)
+                        ->orWhereNull('user_id'); // Include data dari Android
+                })
                 ->whereMonth('created_at', now()->month)
                 ->whereYear('created_at', now()->year)
                 ->get()
@@ -115,7 +128,10 @@ class DashboardController extends Controller
                 });
                 
             $topBorrowersTahunan = PeminjamanTahunan::with('siswa')
-                ->where('user_id', $user->id)
+                ->where(function ($query) use ($user) {
+                    $query->where('user_id', $user->id)
+                        ->orWhereNull('user_id'); // Include data dari Android
+                })
                 ->whereMonth('created_at', now()->month)
                 ->whereYear('created_at', now()->year)
                 ->get()

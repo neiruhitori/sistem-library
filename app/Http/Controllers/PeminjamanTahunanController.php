@@ -24,7 +24,10 @@ class PeminjamanTahunanController extends Controller
                 'siswa:id,name',
                 'details.kodeBuku:id,kode_buku,bukus_id',
                 'details.kodeBuku.buku:id,judul'
-            ])->where('user_id', Auth::id())
+            ])->where(function ($query) {
+                $query->where('user_id', Auth::id())
+                    ->orWhereNull('user_id'); // Tampilkan juga data dari Android
+            })
                 ->select(['id', 'siswas_id', 'tanggal_pinjam', 'tanggal_kembali', 'status', 'created_at'])
                 ->orderBy('created_at', 'desc');
 
@@ -148,7 +151,10 @@ class PeminjamanTahunanController extends Controller
         $peminjaman = PeminjamanTahunan::with([
             'siswa',
             'details.kodeBuku.buku' // nested relasi
-        ])->where('user_id', Auth::id())->findOrFail($id);
+        ])->where(function ($query) {
+            $query->where('user_id', Auth::id())
+                ->orWhereNull('user_id'); // Bisa akses data dari Android
+        })->findOrFail($id);
 
         return view('peminjamantahunan.show', compact('peminjaman'));
     }
@@ -158,7 +164,11 @@ class PeminjamanTahunanController extends Controller
      */
     public function edit(string $id)
     {
-        $peminjaman = PeminjamanTahunan::with('details.kodeBuku.buku', 'siswa')->where('user_id', Auth::id())->findOrFail($id);
+        $peminjaman = PeminjamanTahunan::with('details.kodeBuku.buku', 'siswa')
+            ->where(function ($query) {
+                $query->where('user_id', Auth::id())
+                    ->orWhereNull('user_id'); // Bisa akses data dari Android
+            })->findOrFail($id);
         $siswas = Siswa::all();
         $kode_bukus = KodeBuku::whereHas('buku', function ($q) {
             $q->where('tipe', 'tahunan');
@@ -181,7 +191,10 @@ class PeminjamanTahunanController extends Controller
 
         DB::beginTransaction();
         try {
-            $peminjaman = PeminjamanTahunan::where('user_id', Auth::id())->findOrFail($id);
+            $peminjaman = PeminjamanTahunan::where(function ($query) {
+                $query->where('user_id', Auth::id())
+                    ->orWhereNull('user_id'); // Bisa akses data dari Android
+            })->findOrFail($id);
 
             // Kembalikan semua kode buku sebelumnya
             foreach ($peminjaman->details as $detail) {
@@ -228,7 +241,11 @@ class PeminjamanTahunanController extends Controller
 
         try {
             // Ambil data peminjaman
-            $peminjaman = PeminjamanTahunan::with('details.kodeBuku')->where('user_id', Auth::id())->findOrFail($id);
+            $peminjaman = PeminjamanTahunan::with('details.kodeBuku')
+                ->where(function ($query) {
+                    $query->where('user_id', Auth::id())
+                        ->orWhereNull('user_id'); // Bisa akses data dari Android
+                })->findOrFail($id);
 
             // Ubah status kode buku menjadi tersedia
             foreach ($peminjaman->details as $detail) {

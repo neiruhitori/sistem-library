@@ -183,7 +183,7 @@ class PeminjamanApiController extends Controller
             // Process Peminjaman Harian jika ada
             if (count($kodeBukuHarian) > 0) {
                 $peminjamanHarian = PeminjamanHarian::create([
-                    'user_id' => 1, // Default user ID untuk peminjaman dari Android
+                    'user_id' => null, // Null agar terlihat oleh semua admin di website
                     'siswas_id' => $request->siswas_id,
                     'tanggal_pinjam' => $request->tanggal_pinjam,
                     'tanggal_kembali' => $request->tanggal_kembali,
@@ -227,7 +227,7 @@ class PeminjamanApiController extends Controller
             // Process Peminjaman Tahunan jika ada
             if (count($kodeBukuTahunan) > 0) {
                 $peminjamanTahunan = PeminjamanTahunan::create([
-                    'user_id' => 1, // Default user ID untuk peminjaman dari Android
+                    'user_id' => null, // Null agar terlihat oleh semua admin di website
                     'siswas_id' => $request->siswas_id,
                     'tanggal_pinjam' => $request->tanggal_pinjam,
                     'tanggal_kembali' => $request->tanggal_kembali,
