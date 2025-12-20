@@ -1,61 +1,151 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Perpustakaan SMPN 02 Klakah
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem manajemen perpustakaan berbasis web untuk SMPN 02 Klakah dengan fitur pembatasan akses lokasi menggunakan GPS.
 
-## About Laravel
+## Fitur Utama
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 📚 Manajemen Perpustakaan
+- **Manajemen Siswa** - CRUD data siswa dengan import Excel
+- **Manajemen Buku** - Kategori Harian dan Tahunan
+- **Peminjaman & Pengembalian** - Tracking lengkap peminjaman
+- **Catatan Denda** - Sistem denda otomatis dengan integrasi Midtrans
+- **Laporan Kelas** - Laporan per kelas dan detail siswa
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 🔐 Sistem Multi-User
+- **User Isolation** - Data terpisah per user/petugas
+- **Notifikasi Personal** - Notifikasi khusus per user
+- **Authentication** - Login sistem yang aman
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 📍 Location-Based Access Control
+- **GPS Restriction** - Sistem hanya dapat diakses dari area sekolah
+- **Radius Control** - Pembatasan akses dalam radius 200m dari sekolah
+- **Real-time Validation** - Validasi lokasi secara real-time
+- **Admin Interface** - Kelola lokasi yang diizinkan via web interface
 
-## Learning Laravel
+## Instalasi
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. **Clone repository**
+   ```bash
+   git clone https://github.com/neiruhitori/sistem-library.git
+   cd sistem-library
+   ```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+2. **Install dependencies**
+   ```bash
+   composer install
+   npm install
+   ```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+3. **Konfigurasi environment**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-## Laravel Sponsors
+4. **Setup database**
+   ```bash
+   php artisan migrate
+   php artisan db:seed
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+5. **Build assets**
+   ```bash
+   npm run build
+   ```
 
-### Premium Partners
+6. **Jalankan server**
+   ```bash
+   php artisan serve
+   ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Konfigurasi Location Restriction
 
-## Contributing
+### Setup Lokasi Sekolah
+1. Login ke sistem sebagai admin
+2. Akses menu **"Kelola Lokasi Akses"** di sidebar
+3. Tambah lokasi SMPN 02 Klakah dengan koordinat GPS
+4. Atur radius pembatasan (default: 200 meter)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Commands untuk Testing
+```bash
+# Test lokasi dengan koordinat tertentu
+php artisan test:location -- -8.076389 113.746111
 
-## Code of Conduct
+# Bypass location restriction untuk development
+php artisan location:bypass enable
+php artisan config:clear
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# Aktifkan kembali location restriction
+php artisan location:bypass disable
+php artisan config:clear
+```
 
-## Security Vulnerabilities
+## Struktur Location Restriction
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Middleware
+- `LocationRestriction` - Middleware utama untuk validasi GPS
+- Support bypass mode via environment variable `LOCATION_BYPASS`
+
+### Model & Database
+- `AllowedLocation` - Model untuk mengelola lokasi yang diizinkan
+- Tabel `allowed_locations` dengan koordinat GPS dan radius
+- Haversine formula untuk kalkulasi jarak
+
+### Controllers
+- `LocationController` - Handle GPS collection dan validation
+- `AllowedLocationController` - Admin interface untuk kelola lokasi
+
+### Views
+- `location/check.blade.php` - Halaman request GPS permission
+- `location/denied.blade.php` - Halaman akses ditolak
+- `admin/allowed-locations/` - Interface admin kelola lokasi
+
+## Tech Stack
+
+- **Backend:** Laravel 11, PHP 8.2+
+- **Frontend:** AdminLTE, Bootstrap 4, jQuery
+- **Database:** SQLite/MySQL
+- **GPS:** Browser Geolocation API, Google Maps
+- **Payment:** Midtrans Integration
+- **Others:** Haversine Formula untuk distance calculation
+
+## Production Deployment
+
+1. **Set environment ke production**
+   ```bash
+   APP_ENV=production
+   APP_DEBUG=false
+   LOCATION_BYPASS=false
+   ```
+
+2. **Optimize aplikasi**
+   ```bash
+   php artisan config:cache
+   php artisan route:cache
+   php artisan view:cache
+   ```
+
+3. **Setup koordinat sekolah**
+   - Akses admin panel
+   - Input koordinat GPS SMPN 02 Klakah: `-8.076389, 113.746111`
+   - Set radius: `200` meter
+
+## Security Features
+
+- ✅ **GPS-based Access Control** - Hanya bisa diakses dari area sekolah
+- ✅ **Session Management** - Koordinat user tersimpan di session
+- ✅ **CSRF Protection** - Proteksi dari CSRF attacks
+- ✅ **User Isolation** - Data terpisah antar user
+- ✅ **SQL Injection Prevention** - Eloquent ORM protection
+
+## Browser Support
+
+- ✅ Chrome 50+
+- ✅ Firefox 55+
+- ✅ Safari 11+
+- ✅ Edge 79+
+- ⚠️ **Requires HTTPS** untuk Geolocation API di production
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Proyek ini menggunakan [MIT License](https://opensource.org/licenses/MIT).

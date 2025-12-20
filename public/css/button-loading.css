@@ -1,0 +1,246 @@
+/**
+ * Button Loading Styles
+ * Styling untuk button loading state
+ * Author: System Library SMPN 02 Klakah
+ */
+
+/* Button Loading State */
+.btn-loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.8;
+    cursor: not-allowed !important;
+}
+
+/* Prevent double click */
+.btn-loading:hover {
+    opacity: 0.8 !important;
+}
+
+/* Loading spinner animation */
+@keyframes button-loading-spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.btn-loading .fa-spinner,
+.btn-loading .fa-spin {
+    animation: button-loading-spinner 1s linear infinite;
+}
+
+/* Pulse effect untuk button loading */
+@keyframes button-loading-pulse {
+    0%, 100% {
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+.btn-loading {
+    animation: button-loading-pulse 1.5s ease-in-out infinite;
+}
+
+/* Disable pointer events untuk mencegah klik */
+.btn-loading,
+.btn-loading * {
+    pointer-events: none !important;
+}
+
+/* Loading overlay untuk button */
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+/* Style untuk different button sizes */
+.btn-sm.btn-loading {
+    font-size: 0.875rem;
+}
+
+.btn-lg.btn-loading {
+    font-size: 1.125rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .btn-loading {
+        min-width: 80px;
+    }
+}
+
+/* Integration dengan AdminLTE button styles */
+.btn-primary.btn-loading {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-success.btn-loading {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-danger.btn-loading {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-warning.btn-loading {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-info.btn-loading {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+
+/* Prevent text selection saat loading */
+.btn-loading {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Loading state untuk link yang styled sebagai button */
+a.btn.btn-loading {
+    text-decoration: none;
+    cursor: not-allowed;
+}
+
+/* Smooth transition */
+.btn {
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+/* Focus state untuk loading button */
+.btn-loading:focus,
+.btn-loading:active {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* DataTables button integration */
+.dataTables_wrapper .btn-loading {
+    margin: 0 2px;
+}
+
+/* Modal button loading */
+.modal .btn-loading {
+    min-width: 100px;
+}
+
+/* Form button loading */
+form .btn-loading {
+    min-width: 80px;
+}
+
+/* Icon only button loading */
+.btn-loading:empty::before {
+    content: '';
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: button-loading-spinner 0.75s linear infinite;
+}
+
+/* Prevent form resubmission */
+form.form-loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+form.form-loading .btn:not(.btn-loading) {
+    opacity: 0.5;
+}
+
+/* Loading indicator untuk delete button */
+.btn-delete.btn-loading,
+.delete-btn.btn-loading {
+    background-color: #dc3545 !important;
+}
+
+/* Ensure spinner is visible */
+.btn-loading .fa-spinner {
+    display: inline-block !important;
+    margin-right: 5px;
+}
+
+/* Handle button with icons */
+.btn-loading i:not(.fa-spinner) {
+    display: none;
+}
+
+/* Loading state untuk button dalam card */
+.card .btn-loading {
+    min-width: 70px;
+}
+
+/* Loading state untuk button dalam table */
+table .btn-loading {
+    min-width: 60px;
+}
+
+/* Accessibility - screen reader text */
+.btn-loading .sr-only {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+/* Print styles - hide loading state saat print */
+@media print {
+    .btn-loading {
+        opacity: 1 !important;
+        animation: none !important;
+    }
+    
+    .btn-loading::after {
+        display: none !important;
+    }
+}
+
+/* Compatibility dengan waves effect */
+.btn-loading.waves-effect {
+    overflow: visible;
+}
+
+/* Loading state untuk button group */
+.btn-group .btn-loading {
+    z-index: 1;
+}
+
+/* Prevent multiple submit indikator */
+.btn-loading + .btn-loading {
+    margin-left: 5px;
+}
+
+/* Custom loading untuk import/export button */
+.btn-loading[class*="import"],
+.btn-loading[class*="export"] {
+    min-width: 100px;
+}
+
+/* Style untuk confirmation button (SweetAlert2 compatibility) */
+.swal2-confirm.btn-loading,
+.swal2-cancel.btn-loading {
+    min-width: 100px;
+}

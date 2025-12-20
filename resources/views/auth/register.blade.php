@@ -1,7 +1,7 @@
 <x-guest-layout>
     <div class="login-box">
         <div class="login-logo">
-            <a href="#"><b>Admin</b>LTE</a>
+            <a href="#"><b>Register Library</b></a>
         </div>
         <div class="card">
             <div class="card-body register-card-body">

@@ -5,11 +5,11 @@
             <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="index3.html" class="nav-link">Home</a>
+            <a href="/dashboard" class="nav-link">Home</a>
         </li>
-        <li class="nav-item d-none d-sm-inline-block">
+        {{-- <li class="nav-item d-none d-sm-inline-block">
             <a href="#" class="nav-link">Contact</a>
-        </li>
+        </li> --}}
     </ul>
 
     <!-- Right navbar links -->
@@ -39,29 +39,55 @@
 
         <!-- Notifications Dropdown Menu -->
         <li class="nav-item dropdown">
-            <a class="nav-link" data-toggle="dropdown" href="#">
+            <a class="nav-link" data-toggle="dropdown" href="#" id="notificationDropdown">
                 <i class="far fa-bell"></i>
-                <span class="badge badge-warning navbar-badge">15</span>
+                <span class="badge badge-warning navbar-badge" id="notificationCount" style="display: none;">0</span>
             </a>
-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                <span class="dropdown-item dropdown-header">15 Notifications</span>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                    <i class="fas fa-envelope mr-2"></i> 4 new messages
-                    <span class="float-right text-muted text-sm">3 mins</span>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                    <i class="fas fa-users mr-2"></i> 8 friend requests
-                    <span class="float-right text-muted text-sm">12 hours</span>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item">
-                    <i class="fas fa-file mr-2"></i> 3 new reports
-                    <span class="float-right text-muted text-sm">2 days</span>
-                </a>
-                <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right shadow-lg border-0" id="notificationDropdownMenu" style="width: 350px; max-height: 500px; overflow-y: auto;">
+                <!-- Header -->
+                <div class="bg-primary text-white px-3 py-2 d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0 font-weight-bold">
+                        <i class="fas fa-bell mr-2"></i>
+                        <span id="notificationHeader">Notifikasi</span>
+                    </h6>
+                    <small id="notificationTime" class="text-light opacity-75"></small>
+                </div>
+                
+                <!-- Loading indicator -->
+                <div id="notificationLoading" class="text-center py-4">
+                    <div class="spinner-border spinner-border-sm text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <p class="text-muted mt-2 mb-0 small">Memuat notifikasi...</p>
+                </div>
+                
+                <!-- Notification items container -->
+                <div id="notificationItems" class="notification-container"></div>
+                
+                <!-- Empty state -->
+                <div id="notificationEmpty" class="text-center py-4" style="display: none;">
+                    <div class="text-muted">
+                        <i class="fas fa-inbox fa-2x mb-2 opacity-50"></i>
+                        <p class="mb-0">Tidak ada notifikasi</p>
+                        <small>Semua notifikasi akan muncul di sini</small>
+                    </div>
+                </div>
+                
+                <!-- Footer Actions -->
+                <div class="bg-light px-3 py-2 border-top">
+                    <div class="row no-gutters">
+                        <div class="col-6 pr-1">
+                            <button class="btn btn-outline-primary btn-sm btn-block" id="markAllReadBtn">
+                                <i class="fas fa-check-double"></i> Tandai Dibaca
+                            </button>
+                        </div>
+                        <div class="col-6 pl-1">
+                            <button class="btn btn-outline-danger btn-sm btn-block" id="clearAllBtn">
+                                <i class="fas fa-trash-alt"></i> Hapus Semua
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </li>
         <li class="nav-item">

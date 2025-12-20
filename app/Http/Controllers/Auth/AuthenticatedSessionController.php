@@ -28,6 +28,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // (Removed location-based session handling and redirects)
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
