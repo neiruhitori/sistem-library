@@ -80,6 +80,20 @@
                                     value="{{ old('tahun_terbit', $buku->tahun_terbit ?? '') }}" disabled>
                             </div>
 
+                            <div class="col-md-6">
+                                <label for="isbn" class="form-label">Kode ISBN</label>
+                                <input type="text" class="form-control" name="isbn" id="isbn" 
+                                    placeholder="Tidak ada kode ISBN"
+                                    value="{{ old('isbn', $buku->isbn ?? '') }}" disabled>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="kota_cetak" class="form-label">Kota Cetak</label>
+                                <input type="text" class="form-control" name="kota_cetak" id="kota_cetak" 
+                                    placeholder="Tidak ada kota cetak"
+                                    value="{{ old('kota_cetak', $buku->kota_cetak ?? '') }}" disabled>
+                            </div>
+
                             <div class="col-12">
                                 <label for="description" class="form-label">Deskripsi</label>
                                 <textarea class="form-control @error('description') is-invalid @enderror" name="description" id="description"

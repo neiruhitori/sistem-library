@@ -108,6 +108,26 @@
                                 @enderror
                             </div>
 
+                            <div class="col-md-6">
+                                <label for="isbn" class="form-label">Kode ISBN</label>
+                                <input type="text" class="form-control @error('isbn') is-invalid @enderror"
+                                    name="isbn" id="isbn" placeholder="Masukkan Kode ISBN"
+                                    value="{{ old('isbn', $buku->isbn ?? '') }}">
+                                @error('isbn')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="kota_cetak" class="form-label">Kota Cetak</label>
+                                <input type="text" class="form-control @error('kota_cetak') is-invalid @enderror"
+                                    name="kota_cetak" id="kota_cetak" placeholder="Masukkan Kota Cetak"
+                                    value="{{ old('kota_cetak', $buku->kota_cetak ?? '') }}">
+                                @error('kota_cetak')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <div class="col-12">
                                 <label for="description" class="form-label">Deskripsi</label>
                                 <textarea class="form-control @error('description') is-invalid @enderror" name="description" id="description"

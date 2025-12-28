@@ -13,6 +13,7 @@ use App\Http\Controllers\CatatanTahunanController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KelasController;
+use App\Http\Controllers\PenandatanganController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -86,6 +87,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllRead');
     Route::post('/notifications/clear-all', [NotificationController::class, 'clearAll'])->name('notifications.clearAll');
     Route::delete('/notifications/{id}', [NotificationController::class, 'delete'])->name('notifications.delete');
+
+    // Penandatangan
+    Route::post('/penandatangan/{id}/toggle-active', [PenandatanganController::class, 'toggleActive'])->name('penandatangan.toggle-active');
+    Route::resource('penandatangan', PenandatanganController::class);
 });
 
 

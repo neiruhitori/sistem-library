@@ -39,7 +39,7 @@
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#" id="notificationDropdown">
                 <i class="far fa-bell"></i>
-                <span class="badge badge-warning navbar-badge" id="notificationCount" style="display: none;">0</span>
+                <span class="badge badge-danger navbar-badge" id="notificationCount" style="display: none;">0</span>
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right shadow-lg border-0" id="notificationDropdownMenu" style="width: 350px; max-height: 500px; overflow-y: auto;">
                 <!-- Header -->

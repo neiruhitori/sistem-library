@@ -61,6 +61,8 @@ class BukuController extends Controller
             'penulis' => 'nullable|string',
             'tipe' => 'required|in:harian,tahunan',
             'tahun_terbit' => 'nullable|digits:4',
+            'isbn' => 'nullable|string',
+            'kota_cetak' => 'nullable|string',
             'description' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'kode_buku' => 'required|array|min:1',
@@ -76,6 +78,8 @@ class BukuController extends Controller
             'penulis' => $request->penulis,
             'tipe' => $request->tipe,
             'tahun_terbit' => $request->tahun_terbit,
+            'isbn' => $request->isbn,
+            'kota_cetak' => $request->kota_cetak,
             'description' => $request->description,
             'foto' => $fotoPath ?? null,
         ]);
@@ -121,6 +125,8 @@ class BukuController extends Controller
             'judul' => 'required',
             'penulis' => 'nullable|string',
             'tahun_terbit' => 'nullable|digits:4',
+            'isbn' => 'nullable|string',
+            'kota_cetak' => 'nullable|string',
             'description' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'kode_buku' => 'required|array|min:1',
@@ -136,6 +142,8 @@ class BukuController extends Controller
             'judul' => $request->judul,
             'penulis' => $request->penulis,
             'tahun_terbit' => $request->tahun_terbit,
+            'isbn' => $request->isbn,
+            'kota_cetak' => $request->kota_cetak,
             'description' => $request->description
         ]);
 
