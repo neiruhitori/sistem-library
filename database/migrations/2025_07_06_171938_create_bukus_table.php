@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('penulis')->nullable();
             $table->enum('tipe', ['harian', 'tahunan']);
             $table->year('tahun_terbit')->nullable();
+            $table->string('isbn')->nullable();
+            $table->string('kota_cetak')->nullable();
             $table->text('description')->nullable();
             $table->string('foto')->nullable();
             $table->timestamps();

@@ -304,9 +304,9 @@
     <div class="signature">
         <div class="signature-box">
             <p>Klakah, {{ $tanggalCetak }}</p>
-            <p>Pustakawan</p>
+            <p>Kepala Perpustakaan</p>
             <div class="signature-line">
-                <u>{{ auth()->user()->name }}</u></strong><br>NIP. {{ auth()->user()->nip }}
+                <u>{{ $kepalaPerpustakaan->nama }}</u></strong><br>NIP. {{ $kepalaPerpustakaan->nip }}
             </div>
         </div>
     </div>

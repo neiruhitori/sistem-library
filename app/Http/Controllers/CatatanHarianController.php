@@ -106,13 +106,21 @@ class CatatanHarianController extends Controller
         $iduser = Auth::id();
         $profile = User::where('id', $iduser)->first();
 
+        // Cek apakah ada kepala perpustakaan yang aktif
+        $kepalaPerpustakaan = \App\Models\Penandatangan::getActiveByJabatan('kepala_perpustakaan');
+
+        if (!$kepalaPerpustakaan) {
+            return redirect()->route('catatanharian.show', $id)
+                ->with('error', 'Tidak dapat mencetak PDF. Silakan tambahkan data Kepala Perpustakaan yang aktif terlebih dahulu di menu Penandatangan.');
+        }
+
         $catatan = CatatanDenda::with([
             'siswa',
             'peminjaman.details.kodeBuku.buku',
             'handledByUser' // Tambahkan relasi untuk user yang menangani
         ])->findOrFail($id);
 
-        $pdf = Pdf::loadView('catatanharian.pdf', compact('catatan'))
+        $pdf = Pdf::loadView('catatanharian.pdf', compact('catatan', 'kepalaPerpustakaan'))
             ->setPaper('A4', 'portrait');
 
         return $pdf->stream('catatan_denda_' . $catatan->id . '.pdf', compact('profile'));

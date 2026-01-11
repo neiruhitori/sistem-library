@@ -107,6 +107,20 @@ class KelasController extends Controller
 
         $namaKelas = $this->kelasList[$kelas];
 
+        // Cek apakah ada kepala perpustakaan yang aktif
+        $kepalaPerpustakaan = \App\Models\Penandatangan::getActiveByJabatan('kepala_perpustakaan');
+        $kepalaSekolah = \App\Models\Penandatangan::getActiveByJabatan('kepala_sekolah');
+
+        if (!$kepalaPerpustakaan || !$kepalaSekolah) {
+            $message = 'Tidak dapat mencetak PDF. Silakan tambahkan data yang aktif terlebih dahulu di menu Penandatangan: ';
+            $missing = [];
+            if (!$kepalaPerpustakaan) $missing[] = 'Kepala Perpustakaan';
+            if (!$kepalaSekolah) $missing[] = 'Kepala Sekolah';
+
+            return redirect()->route('kelas.index', $kelas)
+                ->with('error', $message . implode(' dan ', $missing));
+        }
+
         // Ambil semua data siswa berdasarkan kelas
         $siswa = Siswa::where('kelas', $namaKelas)
             ->orderBy('name', 'asc')
@@ -119,7 +133,9 @@ class KelasController extends Controller
             'siswa' => $siswa,
             'namaKelas' => $namaKelas,
             'totalSiswa' => $totalSiswa,
-            'tanggalCetak' => now()->format('d F Y')
+            'tanggalCetak' => now()->format('d F Y'),
+            'kepalaPerpustakaan' => $kepalaPerpustakaan,
+            'kepalaSekolah' => $kepalaSekolah
         ];
 
         $pdf = Pdf::loadView('kelas.pdf', $data);
@@ -139,6 +155,14 @@ class KelasController extends Controller
         }
 
         $namaKelas = $this->kelasList[$kelas];
+
+        // Cek apakah ada kepala perpustakaan yang aktif
+        $kepalaPerpustakaan = \App\Models\Penandatangan::getActiveByJabatan('kepala_perpustakaan');
+
+        if (!$kepalaPerpustakaan) {
+            return redirect()->route('kelas.show', ['kelas' => $kelas, 'id' => $id])
+                ->with('error', 'Tidak dapat mencetak PDF. Silakan tambahkan data Kepala Perpustakaan yang aktif terlebih dahulu di menu Penandatangan.');
+        }
 
         // Ambil data siswa
         $siswa = Siswa::where('kelas', $namaKelas)->findOrFail($id);
@@ -166,7 +190,8 @@ class KelasController extends Controller
             'peminjamanHarian' => $peminjamanHarian,
             'peminjamanTahunan' => $peminjamanTahunan,
             'catatanDenda' => $catatanDenda,
-            'tanggalCetak' => now()->format('d F Y')
+            'tanggalCetak' => now()->format('d F Y'),
+            'kepalaPerpustakaan' => $kepalaPerpustakaan
         ];
 
         $pdf = Pdf::loadView('kelas.detail-pdf', $data);

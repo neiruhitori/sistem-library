@@ -137,6 +137,7 @@
                 <p style="margin: 5px 0;"><strong>Kode Buku</strong> : {{ $detail->kodeBuku->kode_buku ?? '-' }}</p>
                 <p style="margin: 5px 0;"><strong>Penulis</strong> : {{ $detail->kodeBuku->buku->penulis ?? '-' }}</p>
                 <p style="margin: 5px 0;"><strong>Tahun</strong> : {{ $detail->kodeBuku->buku->tahun_terbit ?? '-' }}</p>
+                <p style="margin: 5px 0;"><strong>ISBN</strong> : {{ $detail->kodeBuku->buku->isbn ?? '-' }}</p>
             </div>
         @endif
     @endif
@@ -144,8 +145,8 @@
         <p>Kepala Perpustakaan<br>SMPN 02 Klakah</p>
         <br><br><br>
         <p>
-            <strong><u>{{ $catatan->handledByUser->name ?? 'Tidak diketahui' }}</u></strong><br>
-            NIP. {{ $catatan->handledByUser->nip ?? '-' }}
+            <strong><u>{{ $kepalaPerpustakaan->nama ?? 'Tidak diketahui' }}</u></strong><br>
+            NIP. {{ $kepalaPerpustakaan->nip ?? '-' }}
         </p>
     </div>
 </body>

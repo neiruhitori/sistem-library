@@ -59,6 +59,18 @@
                     setTimeout(() => document.getElementById('alert-success').classList.remove('show'), 4000);
                 </script>
             <?php endif; ?>
+            <?php if(session('error')): ?>
+                <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert" id="alert-error">
+                    <i class="fas fa-exclamation-triangle"></i> <?php echo e(session('error')); ?>
+
+                    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <script>
+                    setTimeout(() => document.getElementById('alert-error').classList.remove('show'), 6000);
+                </script>
+            <?php endif; ?>
             <div class="card-body">
                 <h5 class="mb-3">📌 Informasi Siswa</h5>
                 <ul class="list-group mb-4">
@@ -145,6 +157,14 @@
                                             <small class="text-muted">
                                                 <strong>Tahun Terbit:</strong>
                                                 <?php echo e($detail->kodeBuku->buku->tahun_terbit ?? '-'); ?>
+
+                                            </small>
+                                        </p>
+
+                                        <p class="card-text mb-1">
+                                            <small class="text-muted">
+                                                <strong>ISBN:</strong>
+                                                <?php echo e($detail->kodeBuku->buku->isbn ?? '-'); ?>
 
                                             </small>
                                         </p>

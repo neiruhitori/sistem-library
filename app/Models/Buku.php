@@ -10,7 +10,7 @@ class Buku extends Model
     use HasFactory;
     protected $table ='bukus';
     protected $primaryKey = 'id';
-    protected $fillable = ['judul', 'penulis', 'tipe', 'tahun_terbit', 'description', 'foto'];
+    protected $fillable = ['judul', 'penulis', 'tipe', 'tahun_terbit', 'isbn', 'kota_cetak', 'description', 'foto'];
     protected $guarded = [];
 
     // Hapus user relationship - buku jadi global untuk semua user

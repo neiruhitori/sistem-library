@@ -419,6 +419,14 @@
                           </ul>
                       </li>
                       <li class="nav-header" style="color: #6c757d; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Lainnya</li>
+                      <li class="nav-item">
+                          <a href="/penandatangan" class="nav-link {{ Request::is('penandatangan') || Request::is('penandatangan/*') ? 'active' : '' }}">
+                              <i class="nav-icon fas fa-user-tie"></i>
+                              <p>
+                                  Penandatangan
+                              </p>
+                          </a>
+                      </li>
                   </ul>
               </nav>
               <!-- /.sidebar-menu -->
