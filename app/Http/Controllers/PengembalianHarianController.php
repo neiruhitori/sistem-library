@@ -62,7 +62,7 @@ class PengembalianHarianController extends Controller
     {
         DB::beginTransaction();
         try {
-            $kondisi = $request->input('kondisi_buku'); // input: 'baik', 'terlambat', 'hilang'
+            $kondisi = $request->input('kondisi_buku'); // input: 'baik', 'hilang', 'rusak'
             $siswaId = $detail->peminjaman->siswas_id;
 
             $tglKembali = \Carbon\Carbon::parse($detail->peminjaman->tanggal_kembali);
@@ -74,16 +74,18 @@ class PengembalianHarianController extends Controller
             $dendaTotal = 0;
             $dendaList = [];
 
-            // ✅ 1. Cek keterlambatan jika dipilih 'terlambat' dan memang lewat tanggal
-            if ($kondisi === 'terlambat' && $tglSekarang->gt($tglKembali)) {
+            // ✅ 1. Cek keterlambatan OTOMATIS (sistem menghitung sendiri)
+            if ($tglSekarang->gt($tglKembali)) {
                 $selisihHari = $tglKembali->copy()->startOfDay()->diffInDays($tglSekarang->copy()->startOfDay());
-                $dendaList[] = [
-                    'jenis_denda' => 'terlambat',
-                    'jumlah' => $selisihHari * 1000,
-                    'keterangan' => "Terlambat $selisihHari hari dari tanggal seharusnya",
-                ];
-                $dendaTotal += $selisihHari * 1000;
-                $keteranganList[] = "Terlambat $selisihHari hari";
+                if ($selisihHari > 0) {
+                    $dendaList[] = [
+                        'jenis_denda' => 'terlambat',
+                        'jumlah' => $selisihHari * 1000,
+                        'keterangan' => "Terlambat $selisihHari hari dari tanggal seharusnya",
+                    ];
+                    $dendaTotal += $selisihHari * 1000;
+                    $keteranganList[] = "Terlambat $selisihHari hari";
+                }
             }
 
             // ✅ 2. Denda karena hilang
@@ -116,11 +118,11 @@ class PengembalianHarianController extends Controller
             $detail->save();
 
             // Kode buku kembali tersedia:
-            // - Jika kondisi baik atau terlambat → tersedia
+            // - Jika kondisi baik (dengan atau tanpa keterlambatan) → tersedia
             // - Jika hilang → tidak tersedia
             // - Jika rusak ringan → tersedia
             // - Jika rusak parah → tidak tersedia
-            if ($kondisi === 'baik' || $kondisi === 'terlambat') {
+            if ($kondisi === 'baik') {
                 $detail->kodeBuku->update(['status' => 'tersedia']);
             } elseif ($kondisi === 'rusak') {
                 $jenisKerusakan = $request->input('jenis_kerusakan', '');

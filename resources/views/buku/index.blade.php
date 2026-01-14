@@ -82,6 +82,46 @@
                 </script>
             @endif
 
+            {{-- Alert error dari session --}}
+            @if (session('error'))
+                <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert" id="alert-session-error">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    {{ session('error') }}
+                    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <script>
+                    setTimeout(function() {
+                        let alert = document.getElementById('alert-session-error');
+                        if (alert) {
+                            alert.classList.remove('show');
+                            alert.classList.add('fade');
+                        }
+                    }, 5000);
+                </script>
+            @endif
+
+            {{-- Alert warning --}}
+            @if (session('warning'))
+                <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert" id="alert-warning">
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ session('warning') }}
+                    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <script>
+                    setTimeout(function() {
+                        let alert = document.getElementById('alert-warning');
+                        if (alert) {
+                            alert.classList.remove('show');
+                            alert.classList.add('fade');
+                        }
+                    }, 5000);
+                </script>
+            @endif
+
             {{-- Alert hapus semua --}}
             @if (session('removeAll'))
                 <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert" id="alert-removeall">
@@ -143,7 +183,7 @@
                                     <td>{{ $buku->judul }}</td>
                                     <td>
                                         @if ($buku->foto)
-                                            <img src="{{ asset('storage/' . $buku->foto) }}" alt="Sampul Buku"
+                                            <img src="{{ str_starts_with($buku->foto, 'sampulbuku/') ? asset($buku->foto) : asset('storage/' . $buku->foto) }}" alt="Sampul Buku"
                                                 width="60">
                                         @else
                                             <span class="text-muted">-</span>
@@ -188,21 +228,60 @@
 
                                     <td>{{ $buku->penulis }}</td>
                                     <td>{{ $buku->tahun_terbit }}</td>
-                                    <td>{{ $buku->stok }}</td>
+                                    <td>
+                                        {{ $buku->stok }}
+                                        @if (!$buku->is_active)
+                                            <br><span class="badge badge-secondary badge-sm">Nonaktif</span>
+                                        @endif
+                                    </td>
                                     <td>
                                         <div class="btn-group" role="group">
                                             <a href="{{ route('buku.show', $buku->id) }}" class="btn btn-secondary"><i
                                                     class="fas fa-eye"></i></a>
                                             <a href="{{ route('buku.edit', $buku->id) }}" class="btn btn-warning"><i
                                                     class="fas fa-edit"></i></a>
-                                            <form action="{{ route('buku.destroy', $buku->id) }}" method="POST"
-                                                class="d-inline"
-                                                onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button class="btn btn-danger"><i class="fas fa-trash"></i></button>
-                                            </form>
+                                            
+                                            @php
+                                                // Cek apakah buku pernah dipinjam atau sedang dipinjam
+                                                $peminjamanHarianCount = $buku->peminjamanHarianDetails()->count();
+                                                $peminjamanTahunanCount = $buku->peminjamanTahunanDetails()->count();
+                                                $kodeBukuDipinjam = $buku->kodeBuku()->where('status', 'dipinjam')->count();
+                                                
+                                                $canDelete = ($peminjamanHarianCount == 0 && $peminjamanTahunanCount == 0 && $kodeBukuDipinjam == 0);
+                                                $hasHistory = ($peminjamanHarianCount > 0 || $peminjamanTahunanCount > 0);
+                                            @endphp
+                                            
+                                            @if ($canDelete)
+                                                {{-- Buku bisa dihapus karena belum pernah dipinjam --}}
+                                                <form action="{{ route('buku.destroy', $buku->id) }}" method="POST"
+                                                    class="d-inline"
+                                                    onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button class="btn btn-danger" title="Hapus buku">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            @else
+                                                {{-- Buku tidak bisa dihapus, tampilkan button toggle aktif/nonaktif --}}
+                                                <form action="{{ route('buku.toggle-status', $buku->id) }}" method="POST"
+                                                    class="d-inline"
+                                                    onsubmit="return confirm('{{ $buku->is_active ? "Nonaktifkan buku ini? Buku tidak akan muncul dalam daftar peminjaman." : "Aktifkan kembali buku ini?" }}')">
+                                                    @csrf
+                                                    <button class="btn {{ $buku->is_active ? 'btn-danger' : 'btn-success' }}" 
+                                                        title="{{ $buku->is_active ? 'Nonaktifkan buku (untuk arsip)' : 'Aktifkan kembali buku' }}">
+                                                        <i class="fas fa-{{ $buku->is_active ? 'ban' : 'check-circle' }}"></i>
+                                                    </button>
+                                                </form>
+                                            @endif
                                         </div>
+                                        @if (!$canDelete)
+                                            <div class="mt-1">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-info-circle"></i> Tidak bisa dihapus karena untuk arsip
+                                                </small>
+                                            </div>
+                                        @endif
                                     </td>
                                 </tr>
                             @empty

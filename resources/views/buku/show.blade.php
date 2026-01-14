@@ -104,7 +104,7 @@
                                 <label for="foto" class="form-label">Foto Buku</label>
                                 @if (isset($buku) && $buku->foto)
                                     <div class="mt-2">
-                                        <img src="{{ asset('storage/' . $buku->foto) }}" alt="Foto Buku"
+                                        <img src="{{ str_starts_with($buku->foto, 'sampulbuku/') ? asset($buku->foto) : asset('storage/' . $buku->foto) }}" alt="Foto Buku"
                                             style="max-height: 150px;" disabled>
                                     </div>
                                 @endif

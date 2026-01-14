@@ -151,17 +151,17 @@
                               </li>
                           </ul>
                       <li
-                          class="nav-item <?php echo e(Request::is('kelas/viia') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viib') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viic') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viid') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viie') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viif') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viig') ? 'menu-open' : ''); ?>
+                          class="nav-item <?php echo e(Request::is('kelas/7a') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7b') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7c') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7d') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7e') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7f') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7g') ? 'menu-open' : ''); ?>
 
-            <?php echo e(Request::is('kelas/viiia') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viiib') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viiic') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viiid') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viiie') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viiif') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viiig') ? 'menu-open' : ''); ?>
+            <?php echo e(Request::is('kelas/7ia') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7ib') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7ic') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7id') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7ie') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7if') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7ig') ? 'menu-open' : ''); ?>
 
-            <?php echo e(Request::is('kelas/ixa') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/ixb') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/ixc') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/ixd') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/ixe') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/ixf') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/ixg') ? 'menu-open' : ''); ?>">
+            <?php echo e(Request::is('kelas/9a') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/9b') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/9c') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/9d') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/9e') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/9f') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/9g') ? 'menu-open' : ''); ?>">
                           <a href="#"
-                              class="nav-link <?php echo e(Request::is('kelas/viia') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/viib') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/viic') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/viid') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/viie') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/viif') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/viig') ? 'active' : ''); ?>
+                              class="nav-link <?php echo e(Request::is('kelas/7a') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/7b') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/7c') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/7d') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/7e') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/7f') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/7g') ? 'active' : ''); ?>
 
-                <?php echo e(Request::is('kelas/viiia') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/viiib') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/viiic') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/viiid') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/viiie') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/viiif') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/viiig') ? 'active' : ''); ?>
+                <?php echo e(Request::is('kelas/7ia') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/7ib') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/7ic') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/7id') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/7ie') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/7if') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/7ig') ? 'active' : ''); ?>
 
-                <?php echo e(Request::is('kelas/ixa') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/ixb') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/ixc') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/ixd') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/ixe') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/ixf') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/ixg') ? 'active' : ''); ?>">
+                <?php echo e(Request::is('kelas/9a') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/9b') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/9c') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/9d') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/9e') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/9f') ? 'active' : ''); ?> <?php echo e(Request::is('kelas/9g') ? 'active' : ''); ?>">
                               <i class="nav-icon fas fa-school"></i>
                               <p>
                                   Kelas
@@ -170,18 +170,18 @@
                           </a>
                           <ul class="nav nav-treeview">
                               <li
-                                  class="nav-item <?php echo e(Request::is('kelas/viia') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viib') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viic') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viid') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viie') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viif') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viig') ? 'menu-open' : ''); ?>">
+                                  class="nav-item <?php echo e(Request::is('kelas/7a') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7b') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7c') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7d') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7e') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7f') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7g') ? 'menu-open' : ''); ?>">
                                   <a href="#" class="nav-link">
                                       <i class="nav-icon far fa-folder"></i>
                                       <p>
-                                          VII
+                                          VII / 7
                                           <i class="fas fa-angle-left right"></i>
                                       </p>
                                   </a>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viia"
-                                              class="nav-link  <?php echo e(Request::is('kelas/viia') ? 'active' : ''); ?>">
+                                          <a href="/kelas/7a"
+                                              class="nav-link  <?php echo e(Request::is('kelas/7a') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas A</p>
                                           </a>
@@ -189,8 +189,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viib"
-                                              class="nav-link <?php echo e(Request::is('kelas/viib') ? 'active' : ''); ?>">
+                                          <a href="/kelas/7b"
+                                              class="nav-link <?php echo e(Request::is('kelas/7b') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas B</p>
                                           </a>
@@ -198,8 +198,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viic"
-                                              class="nav-link <?php echo e(Request::is('kelas/viic') ? 'active' : ''); ?>">
+                                          <a href="/kelas/7c"
+                                              class="nav-link <?php echo e(Request::is('kelas/7c') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas C</p>
                                           </a>
@@ -207,8 +207,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viid"
-                                              class="nav-link <?php echo e(Request::is('kelas/viid') ? 'active' : ''); ?>">
+                                          <a href="/kelas/7d"
+                                              class="nav-link <?php echo e(Request::is('kelas/7d') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas D</p>
                                           </a>
@@ -216,8 +216,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viie"
-                                              class="nav-link <?php echo e(Request::is('kelas/viie') ? 'active' : ''); ?>">
+                                          <a href="/kelas/7e"
+                                              class="nav-link <?php echo e(Request::is('kelas/7e') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas E</p>
                                           </a>
@@ -225,8 +225,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viif"
-                                              class="nav-link <?php echo e(Request::is('kelas/viif') ? 'active' : ''); ?>">
+                                          <a href="/kelas/7f"
+                                              class="nav-link <?php echo e(Request::is('kelas/7f') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas F</p>
                                           </a>
@@ -234,8 +234,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viig"
-                                              class="nav-link <?php echo e(Request::is('kelas/viig') ? 'active' : ''); ?>">
+                                          <a href="/kelas/7g"
+                                              class="nav-link <?php echo e(Request::is('kelas/7g') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas G</p>
                                           </a>
@@ -245,18 +245,18 @@
                           </ul>
                           <ul class="nav nav-treeview">
                               <li
-                                  class="nav-item <?php echo e(Request::is('kelas/viiia') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viiib') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viiic') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viiid') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viiie') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viiif') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/viiig') ? 'menu-open' : ''); ?>">
+                                  class="nav-item <?php echo e(Request::is('kelas/7ia') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7ib') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7ic') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7id') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7ie') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7if') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7ig') ? 'menu-open' : ''); ?>">
                                   <a href="#" class="nav-link">
                                       <i class="nav-icon far fa-folder"></i>
                                       <p>
-                                          VIII
+                                          VIII / 8
                                           <i class="fas fa-angle-left right"></i>
                                       </p>
                                   </a>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viiia"
-                                              class="nav-link <?php echo e(Request::is('kelas/viiia') ? 'active' : ''); ?>">
+                                          <a href="/kelas/8a"
+                                              class="nav-link <?php echo e(Request::is('kelas/7ia') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas A</p>
                                           </a>
@@ -264,8 +264,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viiib"
-                                              class="nav-link <?php echo e(Request::is('kelas/viiib') ? 'active' : ''); ?>">
+                                          <a href="/kelas/8b"
+                                              class="nav-link <?php echo e(Request::is('kelas/7ib') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas B</p>
                                           </a>
@@ -273,8 +273,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viiic"
-                                              class="nav-link <?php echo e(Request::is('kelas/viiic') ? 'active' : ''); ?>">
+                                          <a href="/kelas/8c"
+                                              class="nav-link <?php echo e(Request::is('kelas/7ic') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas C</p>
                                           </a>
@@ -282,8 +282,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viiid"
-                                              class="nav-link <?php echo e(Request::is('kelas/viiid') ? 'active' : ''); ?>">
+                                          <a href="/kelas/8d"
+                                              class="nav-link <?php echo e(Request::is('kelas/7id') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas D</p>
                                           </a>
@@ -291,8 +291,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viiie"
-                                              class="nav-link <?php echo e(Request::is('kelas/viiie') ? 'active' : ''); ?>">
+                                          <a href="/kelas/8e"
+                                              class="nav-link <?php echo e(Request::is('kelas/7ie') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas E</p>
                                           </a>
@@ -300,8 +300,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viiif"
-                                              class="nav-link <?php echo e(Request::is('kelas/viiif') ? 'active' : ''); ?>">
+                                          <a href="/kelas/8f"
+                                              class="nav-link <?php echo e(Request::is('kelas/7if') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas F</p>
                                           </a>
@@ -309,8 +309,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viiig"
-                                              class="nav-link <?php echo e(Request::is('kelas/viiig') ? 'active' : ''); ?>">
+                                          <a href="/kelas/8g"
+                                              class="nav-link <?php echo e(Request::is('kelas/7ig') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas G</p>
                                           </a>
@@ -320,18 +320,18 @@
                           </ul>
                           <ul class="nav nav-treeview">
                               <li
-                                  class="nav-item <?php echo e(Request::is('kelas/ixa') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/ixb') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/ixc') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/ixd') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/ixe') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/ixf') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/ixg') ? 'menu-open' : ''); ?>">
+                                  class="nav-item <?php echo e(Request::is('kelas/9a') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/9b') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/9c') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/9d') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/9e') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/9f') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/9g') ? 'menu-open' : ''); ?>">
                                   <a href="#" class="nav-link">
                                       <i class="nav-icon far fa-folder"></i>
                                       <p>
-                                          IX
+                                          IX / 9
                                           <i class="fas fa-angle-left right"></i>
                                       </p>
                                   </a>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/ixa"
-                                              class="nav-link <?php echo e(Request::is('kelas/ixa') ? 'active' : ''); ?>">
+                                          <a href="/kelas/9a"
+                                              class="nav-link <?php echo e(Request::is('kelas/9a') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas A</p>
                                           </a>
@@ -339,8 +339,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/ixb"
-                                              class="nav-link <?php echo e(Request::is('kelas/ixb') ? 'active' : ''); ?>">
+                                          <a href="/kelas/9b"
+                                              class="nav-link <?php echo e(Request::is('kelas/9b') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas B</p>
                                           </a>
@@ -348,8 +348,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/ixc"
-                                              class="nav-link <?php echo e(Request::is('kelas/ixc') ? 'active' : ''); ?>">
+                                          <a href="/kelas/9c"
+                                              class="nav-link <?php echo e(Request::is('kelas/9c') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas C</p>
                                           </a>
@@ -357,8 +357,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/ixd"
-                                              class="nav-link <?php echo e(Request::is('kelas/ixd') ? 'active' : ''); ?>">
+                                          <a href="/kelas/9d"
+                                              class="nav-link <?php echo e(Request::is('kelas/9d') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas D</p>
                                           </a>
@@ -366,8 +366,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/ixe"
-                                              class="nav-link <?php echo e(Request::is('kelas/ixe') ? 'active' : ''); ?>">
+                                          <a href="/kelas/9e"
+                                              class="nav-link <?php echo e(Request::is('kelas/9e') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas E</p>
                                           </a>
@@ -375,8 +375,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/ixf"
-                                              class="nav-link <?php echo e(Request::is('kelas/ixf') ? 'active' : ''); ?>">
+                                          <a href="/kelas/9f"
+                                              class="nav-link <?php echo e(Request::is('kelas/9f') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas F</p>
                                           </a>
@@ -384,8 +384,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/ixg"
-                                              class="nav-link <?php echo e(Request::is('kelas/ixg') ? 'active' : ''); ?>">
+                                          <a href="/kelas/9g"
+                                              class="nav-link <?php echo e(Request::is('kelas/9g') ? 'active' : ''); ?>">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas G</p>
                                           </a>
@@ -436,4 +436,5 @@
               </nav>
               <!-- /.sidebar-menu -->
           </div>
+
 <?php /**PATH C:\laragon\www\sistem-library\resources\views/layouts/sidebar.blade.php ENDPATH**/ ?>

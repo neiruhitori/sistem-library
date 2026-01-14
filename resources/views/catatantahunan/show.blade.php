@@ -78,6 +78,9 @@
                     <li class="list-group-item"><strong>NISN:</strong> {{ $catatan->siswa->nisn ?? '-' }}</li>
                     <li class="list-group-item"><strong>Kelas:</strong>
                         {{ $catatan->siswa->kelas ?? 'Data siswa tidak ditemukan' }}</li>
+                    <li class="list-group-item"><strong>Absen:</strong> {{ $catatan->siswa->absen ?? '-' }}</li>
+                    <li class="list-group-item"><strong>Jenis Kelamin:</strong> {{ $catatan->siswa->jenis_kelamin == 'L' ? 'Laki-laki' : ($catatan->siswa->jenis_kelamin == 'P' ? 'Perempuan' : '-') }}</li>
+                    <li class="list-group-item"><strong>Agama:</strong> {{ $catatan->siswa->agama ?? '-' }}</li>
                 </ul>
 
                 <h5 class="mb-3">💸 Informasi Denda</h5>
@@ -150,6 +153,13 @@
                                             <small class="text-muted">
                                                 <strong>Tahun Terbit:</strong>
                                                 {{ $detail->kodeBuku->buku->tahun_terbit ?? '-' }}
+                                            </small>
+                                        </p>
+
+                                        <p class="card-text mb-1">
+                                            <small class="text-muted">
+                                                <strong>Kelas Buku:</strong>
+                                                {{ $detail->kodeBuku->buku->kelas ?? '-' }}
                                             </small>
                                         </p>
 

@@ -239,16 +239,16 @@
             <div class="info-container">
                 <div class="student-name">{{ strtoupper($siswa->name) }}</div>
                 <div class="info-item">
-                    <span class="info-label">ID:</span>
-                    <span class="info-value">{{ str_pad($siswa->id, 4, '0', STR_PAD_LEFT) }}</span>
-                </div>
-                <div class="info-item">
                     <span class="info-label">NISN:</span>
                     <span class="info-value">{{ $siswa->nisn ?: '-' }}</span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">Kelas:</span>
                     <span class="info-value">{{ strtoupper($siswa->kelas) }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">L/P:</span>
+                    <span class="info-value">{{ $siswa->jenis_kelamin ?: '-' }}</span>
                 </div>
             </div>
         </div>

@@ -165,9 +165,55 @@
                         $(document).ready(function() {
                             $('.select2').select2();
                             $('.select2-single').select2();
+
+                            // Handle student selection change to filter books by class
+                            $('#siswas_id').on('change', function() {
+                                const siswaId = $(this).val();
+                                
+                                if (!siswaId) {
+                                    return;
+                                }
+
+                                // Show loading indicator
+                                $('.select2-single').prop('disabled', true);
+                                
+                                // Fetch filtered books via AJAX
+                                $.ajax({
+                                    url: '{{ route('peminjamantahunan.getBukuByKelas') }}',
+                                    method: 'GET',
+                                    data: { siswa_id: siswaId },
+                                    success: function(data) {
+                                        // Update all book dropdowns (except those already selected)
+                                        $('.select2-single').each(function() {
+                                            const currentValue = $(this).val();
+                                            $(this).empty().append('<option value="">-- Pilih Kode Buku --</option>');
+                                            
+                                            data.forEach(function(item) {
+                                                $(this).append(new Option(item.text, item.id, false, item.id == currentValue));
+                                            }.bind(this));
+
+                                            // Refresh select2
+                                            $(this).trigger('change');
+                                        });
+                                        
+                                        $('.select2-single').prop('disabled', false);
+                                    },
+                                    error: function() {
+                                        alert('Gagal memuat data buku. Silakan coba lagi.');
+                                        $('.select2-single').prop('disabled', false);
+                                    }
+                                });
+                            });
                         });
 
                         function tambahKodeBuku() {
+                            const siswaId = $('#siswas_id').val();
+                            
+                            if (!siswaId) {
+                                alert('Pilih siswa terlebih dahulu!');
+                                return;
+                            }
+
                             const container = document.getElementById('kode-buku-container');
                             const group = document.createElement('div');
                             group.classList.add('input-group', 'mb-2', 'kode-buku-item');
@@ -175,9 +221,6 @@
                             group.innerHTML = `
                 <select name="kode_buku[]" class="form-control select2-single">
                     <option value="">-- Pilih Kode Buku --</option>
-                    @foreach ($kode_bukus as $kode)
-                        <option value="{{ $kode->id }}">{{ $kode->kode_buku }} - {{ $kode->buku->judul ?? '-' }}</option>
-                    @endforeach
                 </select>
                 <div class="input-group-append">
                     <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('.kode-buku-item').remove()">
@@ -187,7 +230,24 @@
             `;
 
                             container.appendChild(group);
-                            $(group).find('.select2-single').select2();
+                            const newSelect = $(group).find('.select2-single');
+                            newSelect.select2();
+
+                            // Load books for the new dropdown
+                            $.ajax({
+                                url: '{{ route('peminjamantahunan.getBukuByKelas') }}',
+                                method: 'GET',
+                                data: { siswa_id: siswaId },
+                                success: function(data) {
+                                    newSelect.empty().append('<option value="">-- Pilih Kode Buku --</option>');
+                                    
+                                    data.forEach(function(item) {
+                                        newSelect.append(new Option(item.text, item.id));
+                                    });
+                                    
+                                    newSelect.trigger('change');
+                                }
+                            });
                         }
                     </script>
                 @endpush

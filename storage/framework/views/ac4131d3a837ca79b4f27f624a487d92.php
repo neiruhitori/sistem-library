@@ -103,6 +103,8 @@
                                 <th>NISN</th>
                                 <th>Nama Siswa</th>
                                 <th>Kelas</th>
+                                <th>L/P</th>
+                                <th>Agama</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -128,6 +130,8 @@
                                 <td>
                                     <span class="badge badge-info"><?php echo e($s->kelas); ?></span>
                                 </td>
+                                <td><?php echo e($s->jenis_kelamin ?? '-'); ?></td>
+                                <td><?php echo e($s->agama ?? '-'); ?></td>
                                 <td>
                                     <div class="btn-group" role="group">
                                         <a href="<?php echo e(route('kelas.show', [$kelas, $s->id])); ?>" class="btn btn-info btn-sm" title="Detail">

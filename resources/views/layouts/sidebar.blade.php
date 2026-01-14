@@ -150,13 +150,13 @@
                               </li>
                           </ul>
                       <li
-                          class="nav-item {{ Request::is('kelas/viia') ? 'menu-open' : '' }} {{ Request::is('kelas/viib') ? 'menu-open' : '' }} {{ Request::is('kelas/viic') ? 'menu-open' : '' }} {{ Request::is('kelas/viid') ? 'menu-open' : '' }} {{ Request::is('kelas/viie') ? 'menu-open' : '' }} {{ Request::is('kelas/viif') ? 'menu-open' : '' }} {{ Request::is('kelas/viig') ? 'menu-open' : '' }}
-            {{ Request::is('kelas/viiia') ? 'menu-open' : '' }} {{ Request::is('kelas/viiib') ? 'menu-open' : '' }} {{ Request::is('kelas/viiic') ? 'menu-open' : '' }} {{ Request::is('kelas/viiid') ? 'menu-open' : '' }} {{ Request::is('kelas/viiie') ? 'menu-open' : '' }} {{ Request::is('kelas/viiif') ? 'menu-open' : '' }} {{ Request::is('kelas/viiig') ? 'menu-open' : '' }}
-            {{ Request::is('kelas/ixa') ? 'menu-open' : '' }} {{ Request::is('kelas/ixb') ? 'menu-open' : '' }} {{ Request::is('kelas/ixc') ? 'menu-open' : '' }} {{ Request::is('kelas/ixd') ? 'menu-open' : '' }} {{ Request::is('kelas/ixe') ? 'menu-open' : '' }} {{ Request::is('kelas/ixf') ? 'menu-open' : '' }} {{ Request::is('kelas/ixg') ? 'menu-open' : '' }}">
+                          class="nav-item {{ Request::is('kelas/7a') ? 'menu-open' : '' }} {{ Request::is('kelas/7b') ? 'menu-open' : '' }} {{ Request::is('kelas/7c') ? 'menu-open' : '' }} {{ Request::is('kelas/7d') ? 'menu-open' : '' }} {{ Request::is('kelas/7e') ? 'menu-open' : '' }} {{ Request::is('kelas/7f') ? 'menu-open' : '' }} {{ Request::is('kelas/7g') ? 'menu-open' : '' }}
+            {{ Request::is('kelas/7ia') ? 'menu-open' : '' }} {{ Request::is('kelas/7ib') ? 'menu-open' : '' }} {{ Request::is('kelas/7ic') ? 'menu-open' : '' }} {{ Request::is('kelas/7id') ? 'menu-open' : '' }} {{ Request::is('kelas/7ie') ? 'menu-open' : '' }} {{ Request::is('kelas/7if') ? 'menu-open' : '' }} {{ Request::is('kelas/7ig') ? 'menu-open' : '' }}
+            {{ Request::is('kelas/9a') ? 'menu-open' : '' }} {{ Request::is('kelas/9b') ? 'menu-open' : '' }} {{ Request::is('kelas/9c') ? 'menu-open' : '' }} {{ Request::is('kelas/9d') ? 'menu-open' : '' }} {{ Request::is('kelas/9e') ? 'menu-open' : '' }} {{ Request::is('kelas/9f') ? 'menu-open' : '' }} {{ Request::is('kelas/9g') ? 'menu-open' : '' }}">
                           <a href="#"
-                              class="nav-link {{ Request::is('kelas/viia') ? 'active' : '' }} {{ Request::is('kelas/viib') ? 'active' : '' }} {{ Request::is('kelas/viic') ? 'active' : '' }} {{ Request::is('kelas/viid') ? 'active' : '' }} {{ Request::is('kelas/viie') ? 'active' : '' }} {{ Request::is('kelas/viif') ? 'active' : '' }} {{ Request::is('kelas/viig') ? 'active' : '' }}
-                {{ Request::is('kelas/viiia') ? 'active' : '' }} {{ Request::is('kelas/viiib') ? 'active' : '' }} {{ Request::is('kelas/viiic') ? 'active' : '' }} {{ Request::is('kelas/viiid') ? 'active' : '' }} {{ Request::is('kelas/viiie') ? 'active' : '' }} {{ Request::is('kelas/viiif') ? 'active' : '' }} {{ Request::is('kelas/viiig') ? 'active' : '' }}
-                {{ Request::is('kelas/ixa') ? 'active' : '' }} {{ Request::is('kelas/ixb') ? 'active' : '' }} {{ Request::is('kelas/ixc') ? 'active' : '' }} {{ Request::is('kelas/ixd') ? 'active' : '' }} {{ Request::is('kelas/ixe') ? 'active' : '' }} {{ Request::is('kelas/ixf') ? 'active' : '' }} {{ Request::is('kelas/ixg') ? 'active' : '' }}">
+                              class="nav-link {{ Request::is('kelas/7a') ? 'active' : '' }} {{ Request::is('kelas/7b') ? 'active' : '' }} {{ Request::is('kelas/7c') ? 'active' : '' }} {{ Request::is('kelas/7d') ? 'active' : '' }} {{ Request::is('kelas/7e') ? 'active' : '' }} {{ Request::is('kelas/7f') ? 'active' : '' }} {{ Request::is('kelas/7g') ? 'active' : '' }}
+                {{ Request::is('kelas/7ia') ? 'active' : '' }} {{ Request::is('kelas/7ib') ? 'active' : '' }} {{ Request::is('kelas/7ic') ? 'active' : '' }} {{ Request::is('kelas/7id') ? 'active' : '' }} {{ Request::is('kelas/7ie') ? 'active' : '' }} {{ Request::is('kelas/7if') ? 'active' : '' }} {{ Request::is('kelas/7ig') ? 'active' : '' }}
+                {{ Request::is('kelas/9a') ? 'active' : '' }} {{ Request::is('kelas/9b') ? 'active' : '' }} {{ Request::is('kelas/9c') ? 'active' : '' }} {{ Request::is('kelas/9d') ? 'active' : '' }} {{ Request::is('kelas/9e') ? 'active' : '' }} {{ Request::is('kelas/9f') ? 'active' : '' }} {{ Request::is('kelas/9g') ? 'active' : '' }}">
                               <i class="nav-icon fas fa-school"></i>
                               <p>
                                   Kelas
@@ -165,18 +165,18 @@
                           </a>
                           <ul class="nav nav-treeview">
                               <li
-                                  class="nav-item {{ Request::is('kelas/viia') ? 'menu-open' : '' }} {{ Request::is('kelas/viib') ? 'menu-open' : '' }} {{ Request::is('kelas/viic') ? 'menu-open' : '' }} {{ Request::is('kelas/viid') ? 'menu-open' : '' }} {{ Request::is('kelas/viie') ? 'menu-open' : '' }} {{ Request::is('kelas/viif') ? 'menu-open' : '' }} {{ Request::is('kelas/viig') ? 'menu-open' : '' }}">
+                                  class="nav-item {{ Request::is('kelas/7a') ? 'menu-open' : '' }} {{ Request::is('kelas/7b') ? 'menu-open' : '' }} {{ Request::is('kelas/7c') ? 'menu-open' : '' }} {{ Request::is('kelas/7d') ? 'menu-open' : '' }} {{ Request::is('kelas/7e') ? 'menu-open' : '' }} {{ Request::is('kelas/7f') ? 'menu-open' : '' }} {{ Request::is('kelas/7g') ? 'menu-open' : '' }}">
                                   <a href="#" class="nav-link">
                                       <i class="nav-icon far fa-folder"></i>
                                       <p>
-                                          VII
+                                          VII / 7
                                           <i class="fas fa-angle-left right"></i>
                                       </p>
                                   </a>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viia"
-                                              class="nav-link  {{ Request::is('kelas/viia') ? 'active' : '' }}">
+                                          <a href="/kelas/7a"
+                                              class="nav-link  {{ Request::is('kelas/7a') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas A</p>
                                           </a>
@@ -184,8 +184,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viib"
-                                              class="nav-link {{ Request::is('kelas/viib') ? 'active' : '' }}">
+                                          <a href="/kelas/7b"
+                                              class="nav-link {{ Request::is('kelas/7b') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas B</p>
                                           </a>
@@ -193,8 +193,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viic"
-                                              class="nav-link {{ Request::is('kelas/viic') ? 'active' : '' }}">
+                                          <a href="/kelas/7c"
+                                              class="nav-link {{ Request::is('kelas/7c') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas C</p>
                                           </a>
@@ -202,8 +202,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viid"
-                                              class="nav-link {{ Request::is('kelas/viid') ? 'active' : '' }}">
+                                          <a href="/kelas/7d"
+                                              class="nav-link {{ Request::is('kelas/7d') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas D</p>
                                           </a>
@@ -211,8 +211,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viie"
-                                              class="nav-link {{ Request::is('kelas/viie') ? 'active' : '' }}">
+                                          <a href="/kelas/7e"
+                                              class="nav-link {{ Request::is('kelas/7e') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas E</p>
                                           </a>
@@ -220,8 +220,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viif"
-                                              class="nav-link {{ Request::is('kelas/viif') ? 'active' : '' }}">
+                                          <a href="/kelas/7f"
+                                              class="nav-link {{ Request::is('kelas/7f') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas F</p>
                                           </a>
@@ -229,8 +229,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viig"
-                                              class="nav-link {{ Request::is('kelas/viig') ? 'active' : '' }}">
+                                          <a href="/kelas/7g"
+                                              class="nav-link {{ Request::is('kelas/7g') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas G</p>
                                           </a>
@@ -240,18 +240,18 @@
                           </ul>
                           <ul class="nav nav-treeview">
                               <li
-                                  class="nav-item {{ Request::is('kelas/viiia') ? 'menu-open' : '' }} {{ Request::is('kelas/viiib') ? 'menu-open' : '' }} {{ Request::is('kelas/viiic') ? 'menu-open' : '' }} {{ Request::is('kelas/viiid') ? 'menu-open' : '' }} {{ Request::is('kelas/viiie') ? 'menu-open' : '' }} {{ Request::is('kelas/viiif') ? 'menu-open' : '' }} {{ Request::is('kelas/viiig') ? 'menu-open' : '' }}">
+                                  class="nav-item {{ Request::is('kelas/7ia') ? 'menu-open' : '' }} {{ Request::is('kelas/7ib') ? 'menu-open' : '' }} {{ Request::is('kelas/7ic') ? 'menu-open' : '' }} {{ Request::is('kelas/7id') ? 'menu-open' : '' }} {{ Request::is('kelas/7ie') ? 'menu-open' : '' }} {{ Request::is('kelas/7if') ? 'menu-open' : '' }} {{ Request::is('kelas/7ig') ? 'menu-open' : '' }}">
                                   <a href="#" class="nav-link">
                                       <i class="nav-icon far fa-folder"></i>
                                       <p>
-                                          VIII
+                                          VIII / 8
                                           <i class="fas fa-angle-left right"></i>
                                       </p>
                                   </a>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viiia"
-                                              class="nav-link {{ Request::is('kelas/viiia') ? 'active' : '' }}">
+                                          <a href="/kelas/8a"
+                                              class="nav-link {{ Request::is('kelas/7ia') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas A</p>
                                           </a>
@@ -259,8 +259,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viiib"
-                                              class="nav-link {{ Request::is('kelas/viiib') ? 'active' : '' }}">
+                                          <a href="/kelas/8b"
+                                              class="nav-link {{ Request::is('kelas/7ib') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas B</p>
                                           </a>
@@ -268,8 +268,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viiic"
-                                              class="nav-link {{ Request::is('kelas/viiic') ? 'active' : '' }}">
+                                          <a href="/kelas/8c"
+                                              class="nav-link {{ Request::is('kelas/7ic') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas C</p>
                                           </a>
@@ -277,8 +277,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viiid"
-                                              class="nav-link {{ Request::is('kelas/viiid') ? 'active' : '' }}">
+                                          <a href="/kelas/8d"
+                                              class="nav-link {{ Request::is('kelas/7id') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas D</p>
                                           </a>
@@ -286,8 +286,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viiie"
-                                              class="nav-link {{ Request::is('kelas/viiie') ? 'active' : '' }}">
+                                          <a href="/kelas/8e"
+                                              class="nav-link {{ Request::is('kelas/7ie') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas E</p>
                                           </a>
@@ -295,8 +295,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viiif"
-                                              class="nav-link {{ Request::is('kelas/viiif') ? 'active' : '' }}">
+                                          <a href="/kelas/8f"
+                                              class="nav-link {{ Request::is('kelas/7if') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas F</p>
                                           </a>
@@ -304,8 +304,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/viiig"
-                                              class="nav-link {{ Request::is('kelas/viiig') ? 'active' : '' }}">
+                                          <a href="/kelas/8g"
+                                              class="nav-link {{ Request::is('kelas/7ig') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas G</p>
                                           </a>
@@ -315,18 +315,18 @@
                           </ul>
                           <ul class="nav nav-treeview">
                               <li
-                                  class="nav-item {{ Request::is('kelas/ixa') ? 'menu-open' : '' }} {{ Request::is('kelas/ixb') ? 'menu-open' : '' }} {{ Request::is('kelas/ixc') ? 'menu-open' : '' }} {{ Request::is('kelas/ixd') ? 'menu-open' : '' }} {{ Request::is('kelas/ixe') ? 'menu-open' : '' }} {{ Request::is('kelas/ixf') ? 'menu-open' : '' }} {{ Request::is('kelas/ixg') ? 'menu-open' : '' }}">
+                                  class="nav-item {{ Request::is('kelas/9a') ? 'menu-open' : '' }} {{ Request::is('kelas/9b') ? 'menu-open' : '' }} {{ Request::is('kelas/9c') ? 'menu-open' : '' }} {{ Request::is('kelas/9d') ? 'menu-open' : '' }} {{ Request::is('kelas/9e') ? 'menu-open' : '' }} {{ Request::is('kelas/9f') ? 'menu-open' : '' }} {{ Request::is('kelas/9g') ? 'menu-open' : '' }}">
                                   <a href="#" class="nav-link">
                                       <i class="nav-icon far fa-folder"></i>
                                       <p>
-                                          IX
+                                          IX / 9
                                           <i class="fas fa-angle-left right"></i>
                                       </p>
                                   </a>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/ixa"
-                                              class="nav-link {{ Request::is('kelas/ixa') ? 'active' : '' }}">
+                                          <a href="/kelas/9a"
+                                              class="nav-link {{ Request::is('kelas/9a') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas A</p>
                                           </a>
@@ -334,8 +334,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/ixb"
-                                              class="nav-link {{ Request::is('kelas/ixb') ? 'active' : '' }}">
+                                          <a href="/kelas/9b"
+                                              class="nav-link {{ Request::is('kelas/9b') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas B</p>
                                           </a>
@@ -343,8 +343,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/ixc"
-                                              class="nav-link {{ Request::is('kelas/ixc') ? 'active' : '' }}">
+                                          <a href="/kelas/9c"
+                                              class="nav-link {{ Request::is('kelas/9c') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas C</p>
                                           </a>
@@ -352,8 +352,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/ixd"
-                                              class="nav-link {{ Request::is('kelas/ixd') ? 'active' : '' }}">
+                                          <a href="/kelas/9d"
+                                              class="nav-link {{ Request::is('kelas/9d') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas D</p>
                                           </a>
@@ -361,8 +361,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/ixe"
-                                              class="nav-link {{ Request::is('kelas/ixe') ? 'active' : '' }}">
+                                          <a href="/kelas/9e"
+                                              class="nav-link {{ Request::is('kelas/9e') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas E</p>
                                           </a>
@@ -370,8 +370,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/ixf"
-                                              class="nav-link {{ Request::is('kelas/ixf') ? 'active' : '' }}">
+                                          <a href="/kelas/9f"
+                                              class="nav-link {{ Request::is('kelas/9f') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas F</p>
                                           </a>
@@ -379,8 +379,8 @@
                                   </ul>
                                   <ul class="nav nav-treeview">
                                       <li class="nav-item">
-                                          <a href="/kelas/ixg"
-                                              class="nav-link {{ Request::is('kelas/ixg') ? 'active' : '' }}">
+                                          <a href="/kelas/9g"
+                                              class="nav-link {{ Request::is('kelas/9g') ? 'active' : '' }}">
                                               <i class="far fa-circle nav-icon"></i>
                                               <p>Kelas G</p>
                                           </a>
@@ -431,3 +431,4 @@
               </nav>
               <!-- /.sidebar-menu -->
           </div>
+

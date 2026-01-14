@@ -137,6 +137,15 @@
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle"></i> 
+                                            <strong>Petunjuk:</strong> Download template Excel terlebih dahulu, isi data siswa sesuai format, kemudian upload kembali.
+                                        </div>
+                                        <div class="mb-3">
+                                            <a href="{{ route('siswa.download.template') }}" class="btn btn-success btn-block">
+                                                <i class="fas fa-download"></i> Download Template Excel
+                                            </a>
+                                        </div>
                                         <form action="{{ route('siswa.import') }}" method="POST"
                                             enctype="multipart/form-data">
                                             @csrf
@@ -164,6 +173,9 @@
                                 <th>NISN</th>
                                 <th>Nama</th>
                                 <th>Kelas</th>
+                                <th>Absen</th>
+                                <th>L/P</th>
+                                <th>Agama</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -177,13 +189,13 @@
                                         @php
                                             $kelas = strtoupper($p->kelas);
                                         @endphp
-                                        @if (Str::startsWith($kelas, 'VII'))
+                                        @if (Str::startsWith($kelas, '7'))
                                             <span class="badge badge-success"
                                                 style="font-size:1rem;">{{ $p->kelas }}</span>
-                                        @elseif(Str::startsWith($kelas, 'VIII'))
+                                        @elseif(Str::startsWith($kelas, '8'))
                                             <span class="badge badge-warning"
                                                 style="font-size:1rem;">{{ $p->kelas }}</span>
-                                        @elseif(Str::startsWith($kelas, 'IX'))
+                                        @elseif(Str::startsWith($kelas, '9'))
                                             <span class="badge badge-danger"
                                                 style="font-size:1rem;">{{ $p->kelas }}</span>
                                         @else
@@ -191,6 +203,9 @@
                                                 style="font-size:1rem;">{{ $p->kelas }}</span>
                                         @endif
                                     </td>
+                                    <td>{{ $p->absen ?: '-' }}</td>
+                                    <td>{{ $p->jenis_kelamin ?: '-' }}</td>
+                                    <td>{{ $p->agama ?: '-' }}</td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Basic example">
                                             <a href="{{ route('siswa.show', $p->id) }}" type="button" class="btn btn-secondary" title="Lihat Detail"><i

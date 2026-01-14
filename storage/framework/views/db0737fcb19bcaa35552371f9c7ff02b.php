@@ -79,6 +79,9 @@
                     <li class="list-group-item"><strong>NISN:</strong> <?php echo e($catatan->siswa->nisn ?? '-'); ?></li>
                     <li class="list-group-item"><strong>Kelas:</strong>
                         <?php echo e($catatan->siswa->kelas ?? 'Data siswa tidak ditemukan'); ?></li>
+                    <li class="list-group-item"><strong>Absen:</strong> <?php echo e($catatan->siswa->absen ?? '-'); ?></li>
+                    <li class="list-group-item"><strong>Jenis Kelamin:</strong> <?php echo e($catatan->siswa->jenis_kelamin == 'L' ? 'Laki-laki' : ($catatan->siswa->jenis_kelamin == 'P' ? 'Perempuan' : '-')); ?></li>
+                    <li class="list-group-item"><strong>Agama:</strong> <?php echo e($catatan->siswa->agama ?? '-'); ?></li>
                 </ul>
 
                 <h5 class="mb-3">💸 Informasi Denda</h5>

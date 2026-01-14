@@ -58,6 +58,22 @@
                                 @enderror
                             </div>
 
+                            @if($tipe === 'tahunan')
+                            <div class="col-md-6">
+                                <label for="kelas" class="form-label">Kelas <span class="text-danger">*</span></label>
+                                <select class="form-control @error('kelas') is-invalid @enderror" name="kelas" id="kelas">
+                                    <option value="">-- Pilih Kelas --</option>
+                                    <option value="7" {{ old('kelas', $buku->kelas ?? '') == '7' ? 'selected' : '' }}>Kelas 7</option>
+                                    <option value="8" {{ old('kelas', $buku->kelas ?? '') == '8' ? 'selected' : '' }}>Kelas 8</option>
+                                    <option value="9" {{ old('kelas', $buku->kelas ?? '') == '9' ? 'selected' : '' }}>Kelas 9</option>
+                                </select>
+                                @error('kelas')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Buku ini akan muncul di peminjaman untuk kelas yang dipilih</small>
+                            </div>
+                            @endif
+
                             <div class="col-12">
                                 <label class="form-label">Kode Buku (bisa lebih dari satu)</label>
                                 <div id="kode-buku-container">
@@ -147,7 +163,7 @@
 
                                 @if (isset($buku) && $buku->foto)
                                     <div class="mt-2">
-                                        <img src="{{ asset('storage/' . $buku->foto) }}" alt="Foto Buku"
+                                        <img src="{{ str_starts_with($buku->foto ?? '', 'sampulbuku/') ? asset($buku->foto) : asset('storage/' . ($buku->foto ?? 'default.jpg')) }}" alt="Foto Buku"
                                             style="max-height: 150px;">
                                     </div>
                                 @endif

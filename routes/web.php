@@ -35,6 +35,7 @@ Route::middleware(['auth'])->group(function () {
     // Siswa
     // routes/web.php
     Route::get('/siswa/export-pdf', [SiswaController::class, 'exportPDF'])->name('siswa.export.pdf');
+    Route::get('/siswa/download-template', [SiswaController::class, 'downloadTemplate'])->name('siswa.download.template');
     Route::post('/siswa/import', [SiswaController::class, 'import'])->name('siswa.import');
     Route::delete('/siswa/hapussemua', [SiswaController::class, 'hapussemua'])->name('siswa.hapussemua');
     Route::get('/siswa/{id}/print-card', [SiswaController::class, 'printCard'])->name('siswa.print.card');
@@ -45,6 +46,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/bukuharian', [BukuController::class, 'indexHarian'])->name('buku.harian');
     Route::get('/bukutahunan', [BukuController::class, 'indexTahunan'])->name('buku.tahunan');
     Route::delete('/buku/hapussemua', [BukuController::class, 'hapussemua'])->name('buku.hapussemua');
+    Route::post('/buku/{id}/toggle-status', [BukuController::class, 'toggleStatus'])->name('buku.toggle-status');
     Route::resource('buku', BukuController::class)->except(['index']);
 
     // Peminjaman Harian
@@ -56,6 +58,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pengembalianharian/{detail}/update', [PengembalianHarianController::class, 'update'])->name('pengembalianharian.update');
 
     // Peminjaman Tahunan
+    Route::get('/peminjamantahunan/get-buku-by-kelas', [PeminjamanTahunanController::class, 'getBukuByKelas'])->name('peminjamantahunan.getBukuByKelas');
     Route::delete('/peminjamantahunan/hapussemua', [PeminjamanTahunanController::class, 'hapussemua'])->name('peminjamantahunan.hapussemua');
     Route::resource('peminjamantahunan', PeminjamanTahunanController::class);
 

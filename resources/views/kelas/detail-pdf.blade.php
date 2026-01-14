@@ -150,16 +150,38 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>PERPUSTAKAAN SMPN 02 KLAKAH</h1>
-        <h2>DETAIL SISWA</h2>
+    <div class="kop">
+        <table width="100%" cellpadding="0" cellspacing="0" style="border: none; border-collapse: collapse;">
+            <tr>
+                <td width="80" style="border: none;">
+                    <img src="{{ public_path('AdminLTE-3.2.0/dist/img/smp2.png') }}" alt="smp"
+                        style="height: 80px;">
+                </td>
+                <td align="center" style="border: none;">
+                    <strong style="font-size: 14px;">PEMERINTAH KABUPATEN LUMAJANG</strong><br>
+                    <strong style="font-size: 14px;">DINAS PENDIDIKAN</strong><br>
+                    <strong style="font-size: 18px;">SMP NEGERI 02 KLAKAH</strong><br>
+                    <span style="font-size: 12px;">Jl. Ranu No.23, Linduboyo, Klakah, Kabupaten Lumajang, Jawa Timur 67356</span>
+                </td>
+                <td width="80" style="border: none;">
+                    <img src="{{ public_path('AdminLTE-3.2.0/dist/img/lumajang.png') }}" alt="kabupaten"
+                        style="height: 80px;">
+                </td>
+            </tr>
+        </table>
+        <hr>
     </div>
+
+    <h3 style="text-align: center; margin-top: 10px;">Detail Siswa</h3>
     
     <!-- Data Siswa -->
     <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ddd;">
         <p style="margin: 3px 0;"><strong>Nama Lengkap</strong> : {{ $siswa->name }}</p>
         <p style="margin: 3px 0;"><strong>NISN</strong> : {{ $siswa->nisn ?? 'N/A' }}</p>
         <p style="margin: 3px 0;"><strong>Kelas</strong> : {{ $siswa->kelas }}</p>
+        <p style="margin: 3px 0;"><strong>Absen</strong> : {{ $siswa->absen ?? '-' }}</p>
+        <p style="margin: 3px 0;"><strong>Jenis Kelamin</strong> : {{ $siswa->jenis_kelamin == 'L' ? 'Laki-laki' : ($siswa->jenis_kelamin == 'P' ? 'Perempuan' : '-') }}</p>
+        <p style="margin: 3px 0;"><strong>Agama</strong> : {{ $siswa->agama ?? '-' }}</p>
         <p style="margin: 3px 0;"><strong>Terdaftar</strong> : {{ $siswa->created_at->format('d F Y') }}</p>
         <p style="margin: 3px 0;"><strong>Tanggal Cetak</strong> : {{ $tanggalCetak }}</p>
     </div>

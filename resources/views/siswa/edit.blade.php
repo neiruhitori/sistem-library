@@ -35,20 +35,72 @@
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label for="nisn" class="form-label">NISN</label>
-                                <input type="text" class="form-control @error('nisn') is-invalid @enderror"
-                                    name="nisn" id="nisn" placeholder="Masukkan NISN Siswa"
-                                    value="{{ $siswa->nisn }}">
-                                @error('nisn')
+                                <label for="absen" class="form-label">No. Absen</label>
+                                <input type="text" class="form-control @error('absen') is-invalid @enderror"
+                                    name="absen" id="absen" placeholder="Masukkan No. Absen"
+                                    value="{{ old('absen', $siswa->absen) }}">
+                                @error('absen')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="col-md-6">
-                                <label for="name" class="form-label">Nama</label>
+                                <label for="name" class="form-label">Nama Lengkap</label>
                                 <input type="text" class="form-control @error('name') is-invalid @enderror"
                                     name="name" id="name" placeholder="Masukkan Nama Siswa"
-                                    value="{{ $siswa->name }}">
+                                    value="{{ old('name', $siswa->name) }}">
                                 @error('name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label for="jenis_kelamin" class="form-label">Jenis Kelamin</label>
+                                <select name="jenis_kelamin" id="jenis_kelamin"
+                                    class="form-control @error('jenis_kelamin') is-invalid @enderror">
+                                    <option value="">Pilih Jenis Kelamin</option>
+                                    <option value="L" {{ old('jenis_kelamin', $siswa->jenis_kelamin) == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                                    <option value="P" {{ old('jenis_kelamin', $siswa->jenis_kelamin) == 'P' ? 'selected' : '' }}>Perempuan</option>
+                                </select>
+                                @error('jenis_kelamin')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label for="agama" class="form-label">Agama</label>
+                                <select name="agama" id="agama"
+                                    class="form-control @error('agama') is-invalid @enderror">
+                                    <option value="">Pilih Agama</option>
+                                    <option value="Islam" {{ old('agama', $siswa->agama) == 'Islam' ? 'selected' : '' }}>Islam</option>
+                                    <option value="Kristen" {{ old('agama', $siswa->agama) == 'Kristen' ? 'selected' : '' }}>Kristen</option>
+                                    <option value="Katolik" {{ old('agama', $siswa->agama) == 'Katolik' ? 'selected' : '' }}>Katolik</option>
+                                    <option value="Hindu" {{ old('agama', $siswa->agama) == 'Hindu' ? 'selected' : '' }}>Hindu</option>
+                                    <option value="Buddha" {{ old('agama', $siswa->agama) == 'Buddha' ? 'selected' : '' }}>Buddha</option>
+                                    <option value="Konghucu" {{ old('agama', $siswa->agama) == 'Konghucu' ? 'selected' : '' }}>Konghucu</option>
+                                </select>
+                                @error('agama')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            @php
+                                // Split NISN untuk edit
+                                $nisnParts = explode(' / ', $siswa->nisn ?? '');
+                                $nisnSekolah = $nisnParts[0] ?? '';
+                                $nisnNasional = $nisnParts[1] ?? '';
+                            @endphp
+                            <div class="col-md-6">
+                                <label for="nisn_sekolah" class="form-label">Nomor Induk Peserta Didik Sekolah</label>
+                                <input type="text" class="form-control @error('nisn_sekolah') is-invalid @enderror"
+                                    name="nisn_sekolah" id="nisn_sekolah" placeholder="Masukkan NISN Sekolah"
+                                    value="{{ old('nisn_sekolah', $nisnSekolah) }}">
+                                @error('nisn_sekolah')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label for="nisn_nasional" class="form-label">Nomor Induk Peserta Didik Nasional</label>
+                                <input type="text" class="form-control @error('nisn_nasional') is-invalid @enderror"
+                                    name="nisn_nasional" id="nisn_nasional" placeholder="Masukkan NISN Nasional"
+                                    value="{{ old('nisn_nasional', $nisnNasional) }}">
+                                @error('nisn_nasional')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -56,9 +108,9 @@
                                 <label for="kelas" class="form-label">Kelas</label>
                                 <select name="kelas" id="kelas"
                                     class="form-control @error('kelas') is-invalid @enderror">
-                                    <option selected disabled>{{ $siswa->kelas }}</option>
-                                    @foreach (['VII A', 'VII B', 'VII C', 'VII D', 'VII E', 'VII F', 'VII G', 'VIII A', 'VIII B', 'VIII C', 'VIII D', 'VIII E', 'VIII F', 'VIII G', 'IX A', 'IX B', 'IX C', 'IX D', 'IX E', 'IX F', 'IX G'] as $kelas)
-                                        <option value="{{ $kelas }}" {{ old('kelas') == $kelas ? 'selected' : '' }}>
+                                    <option value="">-- Pilih Kelas --</option>
+                                    @foreach (['7A', '7B', '7C', '7D', '7E', '7F', '7G', '8A', '8B', '8C', '8D', '8E', '8F', '8G', '9A', '9B', '9C', '9D', '9E', '9F', '9G'] as $kelas)
+                                        <option value="{{ $kelas }}" {{ ($siswa->kelas == $kelas || old('kelas') == $kelas) ? 'selected' : '' }}>
                                             {{ $kelas }}</option>
                                     @endforeach
                                 </select>
