@@ -40,7 +40,10 @@ class PeminjamanApiController extends Controller
                     'id' => $siswa->id,
                     'name' => $siswa->name,
                     'nisn' => $siswa->nisn,
-                    'kelas' => $siswa->kelas
+                    'kelas' => $siswa->kelas,
+                    'absen' => $siswa->absen,
+                    'jenis_kelamin' => $siswa->jenis_kelamin,
+                    'agama' => $siswa->agama
                 ]
             ]);
             
@@ -81,7 +84,10 @@ class PeminjamanApiController extends Controller
                         'id' => $siswa->id,
                         'name' => $siswa->name,
                         'nisn' => $siswa->nisn,
-                        'kelas' => $siswa->kelas
+                        'kelas' => $siswa->kelas,
+                        'absen' => $siswa->absen,
+                        'jenis_kelamin' => $siswa->jenis_kelamin,
+                        'agama' => $siswa->agama
                     ];
                 })
             ]);
