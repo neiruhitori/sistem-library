@@ -234,7 +234,17 @@
                                     @if($tipe == 'tahunan')
                                         <td>
                                             @if($buku->kelas)
-                                                <span class="badge badge-info">{{ $buku->kelas }}</span>
+                                                @php
+                                                    $badgeColor = 'badge-info';
+                                                    if($buku->kelas == '7') {
+                                                        $badgeColor = 'badge-success';
+                                                    } elseif($buku->kelas == '8') {
+                                                        $badgeColor = 'badge-warning';
+                                                    } elseif($buku->kelas == '9') {
+                                                        $badgeColor = 'badge-danger';
+                                                    }
+                                                @endphp
+                                                <span class="badge {{ $badgeColor }}">{{ $buku->kelas }}</span>
                                             @else
                                                 <span class="text-muted">-</span>
                                             @endif
