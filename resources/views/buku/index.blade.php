@@ -172,6 +172,9 @@
                                 <th>Kode Buku</th>
                                 <th>Penulis</th>
                                 <th>Tahun Terbit</th>
+                                @if($tipe == 'tahunan')
+                                    <th>Kelas</th>
+                                @endif
                                 <th>Stok</th>
                                 <th>Aksi</th>
                             </tr>
@@ -228,6 +231,15 @@
 
                                     <td>{{ $buku->penulis }}</td>
                                     <td>{{ $buku->tahun_terbit }}</td>
+                                    @if($tipe == 'tahunan')
+                                        <td>
+                                            @if($buku->kelas)
+                                                <span class="badge badge-info">{{ $buku->kelas }}</span>
+                                            @else
+                                                <span class="text-muted">-</span>
+                                            @endif
+                                        </td>
+                                    @endif
                                     <td>
                                         {{ $buku->stok }}
                                         @if (!$buku->is_active)

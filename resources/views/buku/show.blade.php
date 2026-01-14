@@ -94,6 +94,15 @@
                                     value="{{ old('kota_cetak', $buku->kota_cetak ?? '') }}" disabled>
                             </div>
 
+                            @if($tipe == 'tahunan')
+                            <div class="col-md-6">
+                                <label for="kelas" class="form-label">Kelas Buku</label>
+                                <input type="text" class="form-control" name="kelas" id="kelas" 
+                                    placeholder="Tidak ada kelas"
+                                    value="{{ old('kelas', $buku->kelas ?? '-') }}" disabled>
+                            </div>
+                            @endif
+
                             <div class="col-12">
                                 <label for="description" class="form-label">Deskripsi</label>
                                 <textarea class="form-control @error('description') is-invalid @enderror" name="description" id="description"
