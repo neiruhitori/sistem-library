@@ -81,6 +81,9 @@
                 <th>NISN</th>
                 <th>Nama</th>
                 <th>Kelas</th>
+                <th>Absen</th>
+                <th>L/P</th>
+                <th>Agama</th>
             </tr>
         </thead>
         <tbody>
@@ -90,6 +93,9 @@
                     <td>{{ $s->nisn }}</td>
                     <td style="text-align: left">{{ $s->name }}</td>
                     <td>{{ $s->kelas }}</td>
+                    <td>{{ $s->absen ?: '-' }}</td>
+                    <td>{{ $s->jenis_kelamin ?: '-' }}</td>
+                    <td>{{ $s->agama ?: '-' }}</td>
                 </tr>
             @endforeach
         </tbody>

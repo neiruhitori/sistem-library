@@ -165,7 +165,23 @@
                         $(document).ready(function() {
                             $('.select2').select2();
                             $('.select2-single').select2();
+
+                            // Event listener untuk tanggal pinjam
+                            $('#tanggal_pinjam').on('change', function() {
+                                setTanggalKembali();
+                            });
                         });
+
+                        function setTanggalKembali() {
+                            const tanggalPinjam = $('#tanggal_pinjam').val();
+                            if (tanggalPinjam) {
+                                // Tambah 7 hari (1 minggu)
+                                const date = new Date(tanggalPinjam);
+                                date.setDate(date.getDate() + 7);
+                                const tanggalKembali = date.toISOString().split('T')[0];
+                                $('#tanggal_kembali').val(tanggalKembali);
+                            }
+                        }
 
                         function tambahKodeBuku() {
                             const container = document.getElementById('kode-buku-container');

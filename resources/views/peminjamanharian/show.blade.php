@@ -36,6 +36,9 @@
                     <li class="list-group-item"><strong>Nama:</strong> {{ $peminjaman->siswa->name }}</li>
                     <li class="list-group-item"><strong>NISN:</strong> {{ $peminjaman->siswa->nisn ?? '-' }}</li>
                     <li class="list-group-item"><strong>Kelas:</strong> {{ $peminjaman->siswa->kelas }}</li>
+                    <li class="list-group-item"><strong>Absen:</strong> {{ $peminjaman->siswa->absen ?? '-' }}</li>
+                    <li class="list-group-item"><strong>Jenis Kelamin:</strong> {{ $peminjaman->siswa->jenis_kelamin == 'L' ? 'Laki-laki' : ($peminjaman->siswa->jenis_kelamin == 'P' ? 'Perempuan' : '-') }}</li>
+                    <li class="list-group-item"><strong>Agama:</strong> {{ $peminjaman->siswa->agama ?? '-' }}</li>
                 </ul>
 
                 <h5 class="mb-3">🗓️ Informasi Peminjaman</h5>

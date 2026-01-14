@@ -54,13 +54,28 @@ class SiswaController extends Controller
     {
         $request->validate([
             'name' => 'required|min:1|max:50',
-            'kelas' => 'required|min:1|max:50'
+            'kelas' => 'required|min:1|max:50',
+            'jenis_kelamin' => 'nullable|in:L,P',
+            'agama' => 'nullable|string|max:50',
+            'absen' => 'nullable|string|max:10',
+            'nisn_sekolah' => 'nullable|string',
+            'nisn_nasional' => 'nullable|string'
         ]);
+
+        // Merge NISN sekolah dan nasional menjadi satu format "sekolah / nasional"
+        $nisn = null;
+        if ($request->nisn_sekolah || $request->nisn_nasional) {
+            $nisn = trim($request->nisn_sekolah) . ' / ' . trim($request->nisn_nasional);
+            $nisn = trim($nisn, ' /'); // Remove trailing/leading slash if one is empty
+        }
 
         Siswa::create([
             'name' => $request->name,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'agama' => $request->agama,
             'kelas' => $request->kelas,
-            'nisn' => $request->nisn,
+            'absen' => $request->absen,
+            'nisn' => $nisn,
         ]);
         return redirect('/siswa')->with('success', 'Data Berhasil di Tambahkan');
     }
@@ -96,8 +111,32 @@ class SiswaController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $request->validate([
+            'name' => 'required|min:1|max:50',
+            'kelas' => 'required|min:1|max:50',
+            'jenis_kelamin' => 'nullable|in:L,P',
+            'agama' => 'nullable|string|max:50',
+            'absen' => 'nullable|string|max:10',
+            'nisn_sekolah' => 'nullable|string',
+            'nisn_nasional' => 'nullable|string'
+        ]);
+
+        // Merge NISN sekolah dan nasional menjadi satu format "sekolah / nasional"
+        $nisn = null;
+        if ($request->nisn_sekolah || $request->nisn_nasional) {
+            $nisn = trim($request->nisn_sekolah) . ' / ' . trim($request->nisn_nasional);
+            $nisn = trim($nisn, ' /'); // Remove trailing/leading slash if one is empty
+        }
+
         $siswa = Siswa::findOrFail($id);
-        $siswa->update($request->all());
+        $siswa->update([
+            'name' => $request->name,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'agama' => $request->agama,
+            'kelas' => $request->kelas,
+            'absen' => $request->absen,
+            'nisn' => $nisn,
+        ]);
 
         return redirect()->route('siswa.index')->with('success', 'Siswa Berhasil diupdate!');
     }
@@ -133,6 +172,20 @@ class SiswaController extends Controller
         Excel::import(new SiswaImport, $request->file('file'));
 
         return redirect()->back()->with('success', 'Data Siswa berhasil diimpor!');
+    }
+
+    /**
+     * Download template Excel untuk import siswa
+     */
+    public function downloadTemplate()
+    {
+        $filePath = public_path('templates/template-import-datasiswa.xlsx');
+
+        if (!file_exists($filePath)) {
+            return redirect()->back()->with('error', 'File template tidak ditemukan!');
+        }
+
+        return response()->download($filePath, 'Template_Import_Siswa.xlsx');
     }
     public function hapussemua()
     {

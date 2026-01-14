@@ -67,6 +67,18 @@
                                 <span class="float-right">{{ $siswa->nisn ?? 'N/A' }}</span>
                             </li>
                             <li class="list-group-item">
+                                <b>Absen</b> 
+                                <span class="float-right">{{ $siswa->absen ?? '-' }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Jenis Kelamin</b> 
+                                <span class="float-right">{{ $siswa->jenis_kelamin == 'L' ? 'Laki-laki' : ($siswa->jenis_kelamin == 'P' ? 'Perempuan' : '-') }}</span>
+                            </li>
+                            <li class="list-group-item">
+                                <b>Agama</b> 
+                                <span class="float-right">{{ $siswa->agama ?? '-' }}</span>
+                            </li>
+                            <li class="list-group-item">
                                 <b>Terdaftar</b> 
                                 <span class="float-right">{{ $siswa->created_at->format('d F Y') }}</span>
                             </li>

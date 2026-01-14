@@ -98,6 +98,18 @@
             <td>{{ $catatan->siswa->kelas }}</td>
         </tr>
         <tr>
+            <th>Absen</th>
+            <td>{{ $catatan->siswa->absen ?? '-' }}</td>
+        </tr>
+        <tr>
+            <th>Jenis Kelamin</th>
+            <td>{{ $catatan->siswa->jenis_kelamin ?? '-' }}</td>
+        </tr>
+        <tr>
+            <th>Agama</th>
+            <td>{{ $catatan->siswa->agama ?? '-' }}</td>
+        </tr>
+        <tr>
             <th>Jenis Denda</th>
             <td>{{ ucfirst($catatan->jenis_denda) }}</td>
         </tr>
@@ -138,6 +150,7 @@
                 <p style="margin: 5px 0;"><strong>Penulis</strong> : {{ $detail->kodeBuku->buku->penulis ?? '-' }}</p>
                 <p style="margin: 5px 0;"><strong>Tahun</strong> : {{ $detail->kodeBuku->buku->tahun_terbit ?? '-' }}</p>
                 <p style="margin: 5px 0;"><strong>ISBN</strong> : {{ $detail->kodeBuku->buku->isbn ?? '-' }}</p>
+                <p style="margin: 5px 0;"><strong>Kelas Buku</strong> : {{ $detail->kodeBuku->buku->kelas ?? '-' }}</p>
             </div>
         @endif
     @endif

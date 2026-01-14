@@ -12,27 +12,27 @@ class KelasController extends Controller
      * Daftar kelas yang tersedia
      */
     private $kelasList = [
-        'viia' => 'VII A',
-        'viib' => 'VII B',
-        'viic' => 'VII C',
-        'viid' => 'VII D',
-        'viie' => 'VII E',
-        'viif' => 'VII F',
-        'viig' => 'VII G',
-        'viiia' => 'VIII A',
-        'viiib' => 'VIII B',
-        'viiic' => 'VIII C',
-        'viiid' => 'VIII D',
-        'viiie' => 'VIII E',
-        'viiif' => 'VIII F',
-        'viiig' => 'VIII G',
-        'ixa' => 'IX A',
-        'ixb' => 'IX B',
-        'ixc' => 'IX C',
-        'ixd' => 'IX D',
-        'ixe' => 'IX E',
-        'ixf' => 'IX F',
-        'ixg' => 'IX G'
+        '7a' => '7A',
+        '7b' => '7B',
+        '7c' => '7C',
+        '7d' => '7D',
+        '7e' => '7E',
+        '7f' => '7F',
+        '7g' => '7G',
+        '8a' => '8A',
+        '8b' => '8B',
+        '8c' => '8C',
+        '8d' => '8D',
+        '8e' => '8E',
+        '8f' => '8F',
+        '8g' => '8G',
+        '9a' => '9A',
+        '9b' => '9B',
+        '9c' => '9C',
+        '9d' => '9D',
+        '9e' => '9E',
+        '9f' => '9F',
+        '9g' => '9G'
     ];
 
     /**

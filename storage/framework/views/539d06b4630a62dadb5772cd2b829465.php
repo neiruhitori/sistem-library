@@ -51,6 +51,45 @@
                 </script>
             <?php endif; ?>
 
+            <?php if(session('error')): ?>
+                <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert" id="alert-error">
+                    <i class="fas fa-exclamation-triangle"></i> <?php echo e(session('error')); ?>
+
+                    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <script>
+                    setTimeout(() => document.getElementById('alert-error').classList.remove('show'), 5000);
+                </script>
+            <?php endif; ?>
+
+            <?php if(session('warning')): ?>
+                <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert" id="alert-warning">
+                    <i class="fas fa-exclamation-circle"></i> <?php echo e(session('warning')); ?>
+
+                    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <script>
+                    setTimeout(() => document.getElementById('alert-warning').classList.remove('show'), 5000);
+                </script>
+            <?php endif; ?>
+
+            <?php if(session('removeAll')): ?>
+                <div class="alert alert-info alert-dismissible fade show mt-2" role="alert" id="alert-removeall">
+                    <i class="fas fa-trash-alt"></i> <?php echo e(session('removeAll')); ?>
+
+                    <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <script>
+                    setTimeout(() => document.getElementById('alert-removeall').classList.remove('show'), 5000);
+                </script>
+            <?php endif; ?>
+
             <div class="card shadow mt-3">
                 <div class="card-header bg-primary text-white">
                     <h3 class="card-title"><i class="fas fa-table"></i> Tabel Peminjaman Harian</h3>

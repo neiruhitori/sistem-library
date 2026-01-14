@@ -137,6 +137,15 @@
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle"></i> 
+                                            <strong>Petunjuk:</strong> Download template Excel terlebih dahulu, isi data siswa sesuai format, kemudian upload kembali.
+                                        </div>
+                                        <div class="mb-3">
+                                            <a href="<?php echo e(route('siswa.download.template')); ?>" class="btn btn-success btn-block">
+                                                <i class="fas fa-download"></i> Download Template Excel
+                                            </a>
+                                        </div>
                                         <form action="<?php echo e(route('siswa.import')); ?>" method="POST"
                                             enctype="multipart/form-data">
                                             <?php echo csrf_field(); ?>
@@ -164,6 +173,9 @@
                                 <th>NISN</th>
                                 <th>Nama</th>
                                 <th>Kelas</th>
+                                <th>Absen</th>
+                                <th>L/P</th>
+                                <th>Agama</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -177,13 +189,13 @@
                                         <?php
                                             $kelas = strtoupper($p->kelas);
                                         ?>
-                                        <?php if(Str::startsWith($kelas, 'VII')): ?>
+                                        <?php if(Str::startsWith($kelas, '7')): ?>
                                             <span class="badge badge-success"
                                                 style="font-size:1rem;"><?php echo e($p->kelas); ?></span>
-                                        <?php elseif(Str::startsWith($kelas, 'VIII')): ?>
+                                        <?php elseif(Str::startsWith($kelas, '8')): ?>
                                             <span class="badge badge-warning"
                                                 style="font-size:1rem;"><?php echo e($p->kelas); ?></span>
-                                        <?php elseif(Str::startsWith($kelas, 'IX')): ?>
+                                        <?php elseif(Str::startsWith($kelas, '9')): ?>
                                             <span class="badge badge-danger"
                                                 style="font-size:1rem;"><?php echo e($p->kelas); ?></span>
                                         <?php else: ?>
@@ -191,6 +203,9 @@
                                                 style="font-size:1rem;"><?php echo e($p->kelas); ?></span>
                                         <?php endif; ?>
                                     </td>
+                                    <td><?php echo e($p->absen ?: '-'); ?></td>
+                                    <td><?php echo e($p->jenis_kelamin ?: '-'); ?></td>
+                                    <td><?php echo e($p->agama ?: '-'); ?></td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Basic example">
                                             <a href="<?php echo e(route('siswa.show', $p->id)); ?>" type="button" class="btn btn-secondary" title="Lihat Detail"><i

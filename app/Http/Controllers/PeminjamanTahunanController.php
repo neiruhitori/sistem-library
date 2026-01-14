@@ -6,6 +6,7 @@ use App\Models\KodeBuku;
 use App\Models\PeminjamanTahunan;
 use App\Models\PeminjamanTahunanDetail;
 use App\Models\Siswa;
+use App\Models\Buku;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -53,9 +54,12 @@ class PeminjamanTahunanController extends Controller
                 ->addColumn('action', function ($row) {
                     $viewBtn = '<a href="' . route('peminjamantahunan.show', $row->id) . '" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i></a>';
                     $editBtn = '<a href="' . route('peminjamantahunan.edit', $row->id) . '" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>';
+
+                // Button delete hanya enabled jika status 'selesai'
+                $canDelete = $row->status === 'selesai';
                     $deleteBtn = '<form action="' . route('peminjamantahunan.destroy', $row->id) . '" method="POST" onsubmit="return confirm(\'Yakin hapus data ini?\')" class="d-inline">
                                     ' . csrf_field() . method_field('DELETE') . '
-                                    <button class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                    <button class="btn btn-danger btn-sm" ' . ($canDelete ? '' : 'disabled title="Hanya peminjaman yang sudah selesai yang dapat dihapus"') . '><i class="fas fa-trash"></i></button>
                                   </form>';
 
                     return '<div class="btn-group" role="group">' . $viewBtn . ' ' . $editBtn . ' ' . $deleteBtn . '</div>';
@@ -77,7 +81,8 @@ class PeminjamanTahunanController extends Controller
     {
         $siswas = Siswa::all(); // pastikan model Siswa sudah disiapkan
         $kode_bukus = KodeBuku::whereHas('buku', function ($q) {
-            $q->where('tipe', 'tahunan');
+            $q->where('tipe', 'tahunan')
+                ->where('is_active', true); // Hanya buku yang aktif
         })->where('status', '!=', 'dipinjam')->get();
 
         return view('peminjamantahunan.create', compact('siswas', 'kode_bukus'));
@@ -171,7 +176,8 @@ class PeminjamanTahunanController extends Controller
             })->findOrFail($id);
         $siswas = Siswa::all();
         $kode_bukus = KodeBuku::whereHas('buku', function ($q) {
-            $q->where('tipe', 'tahunan');
+            $q->where('tipe', 'tahunan')
+                ->where('is_active', true); // Hanya buku yang aktif
         })->where('status', '!=', 'dipinjam')->get();
 
         return view('peminjamantahunan.edit', compact('peminjaman', 'siswas', 'kode_bukus'));
@@ -247,6 +253,12 @@ class PeminjamanTahunanController extends Controller
                         ->orWhereNull('user_id'); // Bisa akses data dari Android
                 })->findOrFail($id);
 
+            // Validasi: Hanya peminjaman dengan status 'selesai' yang bisa dihapus
+            if ($peminjaman->status !== 'selesai') {
+                return redirect()->route('peminjamantahunan.index')
+                    ->with('error', 'Data peminjaman tidak dapat dihapus karena masih berstatus "' . $peminjaman->status . '". Hanya peminjaman yang sudah selesai yang dapat dihapus.');
+            }
+
             // Ubah status kode buku menjadi tersedia
             foreach ($peminjaman->details as $detail) {
                 $detail->kodeBuku->update(['status' => 'tersedia']);
@@ -274,7 +286,16 @@ class PeminjamanTahunanController extends Controller
             // Ambil semua data peminjaman milik user yang sedang login
             $peminjaman = PeminjamanTahunan::with('details')->where('user_id', Auth::id())->get();
 
+            $deletedCount = 0;
+            $skippedCount = 0;
+
             foreach ($peminjaman as $p) {
+                // Skip peminjaman yang masih berstatus dipinjam
+                if ($p->status !== 'selesai') {
+                    $skippedCount++;
+                    continue;
+                }
+
                 foreach ($p->details as $detail) {
                     // Reset status kode buku
                     if ($detail->kode_bukus_id) {
@@ -284,16 +305,70 @@ class PeminjamanTahunanController extends Controller
 
                 // Hapus detail peminjaman
                 $p->details()->delete();
+                $p->delete();
+                $deletedCount++;
             }
 
-            // Hapus semua peminjaman milik user yang sedang login
-            PeminjamanTahunan::where('user_id', Auth::id())->delete();
-
             DB::commit();
-            return redirect()->back()->with('removeAll', 'Semua data peminjaman tahunan berhasil dihapus');
+
+            if ($deletedCount > 0 && $skippedCount == 0) {
+                return redirect()->back()->with('removeAll', "Semua data peminjaman tahunan berhasil dihapus ({$deletedCount} data).");
+            } elseif ($deletedCount > 0 && $skippedCount > 0) {
+                return redirect()->back()->with('warning', "{$deletedCount} data berhasil dihapus. {$skippedCount} data tidak dapat dihapus karena masih berstatus dipinjam.");
+            } else {
+                return redirect()->back()->with('error', 'Tidak ada data yang dapat dihapus. Semua peminjaman masih berstatus dipinjam.');
+            }
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Gagal menghapus semua data: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Get books filtered by student's class (for AJAX)
+     */
+    public function getBukuByKelas(Request $request)
+    {
+        $siswaId = $request->siswa_id;
+
+        // Get student's class
+        $siswa = Siswa::find($siswaId);
+
+        if (!$siswa || !$siswa->kelas) {
+            return response()->json([]);
+        }
+
+        // Extract base grade from student's class
+        // e.g., "7A" -> "7", "8B" -> "8", "9C" -> "9"
+        $kelasPattern = '/^([7-9])/';
+        preg_match($kelasPattern, $siswa->kelas, $matches);
+        $baseKelas = $matches[1] ?? null;
+
+        if (!$baseKelas) {
+            return response()->json([]);
+        }
+
+        // Get books that match student's base class and are active (strict matching)
+        $bukus = Buku::where('tipe', 'tahunan')
+            ->where('is_active', true)
+            ->where('kelas', $baseKelas)
+            ->get();
+
+        // Get available kode_buku for each buku
+        $result = [];
+        foreach ($bukus as $buku) {
+            $kodeBukus = KodeBuku::where('bukus_id', $buku->id)
+                ->where('status', 'tersedia')
+                ->get();
+
+            foreach ($kodeBukus as $kodeBuku) {
+                $result[] = [
+                    'id' => $kodeBuku->id,
+                    'text' => $kodeBuku->kode_buku . ' - ' . $buku->judul
+                ];
+            }
+        }
+
+        return response()->json($result);
     }
 }

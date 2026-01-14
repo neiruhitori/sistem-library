@@ -100,6 +100,8 @@
                                 <th>NISN</th>
                                 <th>Nama Siswa</th>
                                 <th>Kelas</th>
+                                <th>L/P</th>
+                                <th>Agama</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -125,6 +127,8 @@
                                 <td>
                                     <span class="badge badge-info">{{ $s->kelas }}</span>
                                 </td>
+                                <td>{{ $s->jenis_kelamin ?? '-' }}</td>
+                                <td>{{ $s->agama ?? '-' }}</td>
                                 <td>
                                     <div class="btn-group" role="group">
                                         <a href="{{ route('kelas.show', [$kelas, $s->id]) }}" class="btn btn-info btn-sm" title="Detail">

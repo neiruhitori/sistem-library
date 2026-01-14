@@ -97,10 +97,12 @@
                                     </div>
                                     <div class="modal-body">
                                         <p>Pilih kondisi buku saat dikembalikan:</p>
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle"></i> <strong>Info:</strong> Sistem akan otomatis menghitung denda keterlambatan jika melewati tanggal kembali.
+                                        </div>
                                         <select name="kondisi_buku" id="kondisiBukuSelect" class="form-control" required>
                                             <option value="">-- Pilih Kondisi --</option>
-                                            <option value="baik">Baik (Tanpa Denda)</option>
-                                            <option value="terlambat">Terlambat (Denda Rp 1.000/hari)</option>
+                                            <option value="baik">Baik (Kondisi Normal)</option>
                                             <option value="rusak">Rusak (Denda Rp 10.000)</option>
                                             <option value="hilang">Hilang (Denda Rp 50.000)</option>
                                         </select>

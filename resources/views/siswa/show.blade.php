@@ -61,6 +61,21 @@
                                     name="name" id="name" placeholder="Masukkan Nama Siswa"
                                     value="{{ $siswa->kelas }}" disabled>
                             </div>
+                            <div class="col-md-6">
+                                <label for="absen" class="form-label">Absen</label>
+                                <input type="text" class="form-control" name="absen" id="absen" 
+                                    value="{{ $siswa->absen ?: '-' }}" disabled>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="jenis_kelamin" class="form-label">Jenis Kelamin</label>
+                                <input type="text" class="form-control" name="jenis_kelamin" id="jenis_kelamin" 
+                                    value="{{ $siswa->jenis_kelamin == 'L' ? 'Laki-laki' : ($siswa->jenis_kelamin == 'P' ? 'Perempuan' : '-') }}" disabled>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="agama" class="form-label">Agama</label>
+                                <input type="text" class="form-control" name="agama" id="agama" 
+                                    value="{{ $siswa->agama ?: '-' }}" disabled>
+                            </div>
                         </div>
                     </div>
                 </form>

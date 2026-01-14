@@ -10,7 +10,7 @@ class Siswa extends Model
     use HasFactory;
     protected $table ='siswas';
     protected $primaryKey = 'id';
-    protected $fillable = ['nisn', 'name', 'kelas'];
+    protected $fillable = ['nisn', 'name', 'jenis_kelamin', 'agama', 'kelas', 'absen'];
     protected $guarded = [];
 
     // Hapus user relationship - siswa jadi global untuk semua user
