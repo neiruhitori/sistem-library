@@ -24,15 +24,8 @@ class PeminjamanApiController extends Controller
     public function getSiswaById($id)
     {
         try {
-            // Optimized query - only select needed fields
-            $siswa = Siswa::select('id', 'name', 'nisn', 'jenis_kelamin', 'agama')
-                ->with(['siswaPeriodeAktif' => function ($query) {
-                    $query->select('id', 'siswas_id', 'kelas', 'absen', 'periode_id')
-                        ->with(['periode' => function ($q) {
-                            $q->select('id', 'status');
-                        }]);
-                }])
-                ->find($id);
+            // Simplified query - hanya ambil by ID
+            $siswa = Siswa::find($id);
             
             if (!$siswa) {
                 return response()->json([
@@ -42,8 +35,9 @@ class PeminjamanApiController extends Controller
             }
 
             // Ambil kelas dan absen dari periode aktif
-            $kelas = $siswa->siswaPeriodeAktif ? $siswa->siswaPeriodeAktif->kelas : '-';
-            $absen = $siswa->siswaPeriodeAktif ? $siswa->siswaPeriodeAktif->absen : '-';
+            $siswaPeriode = $siswa->siswaPeriodeAktif;
+            $kelas = $siswaPeriode ? $siswaPeriode->kelas : '-';
+            $absen = $siswaPeriode ? $siswaPeriode->absen : '-';
 
             return response()->json([
                 'success' => true,
