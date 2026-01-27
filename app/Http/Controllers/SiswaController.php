@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Imports\SiswaImport;
 use App\Models\Siswa;
+use App\Models\Periode;
+use App\Models\SiswaPeriode;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\SvgWriter;
@@ -23,16 +26,37 @@ class SiswaController extends Controller
         $iduser = Auth::id();
         $profile = User::where('id', $iduser)->first();
 
-        // Untuk DataTables, kirim semua data - pagination akan dihandle oleh DataTables
-        if ($request->has('search')) {
-            $siswa = Siswa::where('name', 'LIKE', '%' . $request->search . '%')
-                ->orderBy('created_at', 'DESC')
-                ->get(); // Ubah dari paginate(5) ke get()
+        // Ambil semua periode untuk dropdown
+        $periodes = Periode::orderBy('tahun_ajaran', 'DESC')
+            ->orderBy('semester', 'DESC')
+            ->get();
+
+        // Ambil periode aktif sebagai default
+        $periodeAktif = Periode::where('is_active', true)->first();
+
+        // Periode yang dipilih (dari request atau default ke periode aktif)
+        $selectedPeriode = $request->periode_id ?? ($periodeAktif ? $periodeAktif->id : null);
+
+        // Ambil data siswa berdasarkan periode yang dipilih
+        if ($selectedPeriode) {
+            $siswaQuery = SiswaPeriode::with(['siswa', 'periode'])
+                ->where('periode_id', $selectedPeriode)
+                ->orderBy('kelas', 'ASC')
+                ->orderBy('absen', 'ASC');
+
+            if ($request->has('search') && $request->search) {
+                $siswaQuery->whereHas('siswa', function ($q) use ($request) {
+                    $q->where('name', 'LIKE', '%' . $request->search . '%')
+                        ->orWhere('nisn', 'LIKE', '%' . $request->search . '%');
+                });
+            }
+
+            $siswaData = $siswaQuery->get();
         } else {
-            $siswa = Siswa::orderBy('created_at', 'DESC')
-                ->get(); // Ubah dari paginate(5) ke get()
+            $siswaData = collect();
         }
-        return view('siswa.index', compact('siswa', 'profile'));
+
+        return view('siswa.index', compact('siswaData', 'periodes', 'selectedPeriode', 'profile'));
     }
 
     /**
@@ -43,8 +67,10 @@ class SiswaController extends Controller
         $iduser = Auth::id();
         $profile = User::where('id', $iduser)->first();
 
-        $siswa = Siswa::all();
-        return view('siswa.create', compact('siswa', 'profile'));
+        $periodes = Periode::orderBy('tahun_ajaran', 'DESC')->get();
+        $periodeAktif = Periode::where('is_active', true)->first();
+
+        return view('siswa.create', compact('periodes', 'periodeAktif', 'profile'));
     }
 
     /**
@@ -53,57 +79,100 @@ class SiswaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|min:1|max:50',
-            'kelas' => 'required|min:1|max:50',
-            'jenis_kelamin' => 'nullable|in:L,P',
+            'name' => 'required|min:1|max:100',
+            'nisn' => 'required|string|unique:siswas,nisn',
+            'jenis_kelamin' => 'required|in:L,P',
             'agama' => 'nullable|string|max:50',
+            'periode_id' => 'required|exists:periodes,id',
+            'kelas' => 'required|string|max:10',
             'absen' => 'nullable|string|max:10',
-            'nisn_sekolah' => 'nullable|string',
-            'nisn_nasional' => 'nullable|string'
+            'status' => 'nullable|in:Aktif,Tidak Aktif,Lulus,Pindah'
         ]);
 
-        // Merge NISN sekolah dan nasional menjadi satu format "sekolah / nasional"
-        $nisn = null;
-        if ($request->nisn_sekolah || $request->nisn_nasional) {
-            $nisn = trim($request->nisn_sekolah) . ' / ' . trim($request->nisn_nasional);
-            $nisn = trim($nisn, ' /'); // Remove trailing/leading slash if one is empty
+        DB::beginTransaction();
+        try {
+            // Buat data siswa (identitas)
+            $siswa = Siswa::create([
+                'nisn' => $request->nisn,
+                'name' => $request->name,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'agama' => $request->agama,
+            ]);
+
+            // Buat data siswa periode (kelas dan status)
+            SiswaPeriode::create([
+                'siswa_id' => $siswa->id,
+                'periode_id' => $request->periode_id,
+                'kelas' => $request->kelas,
+                'absen' => $request->absen,
+                'status' => $request->status ?? 'Aktif',
+            ]);
+
+            DB::commit();
+            return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil ditambahkan!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal menambahkan data siswa: ' . $e->getMessage());
         }
-
-        Siswa::create([
-            'name' => $request->name,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'agama' => $request->agama,
-            'kelas' => $request->kelas,
-            'absen' => $request->absen,
-            'nisn' => $nisn,
-        ]);
-        return redirect('/siswa')->with('success', 'Data Berhasil di Tambahkan');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id, Request $request)
     {
         $iduser = Auth::id();
         $profile = User::where('id', $iduser)->first();
 
-        $siswa = Siswa::findOrFail($id);
-        return view('siswa.show', compact('siswa', 'profile'));
+        $siswa = Siswa::with(['siswaPeriodes.periode'])->findOrFail($id);
+
+        // Periode yang dipilih untuk ditampilkan (default periode aktif)
+        $selectedPeriode = $request->periode_id;
+        if (!$selectedPeriode) {
+            $periodeAktif = Periode::where('is_active', true)->first();
+            $selectedPeriode = $periodeAktif ? $periodeAktif->id : null;
+        }
+
+        // Data siswa untuk periode yang dipilih
+        $siswaPeriode = null;
+        if ($selectedPeriode) {
+            $siswaPeriode = $siswa->siswaPeriodes()
+                ->where('periode_id', $selectedPeriode)
+                ->first();
+        }
+
+        return view('siswa.show', compact('siswa', 'siswaPeriode', 'selectedPeriode', 'profile'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id, Request $request)
     {
-        {
         $iduser = Auth::id();
         $profile = User::where('id', $iduser)->first();
 
         $siswa = Siswa::findOrFail($id);
-        return view('siswa.edit', compact('siswa', 'profile'));
-    }
+        $periodes = Periode::orderBy('tahun_ajaran', 'DESC')->get();
+
+        // Periode yang akan diedit (dari request atau periode aktif)
+        $selectedPeriode = $request->periode_id;
+        if (!$selectedPeriode) {
+            $periodeAktif = Periode::where('is_active', true)->first();
+            $selectedPeriode = $periodeAktif ? $periodeAktif->id : null;
+        }
+
+        // Data siswa untuk periode yang dipilih
+        $siswaPeriode = null;
+        if ($selectedPeriode) {
+            $siswaPeriode = SiswaPeriode::where('siswa_id', $id)
+                ->where('periode_id', $selectedPeriode)
+                ->first();
+        }
+
+        return view('siswa.edit', compact('siswa', 'siswaPeriode', 'periodes', 'selectedPeriode', 'profile'));
     }
 
     /**
@@ -112,33 +181,49 @@ class SiswaController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'name' => 'required|min:1|max:50',
-            'kelas' => 'required|min:1|max:50',
-            'jenis_kelamin' => 'nullable|in:L,P',
+            'name' => 'required|min:1|max:100',
+            'nisn' => 'required|string|unique:siswas,nisn,' . $id,
+            'jenis_kelamin' => 'required|in:L,P',
             'agama' => 'nullable|string|max:50',
+            'periode_id' => 'required|exists:periodes,id',
+            'kelas' => 'required|string|max:10',
             'absen' => 'nullable|string|max:10',
-            'nisn_sekolah' => 'nullable|string',
-            'nisn_nasional' => 'nullable|string'
+            'status' => 'nullable|in:Aktif,Tidak Aktif,Lulus,Pindah'
         ]);
 
-        // Merge NISN sekolah dan nasional menjadi satu format "sekolah / nasional"
-        $nisn = null;
-        if ($request->nisn_sekolah || $request->nisn_nasional) {
-            $nisn = trim($request->nisn_sekolah) . ' / ' . trim($request->nisn_nasional);
-            $nisn = trim($nisn, ' /'); // Remove trailing/leading slash if one is empty
+        DB::beginTransaction();
+        try {
+            $siswa = Siswa::findOrFail($id);
+
+            // Update data identitas siswa
+            $siswa->update([
+                'nisn' => $request->nisn,
+                'name' => $request->name,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'agama' => $request->agama,
+            ]);
+
+            // Update atau create data siswa periode
+            SiswaPeriode::updateOrCreate(
+                [
+                    'siswa_id' => $siswa->id,
+                    'periode_id' => $request->periode_id
+                ],
+                [
+                    'kelas' => $request->kelas,
+                    'absen' => $request->absen,
+                    'status' => $request->status ?? 'Aktif',
+                ]
+            );
+
+            DB::commit();
+            return redirect()->route('siswa.index')->with('success', 'Data siswa berhasil diperbarui!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal memperbarui data siswa: ' . $e->getMessage());
         }
-
-        $siswa = Siswa::findOrFail($id);
-        $siswa->update([
-            'name' => $request->name,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'agama' => $request->agama,
-            'kelas' => $request->kelas,
-            'absen' => $request->absen,
-            'nisn' => $nisn,
-        ]);
-
-        return redirect()->route('siswa.index')->with('success', 'Siswa Berhasil diupdate!');
     }
 
     /**
@@ -148,30 +233,65 @@ class SiswaController extends Controller
     {
         $siswa = Siswa::findOrFail($id);
 
+        // Cascade delete akan menghapus siswa_periodes otomatis
         $siswa->delete();
 
         return redirect()->back()->with('success', 'Siswa berhasil dihapus!');
     }
 
-    public function exportPDF()
+    public function exportPDF(Request $request)
     {
         $iduser = Auth::id();
         $profile = User::where('id', $iduser)->first();
 
-        $siswa = Siswa::all(); // atau paginate, terserah
-        $pdf = PDF::loadView('siswa.pdf', compact('siswa'));
-        return $pdf->stream('Daftar_Siswa_SMPN_02_Klakah.pdf', compact('profile'));
+        // Ambil periode yang dipilih atau periode aktif
+        $periodeId = $request->periode_id;
+        if (!$periodeId) {
+            $periodeAktif = Periode::where('is_active', true)->first();
+            $periodeId = $periodeAktif ? $periodeAktif->id : null;
+        }
+
+        if ($periodeId) {
+            $periode = Periode::find($periodeId);
+            $siswaData = SiswaPeriode::with(['siswa', 'periode'])
+                ->where('periode_id', $periodeId)
+                ->orderBy('kelas', 'ASC')
+                ->orderBy('absen', 'ASC')
+                ->get();
+        } else {
+            $periode = null;
+            $siswaData = collect();
+        }
+
+        $pdf = PDF::loadView('siswa.pdf', compact('siswaData', 'periode', 'profile'));
+        return $pdf->stream('Daftar_Siswa_SMPN_02_Klakah.pdf');
     }
 
     public function import(Request $request)
     {
         $request->validate([
             'file' => 'required|mimes:xlsx,xls',
+            'periode_id' => 'required|exists:periodes,id'
         ]);
 
-        Excel::import(new SiswaImport, $request->file('file'));
+        try {
+            $import = new SiswaImport($request->periode_id);
+            Excel::import($import, $request->file('file'));
 
-        return redirect()->back()->with('success', 'Data Siswa berhasil diimpor!');
+            $summary = $import->getSummary();
+
+            $message = sprintf(
+                'Import berhasil! Total: %d siswa. Baru: %d, Diperbarui: %d, Dilewati: %d',
+                $summary['total'],
+                $summary['new'],
+                $summary['updated'],
+                $summary['skipped']
+            );
+
+            return redirect()->back()->with('success', $message);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal import data: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -200,6 +320,21 @@ class SiswaController extends Controller
     {
         $siswa = Siswa::findOrFail($id);
 
+        // Ambil data periode aktif siswa
+        $periodeAktif = Periode::where('is_active', true)->first();
+        $siswaPeriode = null;
+
+        if ($periodeAktif) {
+            $siswaPeriode = SiswaPeriode::where('siswa_id', $siswa->id)
+                ->where('periode_id', $periodeAktif->id)
+                ->first();
+        }
+
+        // Set kelas dan absen dari periode aktif, atau default jika tidak ada
+        $siswa->kelas = $siswaPeriode ? $siswaPeriode->kelas : '-';
+        $siswa->absen = $siswaPeriode ? $siswaPeriode->absen : null;
+        $siswa->status = $siswaPeriode ? $siswaPeriode->status : 'Tidak Aktif';
+
         // Generate QR Code menggunakan Endroid library
         $qrData = json_encode([
             // 'nama' => $siswa->name,
@@ -222,7 +357,7 @@ class SiswaController extends Controller
         }
 
         // Load view ke PDF dengan setting yang sama seperti file lama
-        $pdf = PDF::loadView('siswa.card_fixed', compact('siswa', 'qrCode', 'logoBase64'))
+        $pdf = PDF::loadView('siswa.card_fixed', compact('siswa', 'qrCode', 'logoBase64', 'periodeAktif'))
             ->setPaper('a4', 'portrait')
             ->setOptions([
                 'dpi' => 150,
@@ -240,6 +375,21 @@ class SiswaController extends Controller
     public function printCardPNG($id)
     {
         $siswa = Siswa::findOrFail($id);
+
+        // Ambil data periode aktif siswa
+        $periodeAktif = Periode::where('is_active', true)->first();
+        $siswaPeriode = null;
+
+        if ($periodeAktif) {
+            $siswaPeriode = SiswaPeriode::where('siswa_id', $siswa->id)
+                ->where('periode_id', $periodeAktif->id)
+                ->first();
+        }
+
+        // Set kelas dan absen dari periode aktif, atau default jika tidak ada
+        $siswa->kelas = $siswaPeriode ? $siswaPeriode->kelas : '-';
+        $siswa->absen = $siswaPeriode ? $siswaPeriode->absen : null;
+        $siswa->status = $siswaPeriode ? $siswaPeriode->status : 'Tidak Aktif';
 
         // Generate QR Code menggunakan Endroid library untuk PNG
         $qrData = json_encode([
@@ -265,7 +415,7 @@ class SiswaController extends Controller
         $height = 640;
 
         // Load view untuk konversi ke PNG
-        $html = view('siswa.card_png', compact('siswa', 'qrCode', 'logoBase64', 'width', 'height'))->render();
+        $html = view('siswa.card_png', compact('siswa', 'qrCode', 'logoBase64', 'width', 'height', 'periodeAktif'))->render();
 
         // Convert HTML ke PDF dengan ukuran yang tepat untuk 300 DPI
         $pdf = PDF::loadHTML($html)
@@ -280,5 +430,37 @@ class SiswaController extends Controller
 
         // Return PDF dengan resolusi tinggi untuk printing
         return $pdf->download('kartu-siswa-' . $siswa->name . '-300dpi.pdf');
+    }
+
+    /**
+     * Bulk update status siswa berdasarkan periode
+     */
+    public function bulkUpdateStatus(Request $request)
+    {
+        $request->validate([
+            'siswa_periode_ids' => 'required|array|min:1',
+            'siswa_periode_ids.*' => 'exists:siswa_periodes,id',
+            'status' => 'required|in:Aktif,Tidak Aktif,Lulus,Pindah'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $updated = SiswaPeriode::whereIn('id', $request->siswa_periode_ids)
+                ->update(['status' => $request->status]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => "Berhasil mengubah status {$updated} siswa menjadi {$request->status}"
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengubah status: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

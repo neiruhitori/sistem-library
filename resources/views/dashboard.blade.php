@@ -170,12 +170,21 @@
                                 // Ambil siswa baru dari controller (yang aman untuk di-map)
                                 if($newSiswa && $newSiswa->count() > 0) {
                                     $newSiswaData = $newSiswa->map(function($item) {
+                                        // Ambil periode aktif untuk mendapatkan kelas
+                                        $periodeAktif = \App\Models\Periode::where('is_active', true)->first();
+                                        $kelas = '-';
+                                        
+                                        if ($periodeAktif) {
+                                            $siswaPeriode = $item->siswaPeriodes()->where('periode_id', $periodeAktif->id)->first();
+                                            $kelas = $siswaPeriode ? $siswaPeriode->kelas : '-';
+                                        }
+                                        
                                         return [
                                             'type' => 'siswa',
                                             'icon' => 'fas fa-user-plus',
                                             'color' => 'bg-info',
                                             'title' => 'Siswa Baru Terdaftar',
-                                            'description' => $item->name . ' dari kelas ' . $item->kelas,
+                                            'description' => $item->name . ' dari kelas ' . $kelas,
                                             'time' => $item->created_at->diffForHumans(),
                                             'created_at' => $item->created_at
                                         ];
@@ -250,7 +259,7 @@
                                                 @endif
                                             </td>
                                             <td>{{ $borrower->siswa->name }}</td>
-                                            <td><span class="badge badge-info">{{ $borrower->siswa->kelas }}</span></td>
+                                            <td><span class="badge badge-info">{{ $borrower->siswa->siswaPeriodeAktif->kelas ?? '-' }}</span></td>
                                             <td>
                                                 <span class="badge badge-success">{{ $borrower->total_peminjaman }} buku</span>
                                             </td>
@@ -288,7 +297,7 @@
                                 </a>
                             </div>
                             <div class="col-6">
-                                <button type="button" class="btn btn-success btn-block" data-toggle="modal" data-target="#bukuModal">
+                                <button type="button" class="btn btn-success btn-block" data-bs-toggle="modal" data-bs-target="#bukuModal">
                                     <i class="fas fa-book-medical"></i><br>
                                     Tambah Buku
                                 </button>
@@ -296,16 +305,16 @@
                         </div>
                         <div class="row mt-2">
                             <div class="col-6">
-                                <button type="button" class="btn btn-warning btn-block" data-toggle="modal" data-target="#peminjamanModal">
+                                <button type="button" class="btn btn-warning btn-block" data-bs-toggle="modal" data-bs-target="#peminjamanModal">
                                     <i class="fas fa-hand-holding"></i><br>
                                     Peminjaman
                                 </button>
                             </div>
                             <div class="col-6">
-                                <a href="{{ route('siswa.export.pdf') }}" class="btn btn-danger btn-block">
+                                <button type="button" class="btn btn-danger btn-block" data-bs-toggle="modal" data-bs-target="#exportPdfModal">
                                     <i class="fas fa-file-pdf"></i><br>
                                     Export PDF
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -558,10 +567,19 @@
             ->count();
     }
     
-    $kelasStats = \App\Models\Siswa::selectRaw('kelas, COUNT(*) as total')
-        ->groupBy('kelas')
-        ->pluck('total', 'kelas')
-        ->toArray();
+    // Ambil data kelas dari siswa_periodes dengan periode aktif
+    $periodeAktif = \App\Models\Periode::where('is_active', true)->first();
+    
+    if ($periodeAktif) {
+        $kelasStats = \App\Models\SiswaPeriode::where('periode_id', $periodeAktif->id)
+            ->selectRaw('kelas, COUNT(*) as total')
+            ->groupBy('kelas')
+            ->orderBy('kelas')
+            ->pluck('total', 'kelas')
+            ->toArray();
+    } else {
+        $kelasStats = [];
+    }
 @endphp
 
 <script>
@@ -647,4 +665,146 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+
+<!-- Modal Tambah Buku -->
+<div class="modal fade" id="bukuModal" tabindex="-1" aria-labelledby="bukuModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="bukuModalLabel">
+                    <i class="fas fa-book-medical"></i> Pilih Jenis Buku
+                </h5>
+                <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ route('buku.create', ['tipe' => 'harian']) }}" class="btn btn-lg btn-primary">
+                        <i class="fas fa-calendar-day"></i> Tambah Buku Harian
+                    </a>
+                    <a href="{{ route('buku.create', ['tipe' => 'tahunan']) }}" class="btn btn-lg btn-info">
+                        <i class="fas fa-calendar-alt"></i> Tambah Buku Tahunan
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Peminjaman -->
+<div class="modal fade" id="peminjamanModal" tabindex="-1" aria-labelledby="peminjamanModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-white">
+                <h5 class="modal-title" id="peminjamanModalLabel">
+                    <i class="fas fa-hand-holding"></i> Pilih Jenis Peminjaman
+                </h5>
+                <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ route('peminjamanharian.create') }}" class="btn btn-lg btn-primary">
+                        <i class="fas fa-calendar-day"></i> Peminjaman Harian
+                    </a>
+                    <a href="{{ route('peminjamantahunan.create') }}" class="btn btn-lg btn-info">
+                        <i class="fas fa-calendar-alt"></i> Peminjaman Tahunan
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Export PDF -->
+<div class="modal fade" id="exportPdfModal" tabindex="-1" aria-labelledby="exportPdfModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="exportPdfModalLabel">
+                    <i class="fas fa-file-pdf"></i> Export PDF Kelas
+                </h5>
+                <button type="button" class="close text-white" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Tahap 1: Pilih Tingkat -->
+                <div id="tingkatSelection">
+                    <p class="text-muted mb-3">
+                        <i class="fas fa-info-circle"></i> Pilih tingkat kelas terlebih dahulu
+                    </p>
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-lg btn-success" onclick="showKelasOptions('7')">
+                            <i class="fas fa-graduation-cap"></i> Kelas 7
+                        </button>
+                        <button type="button" class="btn btn-lg btn-warning" onclick="showKelasOptions('8')">
+                            <i class="fas fa-graduation-cap"></i> Kelas 8
+                        </button>
+                        <button type="button" class="btn btn-lg btn-danger" onclick="showKelasOptions('9')">
+                            <i class="fas fa-graduation-cap"></i> Kelas 9
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tahap 2: Pilih Kelas Spesifik -->
+                <div id="kelasSelection" style="display: none;">
+                    <button type="button" class="btn btn-sm btn-secondary mb-3" onclick="backToTingkat()">
+                        <i class="fas fa-arrow-left"></i> Kembali
+                    </button>
+                    <p class="text-muted mb-3">
+                        <i class="fas fa-info-circle"></i> Pilih kelas yang ingin di-export ke PDF
+                    </p>
+                    <div class="row" id="kelasButtons">
+                        <!-- Buttons akan di-generate oleh JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const kelasData = {
+        '7': ['7a', '7b', '7c', '7d', '7e', '7f', '7g'],
+        '8': ['8a', '8b', '8c', '8d', '8e', '8f', '8g'],
+        '9': ['9a', '9b', '9c', '9d', '9e', '9f', '9g']
+    };
+
+    function showKelasOptions(tingkat) {
+        document.getElementById('tingkatSelection').style.display = 'none';
+        document.getElementById('kelasSelection').style.display = 'block';
+        
+        const kelasButtons = document.getElementById('kelasButtons');
+        kelasButtons.innerHTML = '';
+        
+        const kelasList = kelasData[tingkat];
+        kelasList.forEach(kelas => {
+            const col = document.createElement('div');
+            col.className = 'col-4 mb-2';
+            
+            const btn = document.createElement('a');
+            btn.href = `/kelas/${kelas}/cetak-pdf`;
+            btn.target = '_blank';
+            btn.className = 'btn btn-primary btn-block';
+            btn.innerHTML = `<i class="fas fa-file-pdf"></i> ${kelas.toUpperCase()}`;
+            
+            col.appendChild(btn);
+            kelasButtons.appendChild(col);
+        });
+    }
+
+    function backToTingkat() {
+        document.getElementById('kelasSelection').style.display = 'none';
+        document.getElementById('tingkatSelection').style.display = 'block';
+    }
+
+    // Reset modal saat ditutup
+    document.getElementById('exportPdfModal').addEventListener('hidden.bs.modal', function () {
+        backToTingkat();
+    });
+</script>
+
 @endsection

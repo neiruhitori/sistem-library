@@ -55,6 +55,26 @@
                     <h3 class="card-title"><i class="fas fa-table"></i> Tabel Catatan Harian</h3>
                 </div>
                 <div class="card-body">
+                    <!-- Filter Status -->
+                    <div class="mb-3">
+                        <form action="<?php echo e(route('catatanharian.index')); ?>" method="GET" class="form-inline">
+                            <label for="status" class="mr-2">Filter Status:</label>
+                            <select name="status" id="status" class="form-control mr-2" style="width: 200px;">
+                                <option value="">Semua Status</option>
+                                <option value="dibayar" <?php echo e(request('status') == 'dibayar' ? 'selected' : ''); ?>>Lunas</option>
+                                <option value="belum_dibayar" <?php echo e(request('status') == 'belum_dibayar' ? 'selected' : ''); ?>>Belum Bayar</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="fas fa-filter"></i> Filter
+                            </button>
+                            <?php if(request('status')): ?>
+                                <a href="<?php echo e(route('catatanharian.index')); ?>" class="btn btn-secondary btn-sm ml-2">
+                                    <i class="fas fa-times"></i> Reset
+                                </a>
+                            <?php endif; ?>
+                        </form>
+                    </div>
+                    
                     <table id="example1" class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>

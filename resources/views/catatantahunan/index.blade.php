@@ -56,6 +56,26 @@
                     <h3 class="card-title"><i class="fas fa-table"></i> Tabel Catatan Tahunan</h3>
                 </div>
                 <div class="card-body">
+                    <!-- Filter Status -->
+                    <div class="mb-3">
+                        <form action="{{ route('catatantahunan.index') }}" method="GET" class="form-inline">
+                            <label for="status" class="mr-2">Filter Status:</label>
+                            <select name="status" id="status" class="form-control mr-2" style="width: 200px;">
+                                <option value="">Semua Status</option>
+                                <option value="dibayar" {{ request('status') == 'dibayar' ? 'selected' : '' }}>Lunas</option>
+                                <option value="belum_dibayar" {{ request('status') == 'belum_dibayar' ? 'selected' : '' }}>Belum Bayar</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="fas fa-filter"></i> Filter
+                            </button>
+                            @if(request('status'))
+                                <a href="{{ route('catatantahunan.index') }}" class="btn btn-secondary btn-sm ml-2">
+                                    <i class="fas fa-times"></i> Reset
+                                </a>
+                            @endif
+                        </form>
+                    </div>
+                    
                     <table id="example1" class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>

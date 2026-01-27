@@ -3,14 +3,28 @@
 namespace App\Imports;
 
 use App\Models\Siswa;
+use App\Models\SiswaPeriode;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\SkipEmptyRows;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class SiswaImport implements ToModel, WithHeadingRow, WithCalculatedFormulas
 {
+    private $periodeId;
+    private $summary = [
+        'total' => 0,
+        'new' => 0,
+        'updated' => 0,
+        'skipped' => 0
+    ];
+
+    public function __construct($periodeId)
+    {
+        $this->periodeId = $periodeId;
+    }
+
     /**
      * Specify which row is the heading row
      */
@@ -20,27 +34,27 @@ class SiswaImport implements ToModel, WithHeadingRow, WithCalculatedFormulas
     }
 
     /**
-     * Import data siswa dari file Excel.
-     * Logic: Jika NISN sudah ada -> UPDATE, jika belum ada -> INSERT
+     * Import data siswa dari file Excel dengan logika periode.
+     * 
+     * Logika:
+     * 1. NISN belum ada di tabel siswas -> Tambah siswa baru + data periode
+     * 2. NISN ada tapi belum di periode aktif -> Tambah data periode (kenaikan kelas)
+     * 3. NISN ada dan sudah di periode aktif:
+     *    - Jika kelas berbeda -> Update kelas
+     *    - Jika kelas sama -> Skip
      */
     public function model(array $row)
     {
-        // Debug: log semua key dari row (hanya sekali untuk row pertama)
-        if (!isset($this->logged)) {
-            \Log::info('Excel Headers: ' . implode(', ', array_keys($row)));
-            $this->logged = true;
-        }
-
-        // Ambil nama dan kelas
+        // Ambil data dari Excel
         $name = trim($row['nama'] ?? '');
         $kelas = trim($row['kelas'] ?? '');
 
-        // Jika name atau kelas kosong, skip baris ini
+        // Skip jika nama atau kelas kosong
         if (empty($name) || empty($kelas)) {
             return null;
         }
 
-        // Ambil data dari kolom Excel
+        // Ambil data lainnya
         $absen = trim($row['absen'] ?? $row['urut'] ?? '');
         $nisnSekolah = trim($row['nis'] ?? '');
         $nisnNasional = trim($row['nisn'] ?? '');
@@ -60,33 +74,88 @@ class SiswaImport implements ToModel, WithHeadingRow, WithCalculatedFormulas
 
         // Validate jenis kelamin
         if (!in_array($jenisKelamin, ['L', 'P'])) {
-            $jenisKelamin = null;
+            $jenisKelamin = 'L'; // Default
         }
 
-        // Data untuk insert/update
-        $data = [
-            'absen' => $absen ?: null,
-            'name' => $name,
-            'jenis_kelamin' => $jenisKelamin,
-            'agama' => $agama ?: null,
-            'nisn' => $nisn,
-            'kelas' => $kelas,
-        ];
+        // NISN harus ada
+        if (empty($nisn)) {
+            return null;
+        }
 
-        // Upsert: Update jika NISN ada, Insert jika NISN tidak ada
-        if (!empty($nisn)) {
-            $siswa = Siswa::where('nisn', $nisn)->first();
+        $this->summary['total']++;
 
-            if ($siswa) {
-                // NISN sudah ada -> UPDATE
-                $siswa->update($data);
-                return null; // Return null karena sudah di-update manual
+        // Cari siswa berdasarkan NISN
+        $siswa = Siswa::where('nisn', $nisn)->first();
+
+        DB::beginTransaction();
+        try {
+            if (!$siswa) {
+                // CASE 1: NISN belum ada -> Tambah siswa baru + data periode
+                $siswa = Siswa::create([
+                    'nisn' => $nisn,
+                    'name' => $name,
+                    'jenis_kelamin' => $jenisKelamin,
+                    'agama' => $agama ?: null,
+                ]);
+
+                SiswaPeriode::create([
+                    'siswa_id' => $siswa->id,
+                    'periode_id' => $this->periodeId,
+                    'kelas' => $kelas,
+                    'absen' => $absen ?: null,
+                    'status' => 'Aktif'
+                ]);
+
+                $this->summary['new']++;
+            } else {
+                // CASE 2 & 3: NISN sudah ada
+                // Cek apakah sudah terdaftar di periode ini
+                $siswaPeriode = SiswaPeriode::where('siswa_id', $siswa->id)
+                    ->where('periode_id', $this->periodeId)
+                    ->first();
+
+                if (!$siswaPeriode) {
+                    // CASE 2: Belum di periode aktif -> Tambah data periode baru (kenaikan kelas)
+                    SiswaPeriode::create([
+                        'siswa_id' => $siswa->id,
+                        'periode_id' => $this->periodeId,
+                        'kelas' => $kelas,
+                        'absen' => $absen ?: null,
+                        'status' => 'Aktif'
+                    ]);
+
+                    $this->summary['new']++;
+                } else {
+                    // CASE 3: Sudah di periode aktif
+                    if ($siswaPeriode->kelas != $kelas) {
+                        // Kelas berbeda -> Update
+                        $siswaPeriode->update([
+                            'kelas' => $kelas,
+                            'absen' => $absen ?: $siswaPeriode->absen
+                        ]);
+
+                        $this->summary['updated']++;
+                    } else {
+                        // Kelas sama -> Skip (tidak duplikat)
+                        $this->summary['skipped']++;
+                    }
+                }
             }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Error importing siswa: ' . $e->getMessage());
         }
 
-        // NISN tidak ada atau NISN kosong -> INSERT baru
-        return new Siswa($data);
+        return null; // Return null karena kita handle create/update manual
     }
 
-    private $logged = false;
+    /**
+     * Get import summary
+     */
+    public function getSummary()
+    {
+        return $this->summary;
+    }
 }

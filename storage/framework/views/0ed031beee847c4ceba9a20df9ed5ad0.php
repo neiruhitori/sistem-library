@@ -144,18 +144,18 @@
                 </script>
             <?php endif; ?>
 
-            <div class="card mx-auto mt-3 shadow" style="max-width: 98%;">
+            <div class="card mx-auto mt-3 mb-5 shadow" style="max-width: 98%;">
                 <div class="card-header bg-primary text-white">
                     <h3 class="card-title"><i class="fas fa-table"></i> DataTable Buku <?php echo e(ucfirst($tipe)); ?></h3>
                 </div>
                 <div class="card-body">
-                    <div class="mb-3 d-flex flex-wrap gap-2">
+                    <div class="mb-3">
                         <a href="<?php echo e(route('buku.create', ['tipe' => $tipe])); ?>" class="btn btn-success">
                             <i class="fas fa-plus"></i> Tambah Buku
                         </a>
                         <form action="<?php echo e(route('buku.hapussemua')); ?>" method="POST"
                             onsubmit="return confirm('Yakin ingin menghapus semua data buku <?php echo e($tipe); ?>?')"
-                            class="d-inline">
+                            style="display: inline;">
                             <?php echo csrf_field(); ?>
                             <?php echo method_field('DELETE'); ?>
                             <input type="hidden" name="tipe" value="<?php echo e($tipe); ?>">
@@ -163,7 +163,6 @@
                                 <i class="fas fa-trash-alt"></i> Hapus Semua Buku
                             </button>
                         </form>
-
                     </div>
                     <table id="example1" class="table table-bordered table-striped table-hover">
                         <thead class="thead-dark">
@@ -261,22 +260,23 @@
                                         <?php endif; ?>
                                     </td>
                                     <td>
+                                        <?php
+                                            // Cek apakah buku pernah dipinjam atau sedang dipinjam
+                                            $peminjamanHarianCount = $buku->peminjamanHarianDetails()->count();
+                                            $peminjamanTahunanCount = $buku->peminjamanTahunanDetails()->count();
+                                            $kodeBukuDipinjam = $buku->kodeBuku()->where('status', 'dipinjam')->count();
+                                            
+                                            $canDelete = ($peminjamanHarianCount == 0 && $peminjamanTahunanCount == 0 && $kodeBukuDipinjam == 0);
+                                            $hasHistory = ($peminjamanHarianCount > 0 || $peminjamanTahunanCount > 0);
+                                        ?>
+                                        
                                         <div class="btn-group" role="group">
-                                            <a href="<?php echo e(route('buku.show', $buku->id)); ?>" class="btn btn-secondary"><i
-                                                    class="fas fa-eye"></i></a>
-                                            <a href="<?php echo e(route('buku.edit', $buku->id)); ?>" class="btn btn-warning"><i
-                                                    class="fas fa-edit"></i></a>
-                                            
-                                            <?php
-                                                // Cek apakah buku pernah dipinjam atau sedang dipinjam
-                                                $peminjamanHarianCount = $buku->peminjamanHarianDetails()->count();
-                                                $peminjamanTahunanCount = $buku->peminjamanTahunanDetails()->count();
-                                                $kodeBukuDipinjam = $buku->kodeBuku()->where('status', 'dipinjam')->count();
-                                                
-                                                $canDelete = ($peminjamanHarianCount == 0 && $peminjamanTahunanCount == 0 && $kodeBukuDipinjam == 0);
-                                                $hasHistory = ($peminjamanHarianCount > 0 || $peminjamanTahunanCount > 0);
-                                            ?>
-                                            
+                                            <a href="<?php echo e(route('buku.show', $buku->id)); ?>" class="btn btn-secondary" title="Lihat Detail">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="<?php echo e(route('buku.edit', $buku->id)); ?>" class="btn btn-warning" title="Edit Data">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
                                             <?php if($canDelete): ?>
                                                 
                                                 <form action="<?php echo e(route('buku.destroy', $buku->id)); ?>" method="POST"
@@ -284,7 +284,7 @@
                                                     onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
                                                     <?php echo csrf_field(); ?>
                                                     <?php echo method_field('DELETE'); ?>
-                                                    <button class="btn btn-danger" title="Hapus buku">
+                                                    <button type="submit" class="btn btn-danger" title="Hapus buku">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </form>
@@ -294,7 +294,7 @@
                                                     class="d-inline"
                                                     onsubmit="return confirm('<?php echo e($buku->is_active ? "Nonaktifkan buku ini? Buku tidak akan muncul dalam daftar peminjaman." : "Aktifkan kembali buku ini?"); ?>')">
                                                     <?php echo csrf_field(); ?>
-                                                    <button class="btn <?php echo e($buku->is_active ? 'btn-danger' : 'btn-success'); ?>" 
+                                                    <button type="submit" class="btn <?php echo e($buku->is_active ? 'btn-danger' : 'btn-success'); ?>" 
                                                         title="<?php echo e($buku->is_active ? 'Nonaktifkan buku (untuk arsip)' : 'Aktifkan kembali buku'); ?>">
                                                         <i class="fas fa-<?php echo e($buku->is_active ? 'ban' : 'check-circle'); ?>"></i>
                                                     </button>
@@ -372,6 +372,18 @@
             z-index: 1;
             letter-spacing: 10px;
             text-shadow: 1px 1px 2px rgba(100, 88, 88, 0.5);
+        }
+        
+        /* Fix button alignment in btn-group */
+        .btn-group form.d-inline {
+            display: inline-block !important;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .btn-group .btn {
+            float: none;
+            margin: 0;
         }
     </style>
     <?php $__env->startPush('scripts'); ?>

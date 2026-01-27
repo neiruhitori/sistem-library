@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Siswa;
+use App\Models\Periode;
+use App\Models\SiswaPeriode;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -47,15 +49,34 @@ class KelasController extends Controller
 
         $namaKelas = $this->kelasList[$kelas];
 
-        // Ambil data siswa berdasarkan kelas (tanpa pagination untuk DataTables)
-        $siswa = Siswa::where('kelas', $namaKelas)
-            ->orderBy('name', 'asc')
+        // Ambil periode aktif
+        $periodeAktif = Periode::where('is_active', true)->first();
+
+        if (!$periodeAktif) {
+            return redirect()->back()->with('error', 'Tidak ada periode aktif. Silakan aktifkan periode terlebih dahulu.');
+        }
+
+        // Ambil data siswa berdasarkan kelas dari periode aktif
+        $siswaPeriodes = SiswaPeriode::where('periode_id', $periodeAktif->id)
+            ->where('kelas', $namaKelas)
+            ->where('status', 'Aktif') // Hanya tampilkan siswa dengan status Aktif
+            ->with('siswa')
             ->get();
+
+        // Transform ke collection siswa dengan tambahan informasi periode
+        $siswa = $siswaPeriodes->map(function ($siswaPeriode) {
+            $student = $siswaPeriode->siswa;
+            $student->kelas = $siswaPeriode->kelas;
+            $student->absen = $siswaPeriode->absen;
+            $student->status = $siswaPeriode->status;
+            $student->siswa_periode_id = $siswaPeriode->id;
+            return $student;
+        })->sortBy('name');
 
         // Hitung statistik
         $totalSiswa = $siswa->count();
 
-        return view('kelas.index', compact('siswa', 'namaKelas', 'kelas', 'totalSiswa'));
+        return view('kelas.index', compact('siswa', 'namaKelas', 'kelas', 'totalSiswa', 'periodeAktif'));
     }
 
     /**
@@ -70,8 +91,26 @@ class KelasController extends Controller
 
         $namaKelas = $this->kelasList[$kelas];
 
+        // Ambil periode aktif
+        $periodeAktif = Periode::where('is_active', true)->first();
+
+        if (!$periodeAktif) {
+            return redirect()->back()->with('error', 'Tidak ada periode aktif. Silakan aktifkan periode terlebih dahulu.');
+        }
+
         // Ambil data siswa
-        $siswa = Siswa::where('kelas', $namaKelas)->findOrFail($id);
+        $siswa = Siswa::findOrFail($id);
+
+        // Ambil data periode siswa untuk kelas yang sesuai
+        $siswaPeriode = SiswaPeriode::where('siswa_id', $id)
+            ->where('periode_id', $periodeAktif->id)
+            ->where('kelas', $namaKelas)
+            ->firstOrFail();
+
+        // Tambahkan informasi periode ke siswa
+        $siswa->kelas = $siswaPeriode->kelas;
+        $siswa->absen = $siswaPeriode->absen;
+        $siswa->status = $siswaPeriode->status;
 
         // Ambil data peminjaman harian siswa dengan relasi yang ada
         $peminjamanHarian = $siswa->peminjamanHarian()
@@ -92,7 +131,7 @@ class KelasController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('kelas.show', compact('siswa', 'namaKelas', 'kelas', 'peminjamanHarian', 'peminjamanTahunan', 'catatanDenda'));
+        return view('kelas.show', compact('siswa', 'namaKelas', 'kelas', 'peminjamanHarian', 'peminjamanTahunan', 'catatanDenda', 'periodeAktif'));
     }
 
     /**
@@ -121,10 +160,29 @@ class KelasController extends Controller
                 ->with('error', $message . implode(' dan ', $missing));
         }
 
-        // Ambil semua data siswa berdasarkan kelas
-        $siswa = Siswa::where('kelas', $namaKelas)
-            ->orderBy('name', 'asc')
+        // Ambil periode aktif
+        $periodeAktif = Periode::where('is_active', true)->first();
+
+        if (!$periodeAktif) {
+            return redirect()->route('kelas.index', $kelas)
+                ->with('error', 'Tidak ada periode aktif. Silakan aktifkan periode terlebih dahulu.');
+        }
+
+        // Ambil semua data siswa berdasarkan kelas dari periode aktif
+        $siswaPeriodes = SiswaPeriode::where('periode_id', $periodeAktif->id)
+            ->where('kelas', $namaKelas)
+            ->where('status', 'Aktif') // Hanya tampilkan siswa dengan status Aktif
+            ->with('siswa')
             ->get();
+
+        // Transform ke collection siswa dengan tambahan informasi periode
+        $siswa = $siswaPeriodes->map(function ($siswaPeriode) {
+            $student = $siswaPeriode->siswa;
+            $student->kelas = $siswaPeriode->kelas;
+            $student->absen = $siswaPeriode->absen;
+            $student->status = $siswaPeriode->status;
+            return $student;
+        })->sortBy('name');
 
         // Hitung statistik
         $totalSiswa = $siswa->count();
@@ -135,7 +193,8 @@ class KelasController extends Controller
             'totalSiswa' => $totalSiswa,
             'tanggalCetak' => now()->format('d F Y'),
             'kepalaPerpustakaan' => $kepalaPerpustakaan,
-            'kepalaSekolah' => $kepalaSekolah
+            'kepalaSekolah' => $kepalaSekolah,
+            'periodeAktif' => $periodeAktif
         ];
 
         $pdf = Pdf::loadView('kelas.pdf', $data);
@@ -164,8 +223,27 @@ class KelasController extends Controller
                 ->with('error', 'Tidak dapat mencetak PDF. Silakan tambahkan data Kepala Perpustakaan yang aktif terlebih dahulu di menu Penandatangan.');
         }
 
+        // Ambil periode aktif
+        $periodeAktif = Periode::where('is_active', true)->first();
+
+        if (!$periodeAktif) {
+            return redirect()->route('kelas.show', ['kelas' => $kelas, 'id' => $id])
+                ->with('error', 'Tidak ada periode aktif. Silakan aktifkan periode terlebih dahulu.');
+        }
+
         // Ambil data siswa
-        $siswa = Siswa::where('kelas', $namaKelas)->findOrFail($id);
+        $siswa = Siswa::findOrFail($id);
+
+        // Ambil data periode siswa untuk kelas yang sesuai
+        $siswaPeriode = SiswaPeriode::where('siswa_id', $id)
+            ->where('periode_id', $periodeAktif->id)
+            ->where('kelas', $namaKelas)
+            ->firstOrFail();
+
+        // Tambahkan informasi periode ke siswa
+        $siswa->kelas = $siswaPeriode->kelas;
+        $siswa->absen = $siswaPeriode->absen;
+        $siswa->status = $siswaPeriode->status;
 
         // Ambil data peminjaman harian siswa
         $peminjamanHarian = $siswa->peminjamanHarian()
@@ -191,7 +269,8 @@ class KelasController extends Controller
             'peminjamanTahunan' => $peminjamanTahunan,
             'catatanDenda' => $catatanDenda,
             'tanggalCetak' => now()->format('d F Y'),
-            'kepalaPerpustakaan' => $kepalaPerpustakaan
+            'kepalaPerpustakaan' => $kepalaPerpustakaan,
+            'periodeAktif' => $periodeAktif
         ];
 
         $pdf = Pdf::loadView('kelas.detail-pdf', $data);

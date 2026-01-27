@@ -56,14 +56,48 @@ class NotificationController extends Controller
     public function markAsReadAndRedirect($id)
     {
         try {
+            // Ambil data notifikasi
+            $notification = DB::table('notifications')
+                ->where('id', $id)
+                ->where('user_id', Auth::id())
+                ->first();
+
+            if (!$notification) {
+                return redirect()->route('dashboard')->with('error', 'Notifikasi tidak ditemukan');
+            }
+
+            // Tandai sebagai sudah dibaca
             DB::table('notifications')
                 ->where('id', $id)
                 ->where('user_id', Auth::id())
                 ->update(['is_read' => true]);
 
-            return redirect()->route('dashboard');
+            // Redirect berdasarkan type notifikasi
+            switch ($notification->type) {
+                case 'peminjaman_harian':
+                    return redirect()->route('peminjamanharian.show', $notification->reference_id);
+
+                case 'peminjaman_tahunan':
+                    return redirect()->route('peminjamantahunan.show', $notification->reference_id);
+
+                case 'pengembalian_harian':
+                    return redirect()->route('peminjamanharian.show', $notification->reference_id);
+
+                case 'pengembalian_tahunan':
+                    return redirect()->route('peminjamantahunan.show', $notification->reference_id);
+
+                case 'denda_harian':
+                    return redirect()->route('catatanharian.show', $notification->reference_id);
+
+                case 'denda_tahunan':
+                    return redirect()->route('catatantahunan.show', $notification->reference_id);
+
+                default:
+                    return redirect()->route('dashboard');
+            }
         } catch (\Exception $e) {
-            return redirect()->route('dashboard');
+            \Log::error('Notification redirect error: ' . $e->getMessage());
+            return redirect()->route('dashboard')->with('error', 'Terjadi kesalahan');
         }
     }
 
