@@ -33,7 +33,7 @@ class BukuApiController extends Controller
                         }
                     } else {
                         // Set default image URL jika foto tidak ada
-                        $item->foto_url = asset('sampulbuku/default.jpg');
+                        $item->foto_url = url('sampulbuku/default.jpg');
                     }
 
                     // Hitung stok buku berdasarkan status di kode_bukus
@@ -118,10 +118,10 @@ class BukuApiController extends Controller
                     }
                 } else {
                     // Set default image URL jika foto tidak ada
-                    $buku->foto_url = asset('sampulbuku/default.jpg');
+                    $buku->foto_url = url('sampulbuku/default.jpg');
                 }
             } catch (\Exception $e) {
-                $buku->foto_url = asset('sampulbuku/default.jpg');
+                $buku->foto_url = url('sampulbuku/default.jpg');
             }
 
             // Hitung stok buku
