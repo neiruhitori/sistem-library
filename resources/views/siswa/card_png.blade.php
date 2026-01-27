@@ -252,7 +252,7 @@
                 </div>
             </div>
         </div>
-        <div class="year">Valid: {{ date('Y') }}</div>
+        {{-- <div class="year">Valid: {{ date('Y') }}</div> --}}
     </div>
 
     <div class="card-back">

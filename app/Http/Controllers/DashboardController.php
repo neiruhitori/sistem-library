@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\Siswa;
+use App\Models\Periode;
+use App\Models\SiswaPeriode;
 use App\Models\Buku;
 use App\Models\PeminjamanHarian;
 use App\Models\PeminjamanTahunan;
@@ -59,21 +61,26 @@ class DashboardController extends Controller
                   ->whereYear('created_at', now()->year)
                   ->count();
             }
-            
-            // Stats kelas dari semua siswa (global)
-            $kelasStats = Siswa::selectRaw('kelas, COUNT(*) as total')
-                ->groupBy('kelas')
-                ->pluck('total', 'kelas')
-                ->toArray();
-                
-            // Jika kosong, berikan data default
-            if (empty($kelasStats)) {
+
+            // Stats kelas dari semua siswa (global) - menggunakan periode aktif
+            // Ambil periode aktif
+            $periodeAktif = Periode::where('is_active', true)->first();
+
+            if ($periodeAktif) {
+                $kelasStats = SiswaPeriode::where('periode_id', $periodeAktif->id)
+                    ->selectRaw('kelas, COUNT(*) as total')
+                    ->groupBy('kelas')
+                    ->orderBy('kelas')
+                    ->pluck('total', 'kelas')
+                    ->toArray();
+            } else {
+                // Jika tidak ada periode aktif, tampilkan data kosong
                 $kelasStats = [];
             }
 
             // Recent activities dari user ini + data dari Android (gabung harian dan tahunan dengan union query)
             // Ambil data dari kedua tabel dan gabungkan berdasarkan timestamp
-            $recentPeminjamanHarian = PeminjamanHarian::with(['siswa', 'details.kodeBuku.buku'])
+            $recentPeminjamanHarian = PeminjamanHarian::with(['siswa', 'siswa.siswaPeriodeAktif', 'details.kodeBuku.buku'])
                 ->where(function ($query) use ($user) {
                     $query->where('user_id', $user->id)
                         ->orWhereNull('user_id'); // Include data dari Android
@@ -85,8 +92,8 @@ class DashboardController extends Controller
                     $item->tipe_peminjaman = 'harian';
                     return $item;
                 });
-                
-            $recentPeminjamanTahunan = PeminjamanTahunan::with(['siswa', 'details.kodeBuku.buku'])
+
+            $recentPeminjamanTahunan = PeminjamanTahunan::with(['siswa', 'siswa.siswaPeriodeAktif', 'details.kodeBuku.buku'])
                 ->where(function ($query) use ($user) {
                     $query->where('user_id', $user->id)
                         ->orWhereNull('user_id'); // Include data dari Android
@@ -110,7 +117,7 @@ class DashboardController extends Controller
                 ->get();
 
             // Top borrowers dari user ini + data dari Android (gabung harian dan tahunan)
-            $topBorrowersHarian = PeminjamanHarian::with('siswa')
+            $topBorrowersHarian = PeminjamanHarian::with(['siswa', 'siswa.siswaPeriodeAktif'])
                 ->where(function ($query) use ($user) {
                     $query->where('user_id', $user->id)
                         ->orWhereNull('user_id'); // Include data dari Android
@@ -126,8 +133,8 @@ class DashboardController extends Controller
                         'total_peminjaman' => $group->count()
                     ];
                 });
-                
-            $topBorrowersTahunan = PeminjamanTahunan::with('siswa')
+
+            $topBorrowersTahunan = PeminjamanTahunan::with(['siswa', 'siswa.siswaPeriodeAktif'])
                 ->where(function ($query) use ($user) {
                     $query->where('user_id', $user->id)
                         ->orWhereNull('user_id'); // Include data dari Android

@@ -7,26 +7,12 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-      <!-- Statistik Peminjaman -->
-    <div class="stats-box">
-        <div class="stat-item">
-            <div class="stat-number">{{ $peminjamanHarian->sum(function($p) { return $p->details->count(); }) }}</div>
-            <div class="stat-label">Peminjaman Harian</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-number">{{ $peminjamanTahunan->sum(function($p) { return $p->details->count(); }) }}</div>
-            <div class="stat-label">Peminjaman Tahunan</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-number">{{ $peminjamanHarian->sum(function($p) { return $p->details->count(); }) + $peminjamanTahunan->sum(function($p) { return $p->details->count(); }) }}</div>
-            <div class="stat-label">Total Peminjaman</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-number">{{ $catatanDenda->count() }}</div>
-            <div class="stat-label">Aktivitas Denda</div>
-        </div>
-    </div>ng: 20px;
+            padding: 20px;
             font-size: 12px;
+        }
+        
+        @page {
+            margin: 20px;
         }
         
         .header {
@@ -125,14 +111,15 @@
         }
         
         .footer {
-            margin-top: 30px;
+            margin-top: 20px;
             text-align: right;
             font-size: 10px;
             color: #666;
         }
         
         .signature {
-            margin-top: 40px;
+            margin-top: 50px;
+            page-break-inside: avoid;
             text-align: right;
         }
         
@@ -143,9 +130,12 @@
         }
         
         .signature-line {
-            border-top: 1px solid #333;
-            margin-top: 50px;
+            margin-top: 60px;
             padding-top: 5px;
+        }
+        
+        .page-break-before {
+            page-break-before: always;
         }
     </style>
 </head>
@@ -153,23 +143,25 @@
     <div class="kop">
         <table width="100%" cellpadding="0" cellspacing="0" style="border: none; border-collapse: collapse;">
             <tr>
-                <td width="80" style="border: none;">
+                <td width="80" style="border: none; vertical-align: middle;">
                     <img src="{{ public_path('AdminLTE-3.2.0/dist/img/smp2.png') }}" alt="smp"
                         style="height: 80px;">
                 </td>
-                <td align="center" style="border: none;">
-                    <strong style="font-size: 14px;">PEMERINTAH KABUPATEN LUMAJANG</strong><br>
-                    <strong style="font-size: 14px;">DINAS PENDIDIKAN</strong><br>
-                    <strong style="font-size: 18px;">SMP NEGERI 02 KLAKAH</strong><br>
-                    <span style="font-size: 12px;">Jl. Ranu No.23, Linduboyo, Klakah, Kabupaten Lumajang, Jawa Timur 67356</span>
+                <td style="border: none; vertical-align: middle; text-align: center;">
+                    <div style="line-height: 1.5;">
+                        <strong style="font-size: 14px;">PEMERINTAH KABUPATEN LUMAJANG</strong><br>
+                        <strong style="font-size: 14px;">DINAS PENDIDIKAN</strong><br>
+                        <strong style="font-size: 18px;">SMP NEGERI 02 KLAKAH</strong><br>
+                        <span style="font-size: 12px;">Jl. Ranu No.23, Linduboyo, Klakah, Kabupaten Lumajang, Jawa Timur 67356</span>
+                    </div>
                 </td>
-                <td width="80" style="border: none;">
+                <td width="80" style="border: none; vertical-align: middle;">
                     <img src="{{ public_path('AdminLTE-3.2.0/dist/img/lumajang.png') }}" alt="kabupaten"
                         style="height: 80px;">
                 </td>
             </tr>
         </table>
-        <hr>
+        <hr style="border: 1px solid #000; margin-top: 5px;">
     </div>
 
     <h3 style="text-align: center; margin-top: 10px;">Detail Siswa</h3>
@@ -201,11 +193,12 @@
         <thead>
             <tr>
                 <th style="width: 5%">No</th>
-                <th style="width: 15%">Tanggal Pinjam</th>
-                <th style="width: 15%">Tanggal Kembali</th>
-                <th style="width: 35%">Buku</th>
-                <th style="width: 15%">Kode Buku</th>
-                <th style="width: 15%">Status</th>
+                <th style="width: 12%">Tanggal Pinjam</th>
+                <th style="width: 12%">Tanggal Kembali</th>
+                <th style="width: 28%">Buku</th>
+                <th style="width: 13%">Kode Buku</th>
+                <th style="width: 10%">Status</th>
+                <th style="width: 20%">Tanda Tangan</th>
             </tr>
         </thead>
         <tbody>
@@ -229,11 +222,22 @@
                             <span class="badge badge-secondary">{{ ucfirst($harian->status) }}</span>
                         @endif
                     </td>
+                    <td style="height: 40px;"></td>
                 </tr>
                 @endforeach
             @endforeach
         </tbody>
     </table>
+    <div style="text-align: right; margin-top: 10px; margin-bottom: 20px;">
+        <div style="display: inline-block; text-align: center; min-width: 200px;">
+            <p style="margin: 0;">Klakah, {{ $tanggalCetak }}</p>
+            <p style="margin: 5px 0;">Kepala Perpustakaan</p>
+            <div style="margin-top: 60px;">
+                <strong><u>{{ $kepalaPerpustakaan->nama }}</u></strong><br>
+                NIP. {{ $kepalaPerpustakaan->nip }}
+            </div>
+        </div>
+    </div>
     @else
     <div class="no-data">
         Belum ada riwayat peminjaman harian
@@ -247,11 +251,12 @@
         <thead>
             <tr>
                 <th style="width: 5%">No</th>
-                <th style="width: 15%">Tanggal Pinjam</th>
-                <th style="width: 15%">Tanggal Kembali</th>
-                <th style="width: 35%">Buku</th>
-                <th style="width: 15%">Kode Buku</th>
-                <th style="width: 15%">Status</th>
+                <th style="width: 12%">Tanggal Pinjam</th>
+                <th style="width: 12%">Tanggal Kembali</th>
+                <th style="width: 28%">Buku</th>
+                <th style="width: 13%">Kode Buku</th>
+                <th style="width: 10%">Status</th>
+                <th style="width: 20%">Tanda Tangan</th>
             </tr>
         </thead>
         <tbody>
@@ -275,11 +280,22 @@
                             <span class="badge badge-secondary">{{ ucfirst($tahunan->status) }}</span>
                         @endif
                     </td>
+                    <td style="height: 40px;"></td>
                 </tr>
                 @endforeach
             @endforeach
         </tbody>
     </table>
+    <div style="text-align: right; margin-top: 10px; margin-bottom: 20px;">
+        <div style="display: inline-block; text-align: center; min-width: 200px;">
+            <p style="margin: 0;">Klakah, {{ $tanggalCetak }}</p>
+            <p style="margin: 5px 0;">Kepala Perpustakaan</p>
+            <div style="margin-top: 60px;">
+                <strong><u>{{ $kepalaPerpustakaan->nama }}</u></strong><br>
+                NIP. {{ $kepalaPerpustakaan->nip }}
+            </div>
+        </div>
+    </div>
     @else
     <div class="no-data">
         Belum ada riwayat peminjaman tahunan
@@ -287,16 +303,17 @@
     @endif
     
     <!-- Aktivitas Denda -->
-    <h3>Aktivitas Denda</h3>
+    <div class="section-title">AKTIVITAS DENDA</div>
     @if($catatanDenda->count() > 0)
-    <table class="table">
+    <table>
         <thead>
             <tr>
-                <th>No</th>
-                <th>Tanggal</th>
-                <th>Keterangan</th>
-                <th>Jumlah Denda</th>
-                <th>Status</th>
+                <th style="width: 5%">No</th>
+                <th style="width: 15%">Tanggal</th>
+                <th style="width: 30%">Keterangan</th>
+                <th style="width: 15%">Jumlah Denda</th>
+                <th style="width: 15%">Status</th>
+                <th style="width: 20%">Tanda Tangan</th>
             </tr>
         </thead>
         <tbody>
@@ -313,28 +330,25 @@
                         <span class="badge badge-warning">Belum Lunas</span>
                     @endif
                 </td>
+                <td style="height: 40px;"></td>
             </tr>
             @endforeach
         </tbody>
     </table>
+    {{-- <div style="text-align: right; margin-top: 10px; margin-bottom: 20px;">
+        <div style="display: inline-block; text-align: center; min-width: 200px;">
+            <p style="margin: 0;">Klakah, {{ $tanggalCetak }}</p>
+            <p style="margin: 5px 0;">Kepala Perpustakaan</p>
+            <div style="margin-top: 60px;">
+                <strong><u>{{ $kepalaPerpustakaan->nama }}</u></strong><br>
+                NIP. {{ $kepalaPerpustakaan->nip }}
+            </div>
+        </div>
+    </div> --}}
     @else
     <div class="no-data">
         Tidak ada aktivitas denda
     </div>
     @endif
-    
-    <div class="signature">
-        <div class="signature-box">
-            <p>Klakah, {{ $tanggalCetak }}</p>
-            <p>Kepala Perpustakaan</p>
-            <div class="signature-line">
-                <u>{{ $kepalaPerpustakaan->nama }}</u></strong><br>NIP. {{ $kepalaPerpustakaan->nip }}
-            </div>
-        </div>
-    </div>
-    
-    <div class="footer">
-        <p>Dicetak pada: {{ now()->format('d F Y H:i:s') }} | Sistem Perpustakaan SMPN 02 Klakah</p>
-    </div>
 </body>
 </html>

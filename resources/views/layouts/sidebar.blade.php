@@ -418,9 +418,21 @@
                               </li>
                           </ul>
                       </li>
-                      <li class="nav-header" style="color: #6c757d; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Lainnya</li>
+                      <li class="nav-header"
+                          style="color: #6c757d; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">
+                          Lainnya</li>
                       <li class="nav-item">
-                          <a href="/penandatangan" class="nav-link {{ Request::is('penandatangan') || Request::is('penandatangan/*') ? 'active' : '' }}">
+                          <a href="{{ route('periode.index') }}"
+                              class="nav-link {{ Request::is('periode*') ? 'active' : '' }}">
+                              <i class="nav-icon fas fa-calendar-alt"></i>
+                              <p>
+                                  Periode Tahun Ajaran
+                              </p>
+                          </a>
+                      </li>
+                      <li class="nav-item">
+                          <a href="/penandatangan"
+                              class="nav-link {{ Request::is('penandatangan') || Request::is('penandatangan/*') ? 'active' : '' }}">
                               <i class="nav-icon fas fa-user-tie"></i>
                               <p>
                                   Penandatangan
@@ -431,4 +443,3 @@
               </nav>
               <!-- /.sidebar-menu -->
           </div>
-

@@ -61,18 +61,37 @@
                 <form method="POST" action="{{ route('peminjamanharian.store') }}">
                     @csrf
                     <div class="card-body">
+                        @if (!$periodeAktif)
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <strong>Peringatan:</strong> Tidak ada periode aktif. Silakan aktifkan periode terlebih dahulu di menu Periode Tahun Ajaran.
+                            </div>
+                        @elseif ($siswaData->isEmpty())
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                <strong>Informasi:</strong> Tidak ada siswa aktif pada periode {{ $periodeAktif->nama_lengkap }}. Silakan tambahkan siswa terlebih dahulu.
+                            </div>
+                        @endif
+
                         <div class="row g-3">
                             <div class="col-md-12">
-                                <label for="siswas_id" class="form-label">Nama Siswa</label>
-                                <select name="siswas_id" id="siswas_id" class="form-control select2">
+                                <label for="siswas_id" class="form-label">
+                                    Nama Siswa <span class="text-danger">*</span>
+                                    @if ($periodeAktif)
+                                        <small class="text-muted">(Periode: {{ $periodeAktif->nama_lengkap }})</small>
+                                    @endif
+                                </label>
+                                <select name="siswas_id" id="siswas_id" class="form-control select2" required {{ $siswaData->isEmpty() ? 'disabled' : '' }}>
                                     <option value="">-- Pilih Siswa --</option>
-                                    @foreach ($siswas as $siswa)
-                                        <option value="{{ $siswa->id }}">
-                                            {{ $siswa->name }} - {{ $siswa->nisn ?? 'Belum ada NISN' }} -
-                                            {{ $siswa->kelas }}
+                                    @foreach ($siswaData as $siswa)
+                                        <option value="{{ $siswa['id'] }}">
+                                            {{ $siswa['display_name'] }}
                                         </option>
                                     @endforeach
                                 </select>
+                                <small class="form-text text-muted">
+                                    <i class="fas fa-info-circle"></i> Hanya menampilkan siswa dengan status "Aktif"
+                                </small>
                             </div>
 
                             <div class="col-md-6">
@@ -175,7 +194,62 @@
                             $('#tanggal_pinjam').on('change', function() {
                                 setTanggalKembali();
                             });
+
+                            // Event listener untuk deteksi duplikasi kode buku
+                            $(document).on('change', '.select2-single', function() {
+                                checkDuplicateBooks();
+                            });
+
+                            // Validasi sebelum submit
+                            $('form').on('submit', function(e) {
+                                if (!validateNoDuplicateBooks()) {
+                                    e.preventDefault();
+                                    return false;
+                                }
+                            });
                         });
+
+                        function checkDuplicateBooks() {
+                            const selectedBooks = [];
+                            let hasDuplicate = false;
+
+                            $('.select2-single').each(function() {
+                                const value = $(this).val();
+                                if (value) {
+                                    if (selectedBooks.includes(value)) {
+                                        hasDuplicate = true;
+                                        $(this).addClass('is-invalid');
+                                    } else {
+                                        $(this).removeClass('is-invalid');
+                                        selectedBooks.push(value);
+                                    }
+                                }
+                            });
+
+                            // Tampilkan/sembunyikan pesan error
+                            if (hasDuplicate) {
+                                if ($('#duplicate-error').length === 0) {
+                                    $('#kode-buku-container').after(
+                                        '<div id="duplicate-error" class="alert alert-danger mt-2">' +
+                                        '<i class="fas fa-exclamation-triangle"></i> ' +
+                                        'Kode buku yang sama tidak boleh dipilih lebih dari sekali!' +
+                                        '</div>'
+                                    );
+                                }
+                            } else {
+                                $('#duplicate-error').remove();
+                            }
+
+                            return !hasDuplicate;
+                        }
+
+                        function validateNoDuplicateBooks() {
+                            const isValid = checkDuplicateBooks();
+                            if (!isValid) {
+                                alert('Terdapat kode buku yang sama! Silakan pilih kode buku yang berbeda.');
+                            }
+                            return isValid;
+                        }
 
                         function setTanggalKembali() {
                             const tanggalPinjam = $('#tanggal_pinjam').val();
@@ -201,7 +275,7 @@
                     @endforeach
                 </select>
                 <div class="input-group-append">
-                    <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('.kode-buku-item').remove()">
+                    <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('.kode-buku-item').remove(); checkDuplicateBooks();">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>

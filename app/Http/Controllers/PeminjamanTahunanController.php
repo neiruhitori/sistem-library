@@ -7,6 +7,8 @@ use App\Models\PeminjamanTahunan;
 use App\Models\PeminjamanTahunanDetail;
 use App\Models\Siswa;
 use App\Models\Buku;
+use App\Models\Periode;
+use App\Models\SiswaPeriode;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -79,13 +81,40 @@ class PeminjamanTahunanController extends Controller
      */
     public function create()
     {
-        $siswas = Siswa::all(); // pastikan model Siswa sudah disiapkan
+        // Ambil periode aktif
+        $periodeAktif = \App\Models\Periode::where('is_active', true)->first();
+
+        // Ambil siswa dari periode aktif dengan status Aktif
+        $siswaData = [];
+        if ($periodeAktif) {
+            $siswaPeriodes = \App\Models\SiswaPeriode::with('siswa')
+                ->where('periode_id', $periodeAktif->id)
+                ->where('status', 'Aktif')
+                ->orderBy('kelas', 'ASC')
+                ->orderBy('absen', 'ASC')
+                ->get();
+
+            // Transform data agar mudah dipakai di view
+            $siswaData = $siswaPeriodes->map(function ($siswaPeriode) {
+                return [
+                    'id' => $siswaPeriode->siswa->id,
+                    'nisn' => $siswaPeriode->siswa->nisn,
+                    'name' => $siswaPeriode->siswa->name,
+                    'kelas' => $siswaPeriode->kelas,
+                    'absen' => $siswaPeriode->absen,
+                    'jenis_kelamin' => $siswaPeriode->siswa->jenis_kelamin,
+                    'agama' => $siswaPeriode->siswa->agama,
+                    'display_name' => $siswaPeriode->siswa->name . ' - ' . $siswaPeriode->kelas . ' (' . $siswaPeriode->siswa->nisn . ')'
+                ];
+            });
+        }
+
         $kode_bukus = KodeBuku::whereHas('buku', function ($q) {
             $q->where('tipe', 'tahunan')
                 ->where('is_active', true); // Hanya buku yang aktif
         })->where('status', '!=', 'dipinjam')->get();
 
-        return view('peminjamantahunan.create', compact('siswas', 'kode_bukus'));
+        return view('peminjamantahunan.create', compact('siswaData', 'kode_bukus', 'periodeAktif'));
     }
 
     /**
@@ -100,6 +129,21 @@ class PeminjamanTahunanController extends Controller
             'kode_buku' => 'required|array|min:1',
             'kode_buku.*' => 'exists:kode_bukus,id'
         ]);
+
+        // Cek status siswa di periode aktif
+        $periodeAktif = \App\Models\Periode::where('is_active', true)->first();
+
+        if ($periodeAktif) {
+            $siswaPeriode = \App\Models\SiswaPeriode::where('siswa_id', $request->siswas_id)
+                ->where('periode_id', $periodeAktif->id)
+                ->first();
+
+            if ($siswaPeriode && in_array($siswaPeriode->status, ['Tidak Aktif', 'Lulus', 'Pindah'])) {
+                return back()->withErrors([
+                    'error' => 'Siswa dengan status "' . $siswaPeriode->status . '" tidak dapat melakukan peminjaman.'
+                ])->withInput();
+            }
+        }
 
         DB::beginTransaction();
 
@@ -161,6 +205,19 @@ class PeminjamanTahunanController extends Controller
                 ->orWhereNull('user_id'); // Bisa akses data dari Android
         })->findOrFail($id);
 
+        // Ambil data kelas dari periode aktif
+        $periodeAktif = Periode::where('is_active', true)->first();
+        if ($periodeAktif) {
+            $siswaPeriode = SiswaPeriode::where('siswa_id', $peminjaman->siswa->id)
+                ->where('periode_id', $periodeAktif->id)
+                ->first();
+
+            if ($siswaPeriode) {
+                $peminjaman->siswa->kelas = $siswaPeriode->kelas;
+                $peminjaman->siswa->absen = $siswaPeriode->absen;
+            }
+        }
+
         return view('peminjamantahunan.show', compact('peminjaman'));
     }
 
@@ -174,13 +231,38 @@ class PeminjamanTahunanController extends Controller
                 $query->where('user_id', Auth::id())
                     ->orWhereNull('user_id'); // Bisa akses data dari Android
             })->findOrFail($id);
-        $siswas = Siswa::all();
+
+        // Ambil periode yang sedang aktif
+        $periodeAktif = \App\Models\Periode::where('is_active', true)->first();
+
+        // Ambil siswa dari periode aktif dengan status Aktif saja
+        $siswaData = [];
+        if ($periodeAktif) {
+            $siswaPeriodes = \App\Models\SiswaPeriode::where('periode_id', $periodeAktif->id)
+                ->where('status', 'Aktif')
+                ->with('siswa')
+                ->get();
+
+            foreach ($siswaPeriodes as $sp) {
+                $siswaData[] = [
+                    'id' => $sp->siswa->id,
+                    'nisn' => $sp->siswa->nisn,
+                    'name' => $sp->siswa->name,
+                    'kelas' => $sp->kelas,
+                    'absen' => $sp->absen,
+                    'jenis_kelamin' => $sp->siswa->jenis_kelamin,
+                    'agama' => $sp->siswa->agama,
+                    'display_name' => $sp->siswa->name . ' - ' . $sp->kelas . ' (' . $sp->siswa->nisn . ')'
+                ];
+            }
+        }
+
         $kode_bukus = KodeBuku::whereHas('buku', function ($q) {
             $q->where('tipe', 'tahunan')
                 ->where('is_active', true); // Hanya buku yang aktif
         })->where('status', '!=', 'dipinjam')->get();
 
-        return view('peminjamantahunan.edit', compact('peminjaman', 'siswas', 'kode_bukus'));
+        return view('peminjamantahunan.edit', compact('peminjaman', 'siswaData', 'kode_bukus', 'periodeAktif'));
     }
 
     /**
@@ -331,17 +413,25 @@ class PeminjamanTahunanController extends Controller
     {
         $siswaId = $request->siswa_id;
 
-        // Get student's class
-        $siswa = Siswa::find($siswaId);
+        // Get student's class from active period
+        $periodeAktif = Periode::where('is_active', true)->first();
 
-        if (!$siswa || !$siswa->kelas) {
+        if (!$periodeAktif) {
+            return response()->json([]);
+        }
+
+        $siswaPeriode = SiswaPeriode::where('siswa_id', $siswaId)
+            ->where('periode_id', $periodeAktif->id)
+            ->first();
+
+        if (!$siswaPeriode || !$siswaPeriode->kelas) {
             return response()->json([]);
         }
 
         // Extract base grade from student's class
         // e.g., "7A" -> "7", "8B" -> "8", "9C" -> "9"
         $kelasPattern = '/^([7-9])/';
-        preg_match($kelasPattern, $siswa->kelas, $matches);
+        preg_match($kelasPattern, $siswaPeriode->kelas, $matches);
         $baseKelas = $matches[1] ?? null;
 
         if (!$baseKelas) {

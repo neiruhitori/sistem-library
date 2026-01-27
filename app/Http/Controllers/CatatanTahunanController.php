@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\CatatanDenda;
 use App\Models\User;
+use App\Models\Periode;
+use App\Models\SiswaPeriode;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,12 +16,17 @@ class CatatanTahunanController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $catatans = CatatanDenda::with('siswa')
-            ->where('tipe_peminjaman', 'tahunan')
-            ->latest()
-            ->get();
+        $query = CatatanDenda::with('siswa')
+            ->where('tipe_peminjaman', 'tahunan');
+
+        // Filter berdasarkan status jika ada
+        if ($request->has('status') && $request->status != '') {
+            $query->where('status', $request->status);
+        }
+
+        $catatans = $query->latest()->get();
 
         return view('catatantahunan.index', compact('catatans'));
     }
@@ -50,6 +57,19 @@ class CatatanTahunanController extends Controller
             'peminjamantahunan.details.kodeBuku.buku',
             'handledByUser' // Tambahkan relasi untuk user yang menangani
         ])->findOrFail($id);
+
+        // Ambil data kelas dari periode aktif
+        $periodeAktif = Periode::where('is_active', true)->first();
+        if ($periodeAktif && $catatan->siswa) {
+            $siswaPeriode = SiswaPeriode::where('siswa_id', $catatan->siswa->id)
+                ->where('periode_id', $periodeAktif->id)
+                ->first();
+
+            if ($siswaPeriode) {
+                $catatan->siswa->kelas = $siswaPeriode->kelas;
+                $catatan->siswa->absen = $siswaPeriode->absen;
+            }
+        }
 
         return view('catatantahunan.show', compact('catatan'));
     }
@@ -116,6 +136,19 @@ class CatatanTahunanController extends Controller
             'peminjamantahunan.details.kodeBuku.buku',
             'handledByUser' // Tambahkan relasi untuk user yang menangani
         ])->findOrFail($id);
+
+        // Ambil data kelas dari periode aktif
+        $periodeAktif = Periode::where('is_active', true)->first();
+        if ($periodeAktif && $catatan->siswa) {
+            $siswaPeriode = SiswaPeriode::where('siswa_id', $catatan->siswa->id)
+                ->where('periode_id', $periodeAktif->id)
+                ->first();
+
+            if ($siswaPeriode) {
+                $catatan->siswa->kelas = $siswaPeriode->kelas;
+                $catatan->siswa->absen = $siswaPeriode->absen;
+            }
+        }
 
         $pdf = Pdf::loadView('catatantahunan.pdf', compact('catatan', 'kepalaPerpustakaan'))
             ->setPaper('A4', 'portrait');

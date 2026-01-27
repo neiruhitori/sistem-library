@@ -10,8 +10,54 @@ class Siswa extends Model
     use HasFactory;
     protected $table ='siswas';
     protected $primaryKey = 'id';
-    protected $fillable = ['nisn', 'name', 'jenis_kelamin', 'agama', 'kelas', 'absen'];
+    protected $fillable = ['nisn', 'name', 'jenis_kelamin', 'agama'];
     protected $guarded = [];
+
+    /**
+     * Relasi ke siswa periodes
+     */
+    public function siswaPeriodes()
+    {
+        return $this->hasMany(SiswaPeriode::class);
+    }
+
+    /**
+     * Relasi ke siswa periode yang aktif
+     */
+    public function siswaPeriodeAktif()
+    {
+        return $this->hasOne(SiswaPeriode::class)
+            ->whereHas('periode', function ($query) {
+                $query->where('status', 'aktif');
+            });
+    }
+
+    /**
+     * Relasi ke periodes melalui siswa_periodes
+     */
+    public function periodes()
+    {
+        return $this->belongsToMany(Periode::class, 'siswa_periodes')
+            ->withPivot('kelas', 'absen', 'status')
+            ->withTimestamps();
+    }
+
+    /**
+     * Mendapatkan data siswa untuk periode tertentu
+     */
+    public function getPeriodeData($periodeId)
+    {
+        return $this->siswaPeriodes()->where('periode_id', $periodeId)->first();
+    }
+
+    /**
+     * Mendapatkan kelas siswa untuk periode tertentu
+     */
+    public function getKelasByPeriode($periodeId)
+    {
+        $data = $this->getPeriodeData($periodeId);
+        return $data ? $data->kelas : null;
+    }
 
     // Hapus user relationship - siswa jadi global untuk semua user
 

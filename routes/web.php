@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\PeminjamanHarianController;
 use App\Http\Controllers\PengembalianHarianController;
@@ -32,8 +33,12 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Periode Tahun Ajaran
+    Route::put('/periode/{id}/set-active', [PeriodeController::class, 'setActive'])->name('periode.set-active');
+    Route::resource('periode', PeriodeController::class);
+
     // Siswa
-    // routes/web.php
+    Route::post('/siswa/bulk-update-status', [SiswaController::class, 'bulkUpdateStatus'])->name('siswa.bulk.update.status');
     Route::get('/siswa/export-pdf', [SiswaController::class, 'exportPDF'])->name('siswa.export.pdf');
     Route::get('/siswa/download-template', [SiswaController::class, 'downloadTemplate'])->name('siswa.download.template');
     Route::post('/siswa/import', [SiswaController::class, 'import'])->name('siswa.import');

@@ -861,6 +861,117 @@
     </div>
 </div>
 
+<!-- Modal Notifikasi Denda -->
+<?php
+    $dendaBelumDibayar = \App\Models\CatatanDenda::where('status', 'belum_dibayar')
+        ->with('siswa')
+        ->orderBy('created_at', 'desc')
+        ->get();
+    $jumlahDendaBaru = $dendaBelumDibayar->count();
+?>
+
+<?php if($jumlahDendaBaru > 0 && !Request::is('catatanharian*') && !Request::is('catatantahunan*')): ?>
+<div class="modal fade" id="dendaNotificationModal" tabindex="-1" role="dialog" aria-labelledby="dendaNotificationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content border-warning" style="border-width: 3px;">
+            <div class="modal-header bg-warning text-white">
+                <h4 class="modal-title" id="dendaNotificationLabel">
+                    <i class="fas fa-exclamation-triangle fa-lg"></i> 
+                    <strong>Pemberitahuan Denda!</strong>
+                </h4>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger mb-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bell"></i> 
+                        Terdapat <strong><?php echo e($jumlahDendaBaru); ?> denda</strong> yang belum dibayar!
+                    </h5>
+                </div>
+
+                <div class="mb-3">
+                    <h6 class="font-weight-bold text-muted mb-3">
+                        <i class="fas fa-list"></i> Daftar Denda Terbaru:
+                    </h6>
+                    
+                    <div class="table-responsive" style="max-height: 400px;">
+                        <table class="table table-bordered table-hover table-sm">
+                            <thead class="thead-light sticky-top">
+                                <tr>
+                                    <th width="5%">No</th>
+                                    <th width="25%">Nama Siswa</th>
+                                    <th width="20%">Jenis Denda</th>
+                                    <th width="15%">Jumlah</th>
+                                    <th width="15%">Tipe</th>
+                                    <th width="20%">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $__currentLoopData = $dendaBelumDibayar; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $denda): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <tr>
+                                    <td class="text-center"><?php echo e($index + 1); ?></td>
+                                    <td>
+                                        <strong><?php echo e($denda->siswa->name ?? 'N/A'); ?></strong>
+                                    </td>
+                                    <td><?php echo e($denda->jenis_denda); ?></td>
+                                    <td class="text-danger font-weight-bold">
+                                        Rp <?php echo e(number_format($denda->jumlah, 0, ',', '.')); ?>
+
+                                    </td>
+                                    <td>
+                                        <?php if($denda->tipe_peminjaman == 'harian'): ?>
+                                            <span class="badge badge-primary">Harian</span>
+                                        <?php else: ?>
+                                            <span class="badge badge-info">Tahunan</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="text-center">
+                                        <?php if($denda->tipe_peminjaman == 'harian'): ?>
+                                            <a href="<?php echo e(route('catatanharian.show', $denda->id)); ?>" class="btn btn-sm btn-primary">
+                                                <i class="fas fa-eye"></i> Detail
+                                            </a>
+                                        <?php else: ?>
+                                            <a href="<?php echo e(route('catatantahunan.show', $denda->id)); ?>" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i> Detail
+                                            </a>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="alert alert-info mb-0">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Catatan:</strong> Silakan proses pembayaran denda melalui menu Catatan Denda.
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <a href="<?php echo e(route('catatanharian.index')); ?>" class="btn btn-warning">
+                    <i class="fas fa-calendar-day"></i> Denda Harian
+                </a>
+                <a href="<?php echo e(route('catatantahunan.index')); ?>" class="btn btn-info">
+                    <i class="fas fa-calendar-alt"></i> Denda Tahunan
+                </a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fas fa-times"></i> Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#dendaNotificationModal').modal('show');
+    });
+</script>
+<?php endif; ?>
+
 
 </html>
 <?php /**PATH C:\laragon\www\sistem-library\resources\views/layouts/app.blade.php ENDPATH**/ ?>

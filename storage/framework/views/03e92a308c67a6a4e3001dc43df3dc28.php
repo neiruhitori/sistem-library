@@ -34,6 +34,9 @@
                     <li class="list-group-item"><strong>Nama:</strong> <?php echo e($peminjaman->siswa->name); ?></li>
                     <li class="list-group-item"><strong>NISN:</strong> <?php echo e($peminjaman->siswa->nisn ?? '-'); ?></li>
                     <li class="list-group-item"><strong>Kelas:</strong> <?php echo e($peminjaman->siswa->kelas); ?></li>
+                    <li class="list-group-item"><strong>Absen:</strong> <?php echo e($peminjaman->siswa->absen ?? '-'); ?></li>
+                    <li class="list-group-item"><strong>Jenis Kelamin:</strong> <?php echo e($peminjaman->siswa->jenis_kelamin == 'L' ? 'Laki-laki' : ($peminjaman->siswa->jenis_kelamin == 'P' ? 'Perempuan' : '-')); ?></li>
+                    <li class="list-group-item"><strong>Agama:</strong> <?php echo e($peminjaman->siswa->agama ?? '-'); ?></li>
                 </ul>
 
                 <h5 class="mb-3">🗓️ Informasi Peminjaman</h5>
@@ -59,11 +62,22 @@
                                 <div class="row g-0">
                                     <div class="col-md-4">
                                         <?php if($detail->kodeBuku && $detail->kodeBuku->buku && $detail->kodeBuku->buku->foto): ?>
-                                            <img src="<?php echo e(asset('storage/' . $detail->kodeBuku->buku->foto)); ?>"
+                                            <?php
+                                                $fotoPath = $detail->kodeBuku->buku->foto;
+                                                // Jika path sudah include 'sampulbuku/', gunakan langsung dengan asset()
+                                                // Jika tidak, tambahkan 'sampulbuku/' prefix
+                                                if (str_starts_with($fotoPath, 'sampulbuku/')) {
+                                                    $fotoUrl = asset($fotoPath);
+                                                } else {
+                                                    $fotoUrl = asset('sampulbuku/' . $fotoPath);
+                                                }
+                                            ?>
+                                            <img src="<?php echo e($fotoUrl); ?>"
                                                 alt="Sampul Buku" class="img-fluid rounded-start">
                                         <?php else: ?>
-                                            <img src="<?php echo e(asset('default-cover.png')); ?>" alt="No Cover"
-                                                class="img-fluid rounded-start">
+                                            <div class="d-flex align-items-center justify-content-center bg-secondary rounded-start" style="height: 100%; min-height: 200px;">
+                                                <i class="fas fa-book" style="font-size: 3rem; color: #fff;"></i>
+                                            </div>
                                         <?php endif; ?>
                                     </div>
                                     <div class="col-md-8">
