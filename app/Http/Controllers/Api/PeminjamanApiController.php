@@ -24,7 +24,7 @@ class PeminjamanApiController extends Controller
     public function getSiswaById($id)
     {
         try {
-            $siswa = Siswa::find($id);
+            $siswa = Siswa::with('siswaPeriodeAktif')->find($id);
             
             if (!$siswa) {
                 return response()->json([
@@ -32,7 +32,11 @@ class PeminjamanApiController extends Controller
                     'message' => 'Siswa tidak ditemukan'
                 ], 404);
             }
-            
+
+            // Ambil kelas dan absen dari periode aktif
+            $kelas = $siswa->siswaPeriodeAktif ? $siswa->siswaPeriodeAktif->kelas : '-';
+            $absen = $siswa->siswaPeriodeAktif ? $siswa->siswaPeriodeAktif->absen : '-';
+
             return response()->json([
                 'success' => true,
                 'message' => 'Siswa ditemukan',
@@ -40,8 +44,8 @@ class PeminjamanApiController extends Controller
                     'id' => $siswa->id,
                     'name' => $siswa->name,
                     'nisn' => $siswa->nisn,
-                    'kelas' => $siswa->kelas,
-                    'absen' => $siswa->absen,
+                    'kelas' => $kelas,
+                    'absen' => $absen,
                     'jenis_kelamin' => $siswa->jenis_kelamin,
                     'agama' => $siswa->agama
                 ]
@@ -69,8 +73,9 @@ class PeminjamanApiController extends Controller
                     'message' => 'Kata kunci pencarian tidak boleh kosong'
                 ], 400);
             }
-            
-            $siswas = Siswa::where('name', 'LIKE', '%' . $query . '%')
+
+            $siswas = Siswa::with('siswaPeriodeAktif')
+                ->where('name', 'LIKE', '%' . $query . '%')
                 ->orWhere('nisn', 'LIKE', '%' . $query . '%')
                 ->orderBy('name', 'asc')
                 ->limit(20)
@@ -80,12 +85,15 @@ class PeminjamanApiController extends Controller
                 'success' => true,
                 'message' => 'Pencarian berhasil',
                 'data' => $siswas->map(function ($siswa) {
+                    $kelas = $siswa->siswaPeriodeAktif ? $siswa->siswaPeriodeAktif->kelas : '-';
+                    $absen = $siswa->siswaPeriodeAktif ? $siswa->siswaPeriodeAktif->absen : '-';
+
                     return [
                         'id' => $siswa->id,
                         'name' => $siswa->name,
                         'nisn' => $siswa->nisn,
-                        'kelas' => $siswa->kelas,
-                        'absen' => $siswa->absen,
+                        'kelas' => $kelas,
+                        'absen' => $absen,
                         'jenis_kelamin' => $siswa->jenis_kelamin,
                         'agama' => $siswa->agama
                     ];
@@ -275,9 +283,10 @@ class PeminjamanApiController extends Controller
             }
             
             DB::commit();
-            
-            // Get siswa info
-            $siswa = Siswa::find($request->siswas_id);
+
+            // Get siswa info with periode aktif
+            $siswa = Siswa::with('siswaPeriodeAktif')->find($request->siswas_id);
+            $kelas = $siswa->siswaPeriodeAktif ? $siswa->siswaPeriodeAktif->kelas : '-';
             
             return response()->json([
                 'success' => true,
@@ -286,7 +295,7 @@ class PeminjamanApiController extends Controller
                     'siswa' => [
                         'id' => $siswa->id,
                         'name' => $siswa->name,
-                        'kelas' => $siswa->kelas
+                        'kelas' => $kelas
                     ],
                     'tanggal_pinjam' => $request->tanggal_pinjam,
                     'tanggal_kembali' => $request->tanggal_kembali,
