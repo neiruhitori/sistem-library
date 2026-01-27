@@ -24,7 +24,15 @@ class PeminjamanApiController extends Controller
     public function getSiswaById($id)
     {
         try {
-            $siswa = Siswa::with('siswaPeriodeAktif')->find($id);
+            // Optimized query - only select needed fields
+            $siswa = Siswa::select('id', 'name', 'nisn', 'jenis_kelamin', 'agama')
+                ->with(['siswaPeriodeAktif' => function ($query) {
+                    $query->select('id', 'siswas_id', 'kelas', 'absen', 'periode_id')
+                        ->with(['periode' => function ($q) {
+                            $q->select('id', 'status');
+                        }]);
+                }])
+                ->find($id);
             
             if (!$siswa) {
                 return response()->json([
