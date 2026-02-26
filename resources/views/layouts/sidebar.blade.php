@@ -439,6 +439,15 @@
                               </p>
                           </a>
                       </li>
+                      <li class="nav-item">
+                          <a href="{{ route('penerimaanbarang.index') }}"
+                              class="nav-link {{ Request::is('penerimaanbarang') || Request::is('penerimaanbarang/*') ? 'active' : '' }}">
+                              <i class="nav-icon fas fa-box"></i>
+                              <p>
+                                  Penerimaan Barang
+                              </p>
+                          </a>
+                      </li>
                   </ul>
               </nav>
               <!-- /.sidebar-menu -->
