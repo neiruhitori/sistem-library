@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('penerimaan_barangs', function (Blueprint $table) {
             $table->id();
-            $table->date('tanggal_terima');
-            $table->string('nama_pengarang');
-            $table->string('penerbit');
-            $table->string('nama_barang');
-            $table->year('tahun');
+            $table->string('tanggal_terima')->default('-');
+            $table->string('nama_pengarang')->default('-');
+            $table->string('penerbit')->default('-');
+            $table->string('nama_barang')->default('-');
+            $table->string('tahun')->default('-');
             $table->timestamps();
         });
     }

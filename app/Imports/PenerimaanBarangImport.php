@@ -15,7 +15,8 @@ class PenerimaanBarangImport implements ToModel, WithHeadingRow, WithCalculatedF
     private $summary = [
         'total' => 0,
         'success' => 0,
-        'failed' => 0
+        'failed' => 0,
+        'duplicate' => 0
     ];
 
     /**
@@ -44,36 +45,73 @@ class PenerimaanBarangImport implements ToModel, WithHeadingRow, WithCalculatedF
         $penerbitKey = 'penerbit';
         $namaBarangKey = 'nama_barang';
         $tahunKey = 'tahun';
-        
-        // Skip if required fields are empty
-        if (empty($row[$tanggalTerimaKey]) || empty($row[$namaBarangKey])) {
+
+        // Check if this is a completely empty row (all fields empty or non-existent)
+        $hasAnyData = false;
+        foreach ([$tanggalTerimaKey, $namaPengarangKey, $penerbitKey, $namaBarangKey, $tahunKey] as $key) {
+            if (isset($row[$key]) && $row[$key] !== null && $row[$key] !== '' && $row[$key] !== '-' && $row[$key] !== '~') {
+                $hasAnyData = true;
+                break;
+            }
+        }
+
+        // Skip completely empty rows
+        if (!$hasAnyData) {
             return null;
         }
 
         $this->summary['total']++;
 
         try {
-            // Parse tanggal
-            $tanggalTerima = $this->parseDate($row[$tanggalTerimaKey]);
-            
-            if (!$tanggalTerima) {
-                $this->summary['failed']++;
-                Log::warning('Gagal parse tanggal pada row', [
-                    'tanggal' => $row[$tanggalTerimaKey],
-                    'nama_barang' => $row[$namaBarangKey]
-                ]);
-                return null;
+            // Parse tanggal - set default to "-" if empty
+            $tanggalTerima = '-';
+            if (isset($row[$tanggalTerimaKey]) && $row[$tanggalTerimaKey] !== null && $row[$tanggalTerimaKey] !== '' && $row[$tanggalTerimaKey] !== '-' && $row[$tanggalTerimaKey] !== '~') {
+                $parsedDate = $this->parseDate($row[$tanggalTerimaKey]);
+
+                if (!$parsedDate) {
+                    $this->summary['failed']++;
+                    Log::warning('Gagal parse tanggal pada row', [
+                        'tanggal' => $row[$tanggalTerimaKey],
+                        'nama_barang' => $row[$namaBarangKey] ?? 'unknown',
+                        'row_data' => $row
+                    ]);
+                    return null;
+                }
+                $tanggalTerima = $parsedDate;
             }
 
-            // Validate and clean data
-            $namaPengarang = trim($row[$namaPengarangKey] ?? '');
-            $penerbit = trim($row[$penerbitKey] ?? '');
-            $namaBarang = trim($row[$namaBarangKey] ?? '');
-            $tahun = (int) ($row[$tahunKey] ?? date('Y'));
-            
-            // Validate tahun
-            if ($tahun < 1900 || $tahun > (date('Y') + 1)) {
-                $tahun = date('Y');
+            // Clean data - convert empty to "-"
+            $namaPengarang = $this->normalizeValue($row[$namaPengarangKey] ?? null);
+            $penerbit = $this->normalizeValue($row[$penerbitKey] ?? null);
+            $namaBarang = $this->normalizeValue($row[$namaBarangKey] ?? null);
+            $tahun = '-';
+
+            if (isset($row[$tahunKey]) && $row[$tahunKey] !== null && $row[$tahunKey] !== '' && $row[$tahunKey] !== '-' && $row[$tahunKey] !== '~') {
+                $yearValue = (int) $row[$tahunKey];
+                // Validate tahun
+                if ($yearValue >= 1900 && $yearValue <= (date('Y') + 1)) {
+                    $tahun = (string) $yearValue;
+                }
+            }
+
+            // Check for duplicate data (all fields must match)
+            $isDuplicate = PenerimaanBarang::where('nama_barang', $namaBarang)
+                ->where('nama_pengarang', $namaPengarang)
+                ->where('penerbit', $penerbit)
+                ->where('tahun', $tahun)
+                ->where('tanggal_terima', $tanggalTerima)
+                ->exists();
+
+            if ($isDuplicate) {
+                $this->summary['duplicate']++;
+                Log::info('Data duplikat di-skip', [
+                    'nama_barang' => $namaBarang,
+                    'nama_pengarang' => $namaPengarang,
+                    'penerbit' => $penerbit,
+                    'tahun' => $tahun,
+                    'tanggal_terima' => $tanggalTerima
+                ]);
+                return null;
             }
 
             // Create penerimaan barang
@@ -91,7 +129,9 @@ class PenerimaanBarangImport implements ToModel, WithHeadingRow, WithCalculatedF
             $this->summary['failed']++;
             Log::error('Error importing row', [
                 'error' => $e->getMessage(),
-                'nama_barang' => $row[$namaBarangKey] ?? 'unknown'
+                'trace' => $e->getTraceAsString(),
+                'nama_barang' => $row[$namaBarangKey] ?? 'unknown',
+                'row_data' => $row
             ]);
             return null;
         }
@@ -153,6 +193,26 @@ class PenerimaanBarangImport implements ToModel, WithHeadingRow, WithCalculatedF
             Log::error('Failed to parse date string: ' . $date . ' | Error: ' . $e->getMessage());
             return null;
         }
+    }
+
+    /**
+     * Normalize field value - convert empty, "-", "~" to "-"
+     */
+    private function normalizeValue($value)
+    {
+        if ($value === null || $value === '') {
+            return '-';
+        }
+
+        if (is_string($value)) {
+            $value = trim($value);
+            // Convert empty, "-" or "~" to "-"
+            if ($value === '' || $value === '-' || $value === '~') {
+                return '-';
+            }
+        }
+
+        return $value;
     }
 
     /**

@@ -85,7 +85,7 @@
                                            class="form-control @error('tanggal_terima') is-invalid @enderror" 
                                            id="tanggal_terima"
                                            name="tanggal_terima" 
-                                           value="{{ old('tanggal_terima', $penerimaanBarang->tanggal_terima->format('Y-m-d')) }}"
+                                           value="{{ old('tanggal_terima', $penerimaanBarang->tanggal_terima === '-' ? '' : $penerimaanBarang->tanggal_terima) }}"
                                            required>
                                     @error('tanggal_terima')
                                         <div class="invalid-feedback">{{ $message }}</div>

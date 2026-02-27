@@ -18,8 +18,9 @@ class PenerimaanBarangController extends Controller
     {
         $iduser = Auth::id();
         $profile = User::where('id', $iduser)->first();
-        
-        $penerimaanBarangs = PenerimaanBarang::orderBy('tanggal_terima', 'DESC')->get();
+
+        // Order by ID DESC so newest data (manual input) appears first
+        $penerimaanBarangs = PenerimaanBarang::orderBy('id', 'DESC')->get();
         
         return view('penerimaanbarang.index', compact('penerimaanBarangs', 'profile'));
     }
@@ -47,7 +48,21 @@ class PenerimaanBarangController extends Controller
             'nama_barang' => 'required|string|max:255',
             'tahun' => 'required|digits:4|integer|min:1900|max:' . (date('Y') + 1),
         ]);
-        
+
+        // Check for duplicate data
+        $isDuplicate = PenerimaanBarang::where('nama_barang', $request->nama_barang)
+            ->where('nama_pengarang', $request->nama_pengarang)
+            ->where('penerbit', $request->penerbit)
+            ->where('tahun', $request->tahun)
+            ->where('tanggal_terima', $request->tanggal_terima)
+            ->exists();
+
+        if ($isDuplicate) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Data dengan informasi yang sama sudah ada di database!');
+        }
+
         PenerimaanBarang::create([
             'tanggal_terima' => $request->tanggal_terima,
             'nama_pengarang' => $request->nama_pengarang,
@@ -100,7 +115,22 @@ class PenerimaanBarangController extends Controller
         ]);
         
         $penerimaanBarang = PenerimaanBarang::findOrFail($id);
-        
+
+        // Check for duplicate data (excluding current record)
+        $isDuplicate = PenerimaanBarang::where('id', '!=', $id)
+            ->where('nama_barang', $request->nama_barang)
+            ->where('nama_pengarang', $request->nama_pengarang)
+            ->where('penerbit', $request->penerbit)
+            ->where('tahun', $request->tahun)
+            ->where('tanggal_terima', $request->tanggal_terima)
+            ->exists();
+
+        if ($isDuplicate) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Data dengan informasi yang sama sudah ada di database!');
+        }
+
         $penerimaanBarang->update([
             'tanggal_terima' => $request->tanggal_terima,
             'nama_pengarang' => $request->nama_pengarang,
@@ -145,17 +175,23 @@ class PenerimaanBarangController extends Controller
             $summary = $import->getSummary();
 
             if ($summary['success'] > 0) {
-                return redirect()->back()->with('success', sprintf(
-                    'Import berhasil! Total: %d data. Berhasil: %d, Gagal: %d',
+                $message = sprintf(
+                    'Import berhasil! Total: %d data. Berhasil: %d, Gagal: %d, Duplikat (di-skip): %d',
                     $summary['total'],
                     $summary['success'],
-                    $summary['failed']
-                ));
+                    $summary['failed'],
+                    $summary['duplicate']
+                );
+                return redirect()->back()->with('success', $message);
             } else {
-                return redirect()->back()->with('error', sprintf(
-                    'Import gagal! Total data: %d, Semua data gagal diimport. Periksa format file Excel dan pastikan sesuai dengan template.',
-                    $summary['total']
-                ));
+                $message = sprintf(
+                    'Import gagal! Total data: %d. Berhasil: %d, Gagal: %d, Duplikat (di-skip): %d. Periksa format file Excel dan pastikan sesuai dengan template.',
+                    $summary['total'],
+                    $summary['success'],
+                    $summary['failed'],
+                    $summary['duplicate']
+                );
+                return redirect()->back()->with('error', $message);
             }
         } catch (\Exception $e) {
             \Log::error('Import error: ' . $e->getMessage());

@@ -114,10 +114,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $__empty_1 = true; $__currentLoopData = $penerimaanBarangs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                                <?php $no = 1; ?>
+                                <?php $__empty_1 = true; $__currentLoopData = $penerimaanBarangs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                     <tr>
-                                        <td class="text-center"><?php echo e($index + 1); ?></td>
-                                        <td><?php echo e(\Carbon\Carbon::parse($item->tanggal_terima)->format('d/m/Y')); ?></td>
+                                        <td class="text-center"><?php echo e($no++); ?></td>
+                                        <td><?php echo e($item->tanggal_terima === '-' ? '-' : \Carbon\Carbon::parse($item->tanggal_terima)->format('d/m/Y')); ?></td>
                                         <td><?php echo e($item->nama_barang); ?></td>
                                         <td><?php echo e($item->nama_pengarang); ?></td>
                                         <td><?php echo e($item->penerbit); ?></td>
@@ -241,7 +242,7 @@
     
     <script>
         $(function() {
-            $("#example1").DataTable({
+            var table = $("#example1").DataTable({
                 "responsive": true,
                 "lengthChange": true,
                 "autoWidth": false,
@@ -262,7 +263,7 @@
                         "previous": "Sebelumnya"
                     }
                 },
-                "order": [[1, 'desc']], // Sort by Tanggal Terima (descending)
+                "order": [], // No default sorting - use server order (ID DESC)
                 "columnDefs": [
                     {
                         "targets": 0,
@@ -275,6 +276,16 @@
                         "searchable": false
                     }
                 ]
+            });
+
+            // Update row numbers after draw
+            table.on('draw.dt', function() {
+                var pageInfo = table.page.info();
+                table.column(0, {
+                    page: 'current'
+                }).nodes().each(function(cell, i) {
+                    cell.innerHTML = pageInfo.start + i + 1;
+                });
             });
         });
     </script>

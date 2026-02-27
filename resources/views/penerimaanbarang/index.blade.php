@@ -112,10 +112,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($penerimaanBarangs as $index => $item)
+                                @php $no = 1; @endphp
+                                @forelse ($penerimaanBarangs as $item)
                                     <tr>
-                                        <td class="text-center">{{ $index + 1 }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($item->tanggal_terima)->format('d/m/Y') }}</td>
+                                        <td class="text-center">{{ $no++ }}</td>
+                                        <td>{{ $item->tanggal_terima === '-' ? '-' : \Carbon\Carbon::parse($item->tanggal_terima)->format('d/m/Y') }}</td>
                                         <td>{{ $item->nama_barang }}</td>
                                         <td>{{ $item->nama_pengarang }}</td>
                                         <td>{{ $item->penerbit }}</td>
@@ -239,7 +240,7 @@
     
     <script>
         $(function() {
-            $("#example1").DataTable({
+            var table = $("#example1").DataTable({
                 "responsive": true,
                 "lengthChange": true,
                 "autoWidth": false,
@@ -260,7 +261,7 @@
                         "previous": "Sebelumnya"
                     }
                 },
-                "order": [[1, 'desc']], // Sort by Tanggal Terima (descending)
+                "order": [], // No default sorting - use server order (ID DESC)
                 "columnDefs": [
                     {
                         "targets": 0,
@@ -273,6 +274,16 @@
                         "searchable": false
                     }
                 ]
+            });
+
+            // Update row numbers after draw
+            table.on('draw.dt', function() {
+                var pageInfo = table.page.info();
+                table.column(0, {
+                    page: 'current'
+                }).nodes().each(function(cell, i) {
+                    cell.innerHTML = pageInfo.start + i + 1;
+                });
             });
         });
     </script>

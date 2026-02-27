@@ -93,7 +93,7 @@ endif;
 unset($__errorArgs, $__bag); ?>" 
                                            id="tanggal_terima"
                                            name="tanggal_terima" 
-                                           value="<?php echo e(old('tanggal_terima', $penerimaanBarang->tanggal_terima->format('Y-m-d'))); ?>"
+                                           value="<?php echo e(old('tanggal_terima', $penerimaanBarang->tanggal_terima === '-' ? '' : $penerimaanBarang->tanggal_terima)); ?>"
                                            required>
                                     <?php $__errorArgs = ['tanggal_terima'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
