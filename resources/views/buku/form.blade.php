@@ -74,41 +74,131 @@
                             </div>
                             @endif
 
+                            <div class="col-md-6">
+                                <label for="penerbit_id" class="form-label">Penerbit</label>
+                                <select class="form-control @error('penerbit_id') is-invalid @enderror" name="penerbit_id" id="penerbit_id">
+                                    <option value="">-- Pilih Penerbit --</option>
+                                    @foreach($penerbits as $penerbit)
+                                        <option value="{{ $penerbit->id }}" {{ old('penerbit_id', $buku->penerbit_id ?? '') == $penerbit->id ? 'selected' : '' }}>
+                                            {{ $penerbit->penerbit }} - {{ $penerbit->nama_barang }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('penerbit_id')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                            </div>
+
                             <div class="col-12">
-                                <label class="form-label">Kode Buku (bisa lebih dari satu)</label>
+                                <label class="form-label fw-bold">Kode Buku <span class="text-danger">*</span></label>
+                                <small class="text-muted d-block mb-3">
+                                    <i class="fas fa-info-circle"></i> Masukkan kode awal dan kode akhir yang akan digabungkan menjadi kode buku. 
+                                    <strong>Contoh:</strong> Kode Awal "BK" + Kode Akhir "001" = <strong>"BK - 001"</strong>. Boleh mengisi salah satu saja.
+                                </small>
                                 <div id="kode-buku-container">
-                                    @if (old('kode_buku'))
-                                        @foreach (old('kode_buku') as $kode)
-                                            <div class="input-group mb-2 kode-buku-item">
-                                                <input type="text" name="kode_buku[]" class="form-control"
-                                                    value="{{ $kode }}" placeholder="Kode Buku">
-                                                <button type="button" class="btn btn-danger btn-sm"
-                                                    onclick="hapusKodeBuku(this)">❌</button>
+                                    @if (old('kode_awal'))
+                                        @foreach (old('kode_awal') as $index => $kodeAwal)
+                                            <div class="kode-buku-item mb-3">
+                                                <div class="card border-light shadow-sm">
+                                                    <div class="card-body py-2">
+                                                        <div class="row align-items-center">
+                                                            <div class="col-md-5">
+                                                                <label class="small text-muted mb-1">Kode Awal</label>
+                                                                <input type="text" name="kode_awal[]" class="form-control" 
+                                                                    value="{{ $kodeAwal }}" placeholder="Contoh: BK">
+                                                            </div>
+                                                            <div class="col-md-5">
+                                                                <label class="small text-muted mb-1">Kode Akhir</label>
+                                                                <input type="text" name="kode_akhir[]" class="form-control" 
+                                                                    value="{{ old('kode_akhir')[$index] ?? '' }}" placeholder="Contoh: 001">
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <label class="small text-muted mb-1 d-block">&nbsp;</label>
+                                                                <button type="button" class="btn btn-danger btn-sm" 
+                                                                    onclick="hapusKodeBuku(this)" title="Hapus">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         @endforeach
-                                    @elseif(isset($buku))
-                                        @foreach ($buku->kodeBuku as $kode)
-                                            <div class="input-group mb-2 kode-buku-item">
-                                                <input type="text" name="kode_buku[]" class="form-control"
-                                                    value="{{ $kode->kode_buku }}" placeholder="Kode Buku">
-                                                <button type="button" class="btn btn-danger btn-sm"
-                                                    onclick="hapusKodeBuku(this)">❌</button>
+                                    @elseif(isset($buku) && $buku->kodeBuku->isNotEmpty())
+                                        @foreach ($buku->kodeBuku as $kodeBuku)
+                                            @php
+                                                // Split kode_buku by ' - ' to get kode_awal and kode_akhir
+                                                $parts = explode(' - ', $kodeBuku->kode_buku);
+                                                $kodeAwal = $parts[0] ?? '';
+                                                $kodeAkhir = $parts[1] ?? '';
+                                            @endphp
+                                            <div class="kode-buku-item mb-3">
+                                                <div class="card border-light shadow-sm">
+                                                    <div class="card-body py-2">
+                                                        <div class="row align-items-center">
+                                                            <div class="col-md-5">
+                                                                <label class="small text-muted mb-1">Kode Awal</label>
+                                                                <input type="text" name="kode_awal[]" class="form-control" 
+                                                                    value="{{ $kodeAwal }}" placeholder="Contoh: BK">
+                                                            </div>
+                                                            <div class="col-md-5">
+                                                                <label class="small text-muted mb-1">Kode Akhir</label>
+                                                                <input type="text" name="kode_akhir[]" class="form-control" 
+                                                                    value="{{ $kodeAkhir }}" placeholder="Contoh: 001">
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <label class="small text-muted mb-1 d-block">&nbsp;</label>
+                                                                <button type="button" class="btn btn-danger btn-sm" 
+                                                                    onclick="hapusKodeBuku(this)" title="Hapus">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         @endforeach
                                     @else
-                                        <div class="input-group mb-2 kode-buku-item">
-                                            <input type="text" name="kode_buku[]" class="form-control"
-                                                placeholder="Kode Buku">
-                                            <button type="button" class="btn btn-danger btn-sm"
-                                                onclick="hapusKodeBuku(this)">❌</button>
+                                        <div class="kode-buku-item mb-3">
+                                            <div class="card border-light shadow-sm">
+                                                <div class="card-body py-2">
+                                                    <div class="row align-items-center">
+                                                        <div class="col-md-5">
+                                                            <label class="small text-muted mb-1">Kode Awal</label>
+                                                            <input type="text" name="kode_awal[]" class="form-control" 
+                                                                placeholder="Contoh: BK">
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <label class="small text-muted mb-1">Kode Akhir</label>
+                                                            <input type="text" name="kode_akhir[]" class="form-control" 
+                                                                placeholder="Contoh: 001">
+                                                        </div>
+                                                        <div class="col-md-2 text-center">
+                                                            <label class="small text-muted mb-1 d-block">&nbsp;</label>
+                                                            <button type="button" class="btn btn-danger btn-sm" 
+                                                                onclick="hapusKodeBuku(this)" title="Hapus range ini">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     @endif
                                 </div>
 
-                                <button type="button" class="btn btn-sm btn-outline-primary mt-1"
-                                    onclick="tambahKodeBuku()">+ Tambah Kode</button>
+                                <button type="button" class="btn btn-sm btn-primary" 
+                                    onclick="tambahKodeBuku()">
+                                    <i class="fas fa-plus-circle"></i> Tambah Kode Buku Lagi
+                                </button>
 
                                 @error('kode_buku')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                                @error('kode_awal')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                                @error('kode_akhir')
                                     <div class="text-danger small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -120,26 +210,6 @@
                                     id="tahun_terbit" placeholder="Masukkan Tahun Terbit"
                                     value="{{ old('tahun_terbit', $buku->tahun_terbit ?? '') }}">
                                 @error('tahun_terbit')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="isbn" class="form-label">Kode ISBN</label>
-                                <input type="text" class="form-control @error('isbn') is-invalid @enderror"
-                                    name="isbn" id="isbn" placeholder="Masukkan Kode ISBN"
-                                    value="{{ old('isbn', $buku->isbn ?? '') }}">
-                                @error('isbn')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="kota_cetak" class="form-label">Kota Cetak</label>
-                                <input type="text" class="form-control @error('kota_cetak') is-invalid @enderror"
-                                    name="kota_cetak" id="kota_cetak" placeholder="Masukkan Kota Cetak"
-                                    value="{{ old('kota_cetak', $buku->kota_cetak ?? '') }}">
-                                @error('kota_cetak')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -208,37 +278,81 @@
                         </div>
                     </div>
                 </form>
-                {{-- Tambahkan script untuk dynamic input kode buku --}}
-                <script>
-                    function tambahKodeBuku() {
-                        const container = document.getElementById('kode-buku-container');
-                        const wrapper = document.createElement('div');
-                        wrapper.classList.add('input-group', 'mb-2', 'kode-buku-item');
-
-                        const input = document.createElement('input');
-                        input.type = 'text';
-                        input.name = 'kode_buku[]';
-                        input.placeholder = 'Kode Buku';
-                        input.classList.add('form-control');
-
-                        const btn = document.createElement('button');
-                        btn.type = 'button';
-                        btn.classList.add('btn', 'btn-danger', 'btn-sm');
-                        btn.textContent = '❌';
-                        btn.onclick = function() {
-                            wrapper.remove();
-                        };
-
-                        wrapper.appendChild(input);
-                        wrapper.appendChild(btn);
-                        container.appendChild(wrapper);
-                    }
-
-                    function hapusKodeBuku(el) {
-                        el.closest('.kode-buku-item').remove();
-                    }
-                </script>
             </div>
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    {{-- Select2 CSS --}}
+    <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/plugins/select2/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('AdminLTE-3.2.0/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
+
+    {{-- Select2 JS --}}
+    <script src="{{ asset('AdminLTE-3.2.0/plugins/select2/js/select2.full.min.js') }}"></script>
+
+    <script>
+        // Wait for DOM and jQuery to be fully loaded
+        $(document).ready(function() {
+            console.log('Initializing Select2...');
+            
+            // Initialize Select2 for penerbit dropdown
+            $('#penerbit_id').select2({
+                theme: 'bootstrap4',
+                placeholder: '-- Pilih Penerbit --',
+                allowClear: true,
+                width: '100%'
+            });
+            
+            console.log('Select2 initialized');
+        });
+
+        // Function to add new kode buku input pair
+        function tambahKodeBuku() {
+            const container = document.getElementById('kode-buku-container');
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('kode-buku-item', 'mb-3');
+
+            wrapper.innerHTML = `
+                <div class="card border-light shadow-sm">
+                    <div class="card-body py-2">
+                        <div class="row align-items-center">
+                            <div class="col-md-5">
+                                <label class="small text-muted mb-1">Kode Awal</label>
+                                <input type="text" name="kode_awal[]" class="form-control" 
+                                    placeholder="Contoh: BK">
+                            </div>
+                            <div class="col-md-5">
+                                <label class="small text-muted mb-1">Kode Akhir</label>
+                                <input type="text" name="kode_akhir[]" class="form-control" 
+                                    placeholder="Contoh: 001">
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <label class="small text-muted mb-1 d-block">&nbsp;</label>
+                                <button type="button" class="btn btn-danger btn-sm" 
+                                    onclick="hapusKodeBuku(this)" title="Hapus">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.appendChild(wrapper);
+        }
+
+        // Function to remove kode buku input pair
+        function hapusKodeBuku(el) {
+            const container = document.getElementById('kode-buku-container');
+            const items = container.querySelectorAll('.kode-buku-item');
+            
+            // Prevent removing if only one item remains
+            if (items.length > 1) {
+                el.closest('.kode-buku-item').remove();
+            } else {
+                alert('Minimal harus ada satu kode buku!');
+            }
+        }
+    </script>
+@endpush

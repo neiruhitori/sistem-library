@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Buku;
+use App\Models\PenerimaanBarang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,7 +14,7 @@ class BukuController extends Controller
      */
     public function indexHarian()
     {
-        $bukus = Buku::with(['kodeBuku', 'peminjamanHarianDetails', 'peminjamanTahunanDetails']) // <-- perlu eager load relasi
+        $bukus = Buku::with(['kodeBuku', 'peminjamanHarianDetails', 'peminjamanTahunanDetails', 'penerbit']) // <-- perlu eager load relasi
             ->withCount(['kodeBuku as stok' => function ($query) {
                 $query->where('status', 'tersedia');
             }])
@@ -25,7 +26,7 @@ class BukuController extends Controller
 
     public function indexTahunan()
     {
-        $bukus = Buku::with(['kodeBuku', 'peminjamanHarianDetails', 'peminjamanTahunanDetails']) // <-- perlu eager load relasi
+        $bukus = Buku::with(['kodeBuku', 'peminjamanHarianDetails', 'peminjamanTahunanDetails', 'penerbit']) // <-- perlu eager load relasi
             ->withCount(['kodeBuku as stok' => function ($query) {
                 $query->where('status', 'tersedia');
             }])
@@ -46,8 +47,15 @@ class BukuController extends Controller
             abort(404);
         }
 
+        $penerbits = PenerimaanBarang::select('id', 'penerbit', 'nama_barang')
+            ->whereNotNull('penerbit')
+            ->where('penerbit', '!=', '')
+            ->orderBy('penerbit')
+            ->get();
+
         return view('buku.form', [
-            'tipe' => $tipe
+            'tipe' => $tipe,
+            'penerbits' => $penerbits
         ]);
     }
 
@@ -59,14 +67,15 @@ class BukuController extends Controller
         $rules = [
             'judul' => 'required',
             'penulis' => 'nullable|string',
+            'penerbit_id' => 'nullable|exists:penerimaan_barangs,id',
             'tipe' => 'required|in:harian,tahunan',
             'tahun_terbit' => 'nullable|digits:4',
-            'isbn' => 'nullable|string',
-            'kota_cetak' => 'nullable|string',
             'description' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'kode_buku' => 'required|array|min:1',
-            'kode_buku.*' => 'required|string|distinct|unique:kode_bukus,kode_buku'
+            'kode_awal' => 'required|array|min:1',
+            'kode_awal.*' => 'nullable|string',
+            'kode_akhir' => 'required|array|min:1',
+            'kode_akhir.*' => 'nullable|string'
         ];
 
         // Tambahkan validasi kelas jika tipe tahunan
@@ -75,6 +84,43 @@ class BukuController extends Controller
         }
 
         $request->validate($rules);
+
+        // Validasi custom: setiap pair kode_awal dan kode_akhir tidak boleh kosong semua
+        $hasValidPair = false;
+        foreach ($request->kode_awal as $index => $kodeAwal) {
+            $kodeAkhir = $request->kode_akhir[$index] ?? '';
+            if (!empty($kodeAwal) || !empty($kodeAkhir)) {
+                $hasValidPair = true;
+                break;
+            }
+        }
+
+        if (!$hasValidPair) {
+            return back()->withErrors(['kode_buku' => 'Minimal harus ada satu kode buku yang diisi (kode awal atau kode akhir).'])->withInput();
+        }
+
+        // Generate kode_buku array from multiple kode_awal and kode_akhir pairs
+        $kodeBukuArray = [];
+        foreach ($request->kode_awal as $index => $kodeAwal) {
+            $kodeAkhir = $request->kode_akhir[$index] ?? '';
+
+            // Skip if both are empty
+            if (empty($kodeAwal) && empty($kodeAkhir)) {
+                continue;
+            }
+
+            $generated = $this->generateKodeBuku($kodeAwal, $kodeAkhir);
+            $kodeBukuArray = array_merge($kodeBukuArray, $generated);
+        }
+
+        // Remove duplicates
+        $kodeBukuArray = array_unique($kodeBukuArray);
+
+        // Validate generated kode_buku uniqueness
+        $existingKodes = \App\Models\KodeBuku::whereIn('kode_buku', $kodeBukuArray)->pluck('kode_buku')->toArray();
+        if (count($existingKodes) > 0) {
+            return back()->withErrors(['kode_buku' => 'Kode buku berikut sudah ada: ' . implode(', ', $existingKodes)])->withInput();
+        }
 
         // Set foto: upload, default, atau null
         if ($request->hasFile('foto')) {
@@ -87,16 +133,15 @@ class BukuController extends Controller
         $buku = Buku::create([
             'judul' => $request->judul,
             'penulis' => $request->penulis,
+            'penerbit_id' => $request->penerbit_id,
             'tipe' => $request->tipe,
             'kelas' => $request->tipe === 'tahunan' ? $request->kelas : null,
             'tahun_terbit' => $request->tahun_terbit,
-            'isbn' => $request->isbn,
-            'kota_cetak' => $request->kota_cetak,
             'description' => $request->description,
             'foto' => $fotoPath,
         ]);
 
-        foreach ($request->kode_buku as $kode) {
+        foreach ($kodeBukuArray as $kode) {
             $buku->kodeBuku()->create(['kode_buku' => $kode]);
         }
 
@@ -109,7 +154,7 @@ class BukuController extends Controller
      */
     public function show(string $id)
     {
-        $buku = Buku::with('kodeBuku')->findOrFail($id);
+        $buku = Buku::with(['kodeBuku', 'penerbit'])->findOrFail($id);
         $tipe = $buku->tipe;
 
         return view('buku.show', compact('buku', 'tipe'));
@@ -123,7 +168,13 @@ class BukuController extends Controller
         $buku = Buku::with('kodeBuku')->findOrFail($id);
         $tipe = $buku->tipe;
 
-        return view('buku.form', compact('buku', 'tipe'));
+        $penerbits = PenerimaanBarang::select('id', 'penerbit', 'nama_barang')
+            ->whereNotNull('penerbit')
+            ->where('penerbit', '!=', '')
+            ->orderBy('penerbit')
+            ->get();
+
+        return view('buku.form', compact('buku', 'tipe', 'penerbits'));
     }
 
     /**
@@ -136,13 +187,14 @@ class BukuController extends Controller
         $rules = [
             'judul' => 'required',
             'penulis' => 'nullable|string',
+            'penerbit_id' => 'nullable|exists:penerimaan_barangs,id',
             'tahun_terbit' => 'nullable|digits:4',
-            'isbn' => 'nullable|string',
-            'kota_cetak' => 'nullable|string',
             'description' => 'nullable|string',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'kode_buku' => 'required|array|min:1',
-            'kode_buku.*' => 'required|string|distinct'
+            'kode_awal' => 'required|array|min:1',
+            'kode_awal.*' => 'nullable|string',
+            'kode_akhir' => 'required|array|min:1',
+            'kode_akhir.*' => 'nullable|string'
         ];
 
         // Tambahkan validasi kelas jika tipe tahunan
@@ -151,6 +203,20 @@ class BukuController extends Controller
         }
 
         $request->validate($rules);
+
+        // Validasi custom: setiap pair kode_awal dan kode_akhir tidak boleh kosong semua
+        $hasValidPair = false;
+        foreach ($request->kode_awal as $index => $kodeAwal) {
+            $kodeAkhir = $request->kode_akhir[$index] ?? '';
+            if (!empty($kodeAwal) || !empty($kodeAkhir)) {
+                $hasValidPair = true;
+                break;
+            }
+        }
+
+        if (!$hasValidPair) {
+            return back()->withErrors(['kode_buku' => 'Minimal harus ada satu kode buku yang diisi (kode awal atau kode akhir).'])->withInput();
+        }
 
         // Update foto only if new file uploaded
         if ($request->hasFile('foto')) {
@@ -164,15 +230,40 @@ class BukuController extends Controller
         $buku->update([
             'judul' => $request->judul,
             'penulis' => $request->penulis,
+            'penerbit_id' => $request->penerbit_id,
             'kelas' => $buku->tipe === 'tahunan' ? $request->kelas : null,
             'tahun_terbit' => $request->tahun_terbit,
-            'isbn' => $request->isbn,
-            'kota_cetak' => $request->kota_cetak,
             'description' => $request->description
         ]);
 
+        // Generate kode_buku array from multiple kode_awal and kode_akhir pairs
+        $kodeBukuArray = [];
+        foreach ($request->kode_awal as $index => $kodeAwal) {
+            $kodeAkhir = $request->kode_akhir[$index] ?? '';
+
+            // Skip if both are empty
+            if (empty($kodeAwal) && empty($kodeAkhir)) {
+                continue;
+            }
+
+            $generated = $this->generateKodeBuku($kodeAwal, $kodeAkhir);
+            $kodeBukuArray = array_merge($kodeBukuArray, $generated);
+        }
+
+        // Remove duplicates
+        $kodeBukuArray = array_unique($kodeBukuArray);
+
+        // Validate generated kode_buku uniqueness (excluding current book's codes)
+        $existingKodes = \App\Models\KodeBuku::whereIn('kode_buku', $kodeBukuArray)
+            ->where('bukus_id', '!=', $buku->id)
+            ->pluck('kode_buku')
+            ->toArray();
+        if (count($existingKodes) > 0) {
+            return back()->withErrors(['kode_buku' => 'Kode buku berikut sudah ada: ' . implode(', ', $existingKodes)])->withInput();
+        }
+
         $existingCodes = $buku->kodeBuku->pluck('kode_buku')->toArray();
-        $newCodes = $request->kode_buku;
+        $newCodes = $kodeBukuArray;
 
         $toAdd = array_diff($newCodes, $existingCodes);
         $toDelete = array_diff($existingCodes, $newCodes);
@@ -290,5 +381,32 @@ class BukuController extends Controller
 
         return redirect()->route($tipe == 'harian' ? 'buku.harian' : 'buku.tahunan')
             ->with('success', $message);
+    }
+
+    /**
+     * Generate kode_buku by concatenating kode_awal and kode_akhir with dash
+     */
+    private function generateKodeBuku($kodeAwal, $kodeAkhir)
+    {
+        // Trim both values
+        $kodeAwal = trim($kodeAwal);
+        $kodeAkhir = trim($kodeAkhir);
+
+        // Handle empty values
+        if (empty($kodeAwal) && empty($kodeAkhir)) {
+            return [];
+        }
+
+        // If both have values, concatenate with " - "
+        if (!empty($kodeAwal) && !empty($kodeAkhir)) {
+            $kodeBuku = $kodeAwal . ' - ' . $kodeAkhir;
+        }
+        // If only one has value, use that one
+        else {
+            $kodeBuku = !empty($kodeAwal) ? $kodeAwal : $kodeAkhir;
+        }
+
+        // Return as array with single element
+        return [$kodeBuku];
     }
 }

@@ -10,13 +10,18 @@ class Buku extends Model
     use HasFactory;
     protected $table ='bukus';
     protected $primaryKey = 'id';
-    protected $fillable = ['judul', 'penulis', 'tipe', 'kelas', 'tahun_terbit', 'isbn', 'kota_cetak', 'description', 'foto', 'is_active'];
+    protected $fillable = ['judul', 'penulis', 'penerbit_id', 'tipe', 'kelas', 'tahun_terbit', 'description', 'foto', 'is_active'];
     protected $guarded = [];
     protected $casts = [
         'is_active' => 'boolean',
     ];
 
     // Hapus user relationship - buku jadi global untuk semua user
+
+    public function penerbit()
+    {
+        return $this->belongsTo(PenerimaanBarang::class, 'penerbit_id');
+    }
 
     public function peminjamanHarianDetails()
     {

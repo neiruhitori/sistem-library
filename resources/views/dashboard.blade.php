@@ -402,7 +402,7 @@
                                             <span class="badge badge-success float-right">{{ $popular->total_peminjaman }}x</span>
                                         </a>
                                         <span class="product-description">
-                                            {{ $popular->kodeBuku->buku->pengarang ?? '' }} - {{ $popular->kodeBuku->buku->penerbit ?? '' }}
+                                            {{ $popular->kodeBuku->buku->penulis ?? '' }} - {{ $popular->kodeBuku->buku->penerbit->penerbit ?? '' }}
                                         </span>
                                     </div>
                                 </li>
