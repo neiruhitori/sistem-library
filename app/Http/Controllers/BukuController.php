@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Buku;
 use App\Models\PenerimaanBarang;
+use App\Imports\BukuHarianImport;
+use App\Imports\BukuTahunanImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class BukuController extends Controller
 {
@@ -381,6 +385,125 @@ class BukuController extends Controller
 
         return redirect()->route($tipe == 'harian' ? 'buku.harian' : 'buku.tahunan')
             ->with('success', $message);
+    }
+
+    /**
+     * Import buku harian dari file Excel
+     */
+    public function importHarian(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls|max:2048'
+        ], [
+            'file.required' => 'File Excel harus diupload',
+            'file.mimes' => 'File harus berformat Excel (.xlsx atau .xls)',
+            'file.max' => 'Ukuran file maksimal 2MB'
+        ]);
+
+        try {
+            $import = new BukuHarianImport();
+            Excel::import($import, $request->file('file'));
+
+            $summary = $import->getSummary();
+
+            if ($summary['success'] > 0) {
+                $message = sprintf(
+                    'Import berhasil! Total: %d data. Berhasil: %d, Gagal: %d, Duplikat (di-skip): %d',
+                    $summary['total'],
+                    $summary['success'],
+                    $summary['failed'],
+                    $summary['duplicate']
+                );
+                return redirect()->back()->with('success', $message);
+            } else {
+                $message = sprintf(
+                    'Import gagal! Total data: %d. Berhasil: %d, Gagal: %d, Duplikat (di-skip): %d. Periksa format file Excel dan pastikan sesuai dengan template.',
+                    $summary['total'],
+                    $summary['success'],
+                    $summary['failed'],
+                    $summary['duplicate']
+                );
+                return redirect()->back()->with('error', $message);
+            }
+        } catch (\Exception $e) {
+            Log::error('Import error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal import data: ' . $e->getMessage() . '. Pastikan format file sesuai dengan template!');
+        }
+    }
+
+    /**
+     * Import buku tahunan dari file Excel
+     */
+    public function importTahunan(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls|max:2048',
+            'kelas' => 'required|in:7,8,9'
+        ], [
+            'file.required' => 'File Excel harus diupload',
+            'file.mimes' => 'File harus berformat Excel (.xlsx atau .xls)',
+            'file.max' => 'Ukuran file maksimal 2MB',
+            'kelas.required' => 'Kelas harus dipilih'
+        ]);
+
+        try {
+            $import = new BukuTahunanImport($request->kelas);
+            Excel::import($import, $request->file('file'));
+
+            $summary = $import->getSummary();
+
+            if ($summary['success'] > 0) {
+                $message = sprintf(
+                    'Import berhasil untuk kelas %s! Total: %d data. Berhasil: %d, Gagal: %d, Duplikat (di-skip): %d',
+                    $request->kelas,
+                    $summary['total'],
+                    $summary['success'],
+                    $summary['failed'],
+                    $summary['duplicate']
+                );
+                return redirect()->back()->with('success', $message);
+            } else {
+                $message = sprintf(
+                    'Import gagal! Total data: %d. Berhasil: %d, Gagal: %d, Duplikat (di-skip): %d. Periksa format file Excel dan pastikan sesuai dengan template.',
+                    $summary['total'],
+                    $summary['success'],
+                    $summary['failed'],
+                    $summary['duplicate']
+                );
+                return redirect()->back()->with('error', $message);
+            }
+        } catch (\Exception $e) {
+            Log::error('Import error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Gagal import data: ' . $e->getMessage() . '. Pastikan format file sesuai dengan template!');
+        }
+    }
+
+    /**
+     * Download template Excel untuk import buku harian
+     */
+    public function downloadTemplateHarian()
+    {
+        $filePath = public_path('templates/template-bukuharian.xlsx');
+
+        if (!file_exists($filePath)) {
+            return redirect()->back()->with('error', 'File template tidak ditemukan!');
+        }
+
+        return response()->download($filePath, 'Template_Buku_Harian.xlsx');
+    }
+
+    /**
+     * Download template Excel untuk import buku tahunan
+     */
+    public function downloadTemplateTahunan()
+    {
+        $filePath = public_path('templates/template-bukutahunan.xlsx');
+
+        if (!file_exists($filePath)) {
+            return redirect()->back()->with('error', 'File template tidak ditemukan!');
+        }
+
+        return response()->download($filePath, 'Template_Buku_Tahunan.xlsx');
     }
 
     /**

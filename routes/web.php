@@ -53,6 +53,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/bukutahunan', [BukuController::class, 'indexTahunan'])->name('buku.tahunan');
     Route::delete('/buku/hapussemua', [BukuController::class, 'hapussemua'])->name('buku.hapussemua');
     Route::post('/buku/{id}/toggle-status', [BukuController::class, 'toggleStatus'])->name('buku.toggle-status');
+    Route::post('/bukuharian/import', [BukuController::class, 'importHarian'])->name('buku.harian.import');
+    Route::get('/bukuharian/download-template', [BukuController::class, 'downloadTemplateHarian'])->name('buku.harian.downloadTemplate');
+    Route::post('/bukutahunan/import', [BukuController::class, 'importTahunan'])->name('buku.tahunan.import');
+    Route::get('/bukutahunan/download-template', [BukuController::class, 'downloadTemplateTahunan'])->name('buku.tahunan.downloadTemplate');
     Route::resource('buku', BukuController::class)->except(['index']);
 
     // Peminjaman Harian
