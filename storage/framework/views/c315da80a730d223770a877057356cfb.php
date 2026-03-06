@@ -20,7 +20,7 @@
                 <form method="POST" action="<?php echo e(route('login')); ?>">
                     <?php echo csrf_field(); ?>
                     <div class="input-group mb-3">
-                        <input type="email" id="email" name="email" class="form-control" placeholder="Email"
+                        <input type="text" id="email" name="email" class="form-control" placeholder="Email / NIP"
                             required autofocus autocomplete="username">
                         <?php if (isset($component)) { $__componentOriginalf94ed9c5393ef72725d159fe01139746 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalf94ed9c5393ef72725d159fe01139746 = $attributes; } ?>
@@ -44,7 +44,7 @@
 <?php endif; ?>
                         <div class="input-group-append">
                             <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
+                                <span class="fas fa-user"></span>
                             </div>
                         </div>
                     </div>
@@ -96,12 +96,8 @@
                     </div>
                 </form>
 
-                <div class="social-auth-links text-center mb-3">
-                    <p>- OR -</p>
-                    <a href="<?php echo e(route('auth.google')); ?>" class="btn btn-block btn-danger">
-                        <i class="fab fa-google-plus mr-2"></i> Sign in with Google
-                    </a>
-                </div>
+                
+                
 
                 <!-- /.social-auth-links -->
 
@@ -114,9 +110,8 @@
                         </a>
                     <?php endif; ?>
                 </p>
-                <p class="mb-0">
-                    <a href="<?php echo e(route('register')); ?>" class="text-center">Register a new membership</a>
-                </p>
+                
+                
             </div>
             <!-- /.login-card-body -->
         </div>

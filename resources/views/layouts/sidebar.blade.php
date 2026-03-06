@@ -525,6 +525,17 @@
                               </p>
                           </a>
                       </li>
+                      @if(Auth::check() && Auth::user()->role === 'Kepala Perpustakaan')
+                      <li class="nav-item">
+                          <a href="{{ route('usermanagement.index') }}"
+                              class="nav-link {{ Request::is('usermanagement') || Request::is('usermanagement/*') ? 'active' : '' }}">
+                              <i class="nav-icon fas fa-users-cog"></i>
+                              <p>
+                                  User Management
+                              </p>
+                          </a>
+                      </li>
+                      @endif
                   </ul>
               </nav>
               <!-- /.sidebar-menu -->

@@ -150,6 +150,43 @@ class NotificationService
     }
 
     /**
+     * Buat notifikasi untuk peminjaman guru baru
+     * Jika user_id null (dari Android), broadcast ke semua user
+     */
+    public static function createPeminjamanGuruNotification($peminjamanId)
+    {
+        $peminjaman = \App\Models\PeminjamanGuru::with(['guru', 'details.kodePanduanGuru.bukuPanduanGuru', 'user'])->find($peminjamanId);
+
+        if (!$peminjaman) {
+            return false;
+        }
+
+        $bukuCount = $peminjaman->details->count();
+        $bukuText = $bukuCount > 1 ? "$bukuCount buku panduan" : "1 buku panduan";
+
+        $title = "Peminjaman Guru Baru";
+        $message = "{$peminjaman->guru->nama} meminjam {$bukuText} pada " .
+            $peminjaman->tanggal_pinjam . " (kembali: " . $peminjaman->tanggal_kembali . ")";
+
+        $notifData = [
+            'type' => 'peminjaman_guru',
+            'reference_id' => $peminjamanId,
+            'title' => $title,
+            'message' => $message,
+            'icon' => 'fas fa-chalkboard-teacher'
+        ];
+
+        // Jika user_id null (dari Android), kirim ke semua user
+        if ($peminjaman->user_id === null) {
+            return self::createNotificationForAllUsers($notifData);
+        }
+
+        // Jika ada user_id (dari website), kirim hanya ke user tersebut
+        $notifData['user_id'] = $peminjaman->user_id;
+        return self::createNotification($notifData);
+    }
+
+    /**
      * Buat notifikasi untuk peminjaman yang akan jatuh tempo
      */
     public static function createDueDateReminder($type, $peminjamanId)

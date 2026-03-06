@@ -36,7 +36,8 @@
     <div class="flex justify-center space-x-6">
       <?php if(auth()->guard()->guest()): ?>
         <a href="<?php echo e(route('login')); ?>" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 transition rounded-lg text-white font-semibold shadow-lg">Login</a>
-        <a href="<?php echo e(route('register')); ?>" class="px-6 py-3 bg-green-600 hover:bg-green-700 transition rounded-lg text-white font-semibold shadow-lg">Register</a>
+        
+        
       <?php else: ?>
         <a href="<?php echo e(route('dashboard')); ?>" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 transition rounded-lg text-white font-semibold shadow-lg">Dashboard</a>
       <?php endif; ?>

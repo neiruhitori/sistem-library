@@ -11,12 +11,12 @@
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
                     <div class="input-group mb-3">
-                        <input type="email" id="email" name="email" class="form-control" placeholder="Email"
+                        <input type="text" id="email" name="email" class="form-control" placeholder="Email / NIP"
                             required autofocus autocomplete="username">
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                         <div class="input-group-append">
                             <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
+                                <span class="fas fa-user"></span>
                             </div>
                         </div>
                     </div>
@@ -49,12 +49,13 @@
                     </div>
                 </form>
 
-                <div class="social-auth-links text-center mb-3">
+                {{-- Hidden: Google login disabled --}}
+                {{-- <div class="social-auth-links text-center mb-3">
                     <p>- OR -</p>
                     <a href="{{ route('auth.google') }}" class="btn btn-block btn-danger">
                         <i class="fab fa-google-plus mr-2"></i> Sign in with Google
                     </a>
-                </div>
+                </div> --}}
 
                 <!-- /.social-auth-links -->
 
@@ -66,9 +67,10 @@
                         </a>
                     @endif
                 </p>
-                <p class="mb-0">
+                {{-- Hidden: Register disabled --}}
+                {{-- <p class="mb-0">
                     <a href="{{ route('register') }}" class="text-center">Register a new membership</a>
-                </p>
+                </p> --}}
             </div>
             <!-- /.login-card-body -->
         </div>

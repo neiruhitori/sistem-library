@@ -17,10 +17,10 @@ use App\Models\User;
 use Illuminate\Support\Str;
 
 Route::middleware('guest')->group(function () {
-    Route::get('register', [RegisteredUserController::class, 'create'])
-        ->name('register');
-
-    Route::post('register', [RegisteredUserController::class, 'store']);
+    // Register routes disabled - User management only accessible by admin
+    // Route::get('register', [RegisteredUserController::class, 'create'])
+    //     ->name('register');
+    // Route::post('register', [RegisteredUserController::class, 'store']);
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
@@ -38,27 +38,28 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
-        
-    Route::get('/auth/google', function () {
-        return Socialite::driver('google')->redirect();
-    })->middleware('guest')->name('auth.google');
 
-    Route::get('/auth/google/callback', function () {
-        $googleUser = Socialite::driver('google')->stateless()->user();
+    // Google OAuth routes disabled
+    // Route::get('/auth/google', function () {
+    //     return Socialite::driver('google')->redirect();
+    // })->middleware('guest')->name('auth.google');
 
-        $user = User::updateOrCreate(
-            ['email' => $googleUser->getEmail()],
-            [
-                'name' => $googleUser->getName(),
-                'email_verified_at' => now(),
-                'password' => bcrypt(Str::random(16)),
-            ]
-        );
+    // Route::get('/auth/google/callback', function () {
+    //     $googleUser = Socialite::driver('google')->stateless()->user();
 
-        Auth::login($user);
+    //     $user = User::updateOrCreate(
+    //         ['email' => $googleUser->getEmail()],
+    //         [
+    //             'name' => $googleUser->getName(),
+    //             'email_verified_at' => now(),
+    //             'password' => bcrypt(Str::random(16)),
+    //         ]
+    //     );
 
-        return redirect()->intended('/dashboard');
-    });
+    //     Auth::login($user);
+
+    //     return redirect()->intended('/dashboard');
+    // });
 });
 
 Route::middleware('auth')->group(function () {

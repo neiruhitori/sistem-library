@@ -530,6 +530,17 @@
                               </p>
                           </a>
                       </li>
+                      <?php if(Auth::check() && Auth::user()->role === 'Kepala Perpustakaan'): ?>
+                      <li class="nav-item">
+                          <a href="<?php echo e(route('usermanagement.index')); ?>"
+                              class="nav-link <?php echo e(Request::is('usermanagement') || Request::is('usermanagement/*') ? 'active' : ''); ?>">
+                              <i class="nav-icon fas fa-users-cog"></i>
+                              <p>
+                                  User Management
+                              </p>
+                          </a>
+                      </li>
+                      <?php endif; ?>
                   </ul>
               </nav>
               <!-- /.sidebar-menu -->

@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
+use App\Services\NotificationService;
 
 class PeminjamanGuruController extends Controller
 {
@@ -160,6 +161,9 @@ class PeminjamanGuruController extends Controller
             }
 
             DB::commit();
+
+            // Create notification
+            NotificationService::createPeminjamanGuruNotification($peminjaman->id);
 
             return redirect()->route('peminjamanguru.index')->with('success', 'Peminjaman guru berhasil disimpan.');
         } catch (\Exception $e) {
