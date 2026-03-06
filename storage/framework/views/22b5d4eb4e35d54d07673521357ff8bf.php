@@ -343,6 +343,8 @@
             flex-grow: 1 !important;
         }
     </style>
+    
+    <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 
 <body class="hold-transition  sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
@@ -864,13 +866,13 @@
 <!-- Modal Notifikasi Denda -->
 <?php
     $dendaBelumDibayar = \App\Models\CatatanDenda::where('status', 'belum_dibayar')
-        ->with('siswa')
+        ->with(['siswa', 'guru'])
         ->orderBy('created_at', 'desc')
         ->get();
     $jumlahDendaBaru = $dendaBelumDibayar->count();
 ?>
 
-<?php if($jumlahDendaBaru > 0 && !Request::is('catatanharian*') && !Request::is('catatantahunan*')): ?>
+<?php if($jumlahDendaBaru > 0 && !Request::is('catatanharian*') && !Request::is('catatantahunan*') && !Request::is('catatanguru*')): ?>
 <div class="modal fade" id="dendaNotificationModal" tabindex="-1" role="dialog" aria-labelledby="dendaNotificationLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
         <div class="modal-content border-warning" style="border-width: 3px;">
@@ -879,7 +881,7 @@
                     <i class="fas fa-exclamation-triangle fa-lg"></i> 
                     <strong>Pemberitahuan Denda!</strong>
                 </h4>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close text-white" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -901,7 +903,7 @@
                             <thead class="thead-light sticky-top">
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="25%">Nama Siswa</th>
+                                    <th width="25%">Nama</th>
                                     <th width="20%">Jenis Denda</th>
                                     <th width="15%">Jumlah</th>
                                     <th width="15%">Tipe</th>
@@ -913,7 +915,13 @@
                                 <tr>
                                     <td class="text-center"><?php echo e($index + 1); ?></td>
                                     <td>
-                                        <strong><?php echo e($denda->siswa->name ?? 'N/A'); ?></strong>
+                                        <?php if($denda->tipe_peminjaman == 'guru'): ?>
+                                            <strong><?php echo e($denda->guru->nama ?? 'N/A'); ?></strong>
+                                            <br><small class="text-muted">👨‍🏫 Guru</small>
+                                        <?php else: ?>
+                                            <strong><?php echo e($denda->siswa->name ?? 'N/A'); ?></strong>
+                                            <br><small class="text-muted">👨‍🎓 Siswa</small>
+                                        <?php endif; ?>
                                     </td>
                                     <td><?php echo e($denda->jenis_denda); ?></td>
                                     <td class="text-danger font-weight-bold">
@@ -923,8 +931,10 @@
                                     <td>
                                         <?php if($denda->tipe_peminjaman == 'harian'): ?>
                                             <span class="badge badge-primary">Harian</span>
-                                        <?php else: ?>
+                                        <?php elseif($denda->tipe_peminjaman == 'tahunan'): ?>
                                             <span class="badge badge-info">Tahunan</span>
+                                        <?php else: ?>
+                                            <span class="badge badge-warning">Guru</span>
                                         <?php endif; ?>
                                     </td>
                                     <td class="text-center">
@@ -932,8 +942,12 @@
                                             <a href="<?php echo e(route('catatanharian.show', $denda->id)); ?>" class="btn btn-sm btn-primary">
                                                 <i class="fas fa-eye"></i> Detail
                                             </a>
-                                        <?php else: ?>
+                                        <?php elseif($denda->tipe_peminjaman == 'tahunan'): ?>
                                             <a href="<?php echo e(route('catatantahunan.show', $denda->id)); ?>" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i> Detail
+                                            </a>
+                                        <?php else: ?>
+                                            <a href="<?php echo e(route('catatanguru.show', $denda->id)); ?>" class="btn btn-sm btn-warning">
                                                 <i class="fas fa-eye"></i> Detail
                                             </a>
                                         <?php endif; ?>
@@ -951,13 +965,16 @@
                 </div>
             </div>
             <div class="modal-footer bg-light">
-                <a href="<?php echo e(route('catatanharian.index')); ?>" class="btn btn-warning">
+                <a href="<?php echo e(route('catatanharian.index')); ?>" class="btn btn-primary">
                     <i class="fas fa-calendar-day"></i> Denda Harian
                 </a>
                 <a href="<?php echo e(route('catatantahunan.index')); ?>" class="btn btn-info">
                     <i class="fas fa-calendar-alt"></i> Denda Tahunan
                 </a>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                <a href="<?php echo e(route('catatanguru.index')); ?>" class="btn btn-warning">
+                    <i class="fas fa-chalkboard-teacher"></i> Denda Guru
+                </a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" data-bs-dismiss="modal">
                     <i class="fas fa-times"></i> Tutup
                 </button>
             </div>
@@ -966,8 +983,44 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-        $('#dendaNotificationModal').modal('show');
+    // Auto-show modal denda notification
+    document.addEventListener('DOMContentLoaded', function() {
+        var dendaModal = document.getElementById('dendaNotificationModal');
+        if (dendaModal) {
+            // Check if jQuery is loaded
+            if (typeof jQuery !== 'undefined') {
+                $('#dendaNotificationModal').modal('show');
+                
+                // Manual close handler for better compatibility
+                $('[data-dismiss="modal"]').on('click', function() {
+                    $('#dendaNotificationModal').modal('hide');
+                });
+            } else if (typeof bootstrap !== 'undefined') {
+                // Use Bootstrap 5 if available
+                var modal = new bootstrap.Modal(dendaModal);
+                modal.show();
+            } else {
+                // Fallback: show modal with vanilla JS
+                dendaModal.classList.add('show');
+                dendaModal.style.display = 'block';
+                document.body.classList.add('modal-open');
+                var backdrop = document.createElement('div');
+                backdrop.className = 'modal-backdrop fade show';
+                document.body.appendChild(backdrop);
+                
+                // Add close handlers
+                var closeButtons = dendaModal.querySelectorAll('[data-dismiss="modal"]');
+                closeButtons.forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        dendaModal.classList.remove('show');
+                        dendaModal.style.display = 'none';
+                        document.body.classList.remove('modal-open');
+                        var backdrop = document.querySelector('.modal-backdrop');
+                        if (backdrop) backdrop.remove();
+                    });
+                });
+            }
+        }
     });
 </script>
 <?php endif; ?>

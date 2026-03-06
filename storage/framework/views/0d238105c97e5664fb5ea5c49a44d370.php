@@ -340,12 +340,31 @@
                                 <div class="d-flex justify-content-between">
                                     <div>
                                         <?php
-                                            $bukuTitles = $overdue->details->map(function($detail) {
-                                                return $detail->kodeBuku->buku->judul ?? 'Buku tidak ditemukan';
-                                            })->join(', ');
+                                            // Cek tipe peminjaman berdasarkan model
+                                            $isGuru = $overdue instanceof \App\Models\PeminjamanGuru;
+                                            
+                                            if ($isGuru) {
+                                                // Untuk peminjaman guru = buku panduan guru
+                                                $bukuTitles = $overdue->details->map(function($detail) {
+                                                    return $detail->bukuPanduanGuru->judul ?? 'Buku tidak ditemukan';
+                                                })->join(', ');
+                                                $peminjamNama = $overdue->guru->nama ?? 'Guru tidak ditemukan';
+                                                $peminjamInfo = ''; // Guru tidak punya kelas
+                                                $badgeColor = 'badge-warning';
+                                                $badgeText = 'Guru';
+                                            } else {
+                                                // Untuk peminjaman siswa = buku biasa
+                                                $bukuTitles = $overdue->details->map(function($detail) {
+                                                    return $detail->kodeBuku->buku->judul ?? 'Buku tidak ditemukan';
+                                                })->join(', ');
+                                                $peminjamNama = $overdue->siswa->name ?? 'Siswa tidak ditemukan';
+                                                $peminjamInfo = $overdue->siswa->kelas ?? '';
+                                                $badgeColor = 'badge-danger';
+                                                $badgeText = 'Overdue';
+                                            }
                                         ?>
                                         <strong><?php echo e($bukuTitles ?: 'Buku tidak ditemukan'); ?></strong><br>
-                                        <small class="text-muted"><?php echo e($overdue->siswa->name ?? 'Siswa tidak ditemukan'); ?> - <?php echo e($overdue->siswa->kelas ?? ''); ?></small><br>
+                                        <small class="text-muted"><?php echo e($peminjamNama); ?><?php if($peminjamInfo): ?> - <?php echo e($peminjamInfo); ?><?php endif; ?></small><br>
                                         <small class="text-danger">
                                             <i class="fas fa-clock"></i>
                                             <?php
@@ -356,7 +375,7 @@
                                             (Terlambat <?php echo e($selisihHari); ?> Hari)
                                         </small>
                                     </div>
-                                    <span class="badge badge-danger">Overdue</span>
+                                    <span class="badge <?php echo e($badgeColor); ?>"><?php echo e($badgeText); ?></span>
                                 </div>
                             </div>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>

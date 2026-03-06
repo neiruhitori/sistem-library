@@ -55,6 +55,11 @@
                               </p>
                           </a>
                       </li>
+                      
+                      <!-- MASTER DATA Section -->
+                      <li class="nav-header"
+                          style="color: #ffffff; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">
+                          Master Data</li>
                       <li class="nav-item">
                           <a href="/siswa" class="nav-link <?php echo e(Request::is('siswa') ? 'active' : ''); ?>">
                               <i class="nav-icon fas fa-users"></i>
@@ -63,13 +68,26 @@
                               </p>
                           </a>
                       </li>
+                      <li class="nav-item">
+                          <a href="/guru" class="nav-link <?php echo e(Request::is('guru*') ? 'active' : ''); ?>">
+                              <i class="nav-icon fas fa-chalkboard-teacher"></i>
+                              <p>
+                                  Guru
+                              </p>
+                          </a>
+                      </li>
+                      
+                      <!-- DATA SISWA Section -->
+                      <li class="nav-header"
+                          style="color: #ffffff; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">
+                          Data Siswa</li>
                       <li
-                          class="nav-item <?php echo e(Request::is('bukutahunan') ? 'menu-open' : ''); ?> <?php echo e(Request::is('bukuharian') ? 'menu-open' : ''); ?>">
+                          class="nav-item <?php echo e(Request::is('bukuharian') ? 'menu-open' : ''); ?> <?php echo e(Request::is('bukutahunan') ? 'menu-open' : ''); ?>">
                           <a href="#"
-                              class="nav-link <?php echo e(Request::is('bukutahunan') ? 'active' : ''); ?> <?php echo e(Request::is('bukuharian') ? 'active' : ''); ?>">
+                              class="nav-link <?php echo e(Request::is('bukuharian') ? 'active' : ''); ?> <?php echo e(Request::is('bukutahunan') ? 'active' : ''); ?>">
                               <i class="nav-icon fas fa-book"></i>
                               <p>
-                                  Buku
+                                  Buku Siswa
                                   <i class="fas fa-angle-left right"></i>
                               </p>
                           </a>
@@ -92,14 +110,13 @@
                               </li>
                           </ul>
                       </li>
-                      
                       <li
                           class="nav-item <?php echo e(Request::is('peminjamanharian') ? 'menu-open' : ''); ?> <?php echo e(Request::is('pengembalianharian') ? 'menu-open' : ''); ?>">
                           <a href="#"
                               class="nav-link <?php echo e(Request::is('peminjamanharian') ? 'active' : ''); ?> <?php echo e(Request::is('pengembalianharian') ? 'active' : ''); ?>">
-                              <i class="nav-icon fas fa-table"></i>
+                              <i class="nav-icon fas fa-exchange-alt"></i>
                               <p>
-                                  Data Harian
+                                  Transaksi Harian
                                   <i class="fas fa-angle-left right"></i>
                               </p>
                           </a>
@@ -108,7 +125,7 @@
                                   <a href="/peminjamanharian"
                                       class="nav-link <?php echo e(Request::is('peminjamanharian') ? 'active' : ''); ?>">
                                       <i class="far fa-circle nav-icon"></i>
-                                      <p>Data Peminjaman</p>
+                                      <p>Peminjaman</p>
                                   </a>
                               </li>
                           </ul>
@@ -117,7 +134,7 @@
                                   <a href="/pengembalianharian"
                                       class="nav-link <?php echo e(Request::is('pengembalianharian') ? 'active' : ''); ?>">
                                       <i class="far fa-circle nav-icon"></i>
-                                      <p>Data Pengembalian</p>
+                                      <p>Pengembalian</p>
                                   </a>
                               </li>
                           </ul>
@@ -126,9 +143,9 @@
                           class="nav-item <?php echo e(Request::is('peminjamantahunan') ? 'menu-open' : ''); ?> <?php echo e(Request::is('pengembaliantahunan') ? 'menu-open' : ''); ?>">
                           <a href="#"
                               class="nav-link <?php echo e(Request::is('peminjamantahunan') ? 'active' : ''); ?> <?php echo e(Request::is('pengembaliantahunan') ? 'active' : ''); ?>">
-                              <i class="nav-icon far fa-calendar"></i>
+                              <i class="nav-icon fas fa-calendar-alt"></i>
                               <p>
-                                  Data Tahunan
+                                  Transaksi Tahunan
                                   <i class="fas fa-angle-left right"></i>
                               </p>
                           </a>
@@ -137,7 +154,7 @@
                                   <a href="/peminjamantahunan"
                                       class="nav-link <?php echo e(Request::is('peminjamantahunan') ? 'active' : ''); ?>">
                                       <i class="far fa-circle nav-icon"></i>
-                                      <p>Data Peminjaman</p>
+                                      <p>Peminjaman</p>
                                   </a>
                               </li>
                           </ul>
@@ -146,10 +163,59 @@
                                   <a href="/pengembaliantahunan"
                                       class="nav-link <?php echo e(Request::is('pengembaliantahunan') ? 'active' : ''); ?>">
                                       <i class="far fa-circle nav-icon"></i>
+                                      <p>Pengembalian</p>
+                                  </a>
+                              </li>
+                          </ul>
+                      </li>
+                      
+                      <!-- DATA GURU Section -->
+                      <li class="nav-header"
+                          style="color: #ffffff; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">
+                          Data Guru</li>
+                      <li class="nav-item">
+                          <a href="/bukupanduanguru"
+                              class="nav-link <?php echo e(Request::is('bukupanduanguru*') ? 'active' : ''); ?>">
+                              <i class="nav-icon fas fa-book-reader"></i>
+                              <p>
+                                  Buku Panduan Guru
+                              </p>
+                          </a>
+                      </li>
+                      <li
+                          class="nav-item <?php echo e(Request::is('peminjamanguru') ? 'menu-open' : ''); ?> <?php echo e(Request::is('pengembalianguru') ? 'menu-open' : ''); ?>">
+                          <a href="#"
+                              class="nav-link <?php echo e(Request::is('peminjamanguru') ? 'active' : ''); ?> <?php echo e(Request::is('pengembalianguru') ? 'active' : ''); ?>">
+                              <i class="nav-icon fas fa-exchange-alt"></i>
+                              <p>
+                                  Transaksi Guru
+                                  <i class="fas fa-angle-left right"></i>
+                              </p>
+                          </a>
+                          <ul class="nav nav-treeview">
+                              <li class="nav-item">
+                                  <a href="/peminjamanguru"
+                                      class="nav-link <?php echo e(Request::is('peminjamanguru') ? 'active' : ''); ?>">
+                                      <i class="far fa-circle nav-icon"></i>
+                                      <p>Data Peminjaman</p>
+                                  </a>
+                              </li>
+                          </ul>
+                          <ul class="nav nav-treeview">
+                              <li class="nav-item">
+                                  <a href="/pengembalianguru"
+                                      class="nav-link <?php echo e(Request::is('pengembalianguru') ? 'active' : ''); ?>">
+                                      <i class="far fa-circle nav-icon"></i>
                                       <p>Data Pengembalian</p>
                                   </a>
                               </li>
                           </ul>
+                      </li>
+                      
+                      <!-- LAPORAN Section -->
+                      <li class="nav-header"
+                          style="color: #ffffff; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">
+                          Laporan</li>
                       <li
                           class="nav-item <?php echo e(Request::is('kelas/7a') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7b') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7c') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7d') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7e') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7f') ? 'menu-open' : ''); ?> <?php echo e(Request::is('kelas/7g') ? 'menu-open' : ''); ?>
 
@@ -395,10 +461,10 @@
                           </ul>
                       </li>
                       <li
-                          class="nav-item <?php echo e(Request::is('catatanharian') ? 'menu-open' : ''); ?> <?php echo e(Request::is('catatantahunan') ? 'menu-open' : ''); ?>">
+                          class="nav-item <?php echo e(Request::is('catatanharian') ? 'menu-open' : ''); ?> <?php echo e(Request::is('catatantahunan') ? 'menu-open' : ''); ?> <?php echo e(Request::is('catatanguru') ? 'menu-open' : ''); ?>">
                           <a href="#"
-                              class="nav-link  <?php echo e(Request::is('catatanharian') ? 'active' : ''); ?> <?php echo e(Request::is('catatantahunan') ? 'active' : ''); ?>">
-                              <i class="nav-icon fas fa-pencil-alt"></i>
+                              class="nav-link  <?php echo e(Request::is('catatanharian') ? 'active' : ''); ?> <?php echo e(Request::is('catatantahunan') ? 'active' : ''); ?> <?php echo e(Request::is('catatanguru') ? 'active' : ''); ?>">
+                              <i class="nav-icon fas fa-file-invoice-dollar"></i>
                               <p>
                                   Catatan Denda
                                   <i class="fas fa-angle-left right"></i>
@@ -409,7 +475,7 @@
                                   <a href="/catatanharian"
                                       class="nav-link <?php echo e(Request::is('catatanharian') ? 'active' : ''); ?>">
                                       <i class="far fa-circle nav-icon"></i>
-                                      <p>Harian</p>
+                                      <p>Denda Harian</p>
                                   </a>
                               </li>
                           </ul>
@@ -418,14 +484,25 @@
                                   <a href="/catatantahunan"
                                       class="nav-link <?php echo e(Request::is('catatantahunan') ? 'active' : ''); ?>">
                                       <i class="far fa-circle nav-icon"></i>
-                                      <p>Tahunan</p>
+                                      <p>Denda Tahunan</p>
+                                  </a>
+                              </li>
+                          </ul>
+                          <ul class="nav nav-treeview">
+                              <li class="nav-item">
+                                  <a href="/catatanguru"
+                                      class="nav-link <?php echo e(Request::is('catatanguru') ? 'active' : ''); ?>">
+                                      <i class="far fa-circle nav-icon"></i>
+                                      <p>Denda Guru</p>
                                   </a>
                               </li>
                           </ul>
                       </li>
+                      
+                      <!-- PENGATURAN Section -->
                       <li class="nav-header"
-                          style="color: #6c757d; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">
-                          Lainnya</li>
+                          style="color: #ffffff; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">
+                          Pengaturan</li>
                       <li class="nav-item">
                           <a href="<?php echo e(route('periode.index')); ?>"
                               class="nav-link <?php echo e(Request::is('periode*') ? 'active' : ''); ?>">

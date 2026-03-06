@@ -3,14 +3,19 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\GuruController;
+use App\Http\Controllers\BukuPanduanGuruController;
 use App\Http\Controllers\PeriodeController;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\PeminjamanHarianController;
 use App\Http\Controllers\PengembalianHarianController;
 use App\Http\Controllers\PeminjamanTahunanController;
 use App\Http\Controllers\PengembalianTahunanController;
+use App\Http\Controllers\PeminjamanGuruController;
+use App\Http\Controllers\PengembalianGuruController;
 use App\Http\Controllers\CatatanHarianController;
 use App\Http\Controllers\CatatanTahunanController;
+use App\Http\Controllers\CatatanGuruController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KelasController;
@@ -48,6 +53,22 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/siswa/{id}/print-card-png', [SiswaController::class, 'printCardPNG'])->name('siswa.print.card.png');
     Route::resource('siswa', SiswaController::class);
 
+    // Guru
+    Route::get('/guru/export-pdf', [GuruController::class, 'exportPDF'])->name('guru.export.pdf');
+    Route::get('/guru/download-template', [GuruController::class, 'downloadTemplate'])->name('guru.download.template');
+    Route::post('/guru/import', [GuruController::class, 'import'])->name('guru.import');
+    Route::delete('/guru/hapussemua', [GuruController::class, 'hapussemua'])->name('guru.hapussemua');
+    Route::post('/guru/bulk-update-status', [GuruController::class, 'bulkUpdateStatus'])->name('guru.bulkUpdateStatus');
+    Route::resource('guru', GuruController::class);
+
+    // Buku Panduan Guru
+    Route::get('/bukupanduanguru/export-pdf', [BukuPanduanGuruController::class, 'exportPDF'])->name('bukupanduanguru.export.pdf');
+    Route::get('/bukupanduanguru/download-template', [BukuPanduanGuruController::class, 'downloadTemplate'])->name('bukupanduanguru.download.template');
+    Route::post('/bukupanduanguru/import', [BukuPanduanGuruController::class, 'import'])->name('bukupanduanguru.import');
+    Route::delete('/bukupanduanguru/hapussemua', [BukuPanduanGuruController::class, 'hapussemua'])->name('bukupanduanguru.hapussemua');
+    Route::post('/bukupanduanguru/{id}/toggle-status', [BukuPanduanGuruController::class, 'toggleStatus'])->name('bukupanduanguru.toggle');
+    Route::resource('bukupanduanguru', BukuPanduanGuruController::class);
+
     // Buku
     Route::get('/bukuharian', [BukuController::class, 'indexHarian'])->name('buku.harian');
     Route::get('/bukutahunan', [BukuController::class, 'indexTahunan'])->name('buku.tahunan');
@@ -76,6 +97,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pengembaliantahunan', [PengembalianTahunanController::class, 'index'])->name('pengembaliantahunan.index');
     Route::post('/pengembaliantahunan/{detail}/update', [PengembalianTahunanController::class, 'update'])->name('pengembaliantahunan.update');
 
+    // Peminjaman Guru
+    Route::delete('/peminjamanguru/hapussemua', [PeminjamanGuruController::class, 'hapussemua'])->name('peminjamanguru.hapussemua');
+    Route::resource('peminjamanguru', PeminjamanGuruController::class);
+
+    // Pengembalian Guru
+    Route::get('/pengembalianguru', [PengembalianGuruController::class, 'index'])->name('pengembalianguru.index');
+    Route::put('/pengembalianguru/{detail}/update', [PengembalianGuruController::class, 'update'])->name('pengembalianguru.update');
+
     // Catatan Denda Harian
     Route::get('/catatanharian', [CatatanHarianController::class, 'index'])->name('catatanharian.index');
     Route::get('/catatanharian/{id}', [CatatanHarianController::class, 'show'])->name('catatanharian.show');
@@ -87,6 +116,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/catatantahunan/{id}', [CatatanTahunanController::class, 'show'])->name('catatantahunan.show');
     Route::post('/catatantahunan/{id}/process-payment', [CatatanTahunanController::class, 'processPayment'])->name('catatantahunan.processPayment');
     Route::get('/catatantahunan/{id}/export', [CatatanTahunanController::class, 'export'])->name('catatantahunan.export');
+
+    // Catatan Denda Guru
+    Route::get('/catatanguru', [CatatanGuruController::class, 'index'])->name('catatanguru.index');
+    Route::get('/catatanguru/{id}', [CatatanGuruController::class, 'show'])->name('catatanguru.show');
+    Route::post('/catatanguru/{id}/bayar', [CatatanGuruController::class, 'bayar'])->name('catatanguru.bayar');
+    Route::put('/catatanguru/{id}', [CatatanGuruController::class, 'update'])->name('catatanguru.update');
 
     // Kelas Routes
     Route::get('/kelas/{kelas}/cetak-pdf', [KelasController::class, 'cetakPDF'])->name('kelas.cetak-pdf');

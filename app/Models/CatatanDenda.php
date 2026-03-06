@@ -12,15 +12,20 @@ class CatatanDenda extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
         'siswas_id',
+        'gurus_id',
         'tipe_peminjaman',
         'peminjaman_harians_id',
         'peminjaman_tahunans_id',
+        'peminjaman_gurus_id',
         'referensi_id',
         'jenis_denda',
         'jumlah',
         'keterangan',
         'tanggal_denda',
         'status',
+        'snap_token',
+        'order_id',
+        'tanggal_bayar',
         'handled_by_user_id',
         'approved_by_user_id'
     ];
@@ -31,6 +36,11 @@ class CatatanDenda extends Model
         return $this->belongsTo(Siswa::class, 'siswas_id');
     }
 
+    public function guru()
+    {
+        return $this->belongsTo(Guru::class, 'gurus_id');
+    }
+
     public function peminjaman()
     {
         return $this->belongsTo(PeminjamanHarian::class, 'peminjaman_harians_id');
@@ -39,6 +49,11 @@ class CatatanDenda extends Model
     public function peminjamantahunan()
     {
         return $this->belongsTo(PeminjamanTahunan::class, 'peminjaman_tahunans_id');
+    }
+
+    public function peminjamanGuru()
+    {
+        return $this->belongsTo(PeminjamanGuru::class, 'peminjaman_gurus_id');
     }
 
     // User yang menangani pengembalian/denda
