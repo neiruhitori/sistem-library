@@ -214,8 +214,15 @@ class DashboardController extends Controller
                 ->where('status', 'dipinjam')
                 ->limit(3)
                 ->get();
-                
-            $overdueBooks = $overdueBooksHarian->merge($overdueBooksTaghunan)
+
+            $overdueBooksGuru = \App\Models\PeminjamanGuru::with(['guru', 'details.bukuPanduanGuru'])
+                ->where('user_id', $user->id)
+                ->whereDate('tanggal_kembali', '<', now())
+                ->where('status', 'dipinjam')
+                ->limit(3)
+                ->get();
+
+            $overdueBooks = $overdueBooksHarian->merge($overdueBooksTaghunan)->merge($overdueBooksGuru)
                 ->sortBy('tanggal_kembali')
                 ->take(5);
             

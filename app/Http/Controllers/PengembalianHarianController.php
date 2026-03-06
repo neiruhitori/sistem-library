@@ -111,8 +111,14 @@ class PengembalianHarianController extends Controller
                     'keterangan' => "Buku rusak saat pengembalian - Jenis: $jenisKerusakan",
                 ];
                 $dendaTotal += 10000;
-                $detail->status = 'rusak';
+                // Status tetap 'dikembalikan', bukan 'rusak' (enum tidak support)
+                $detail->status = 'dikembalikan';
                 $keteranganList[] = "Buku rusak ($jenisKerusakan)";
+            }
+
+            // ✅ 4. Set status default untuk kondisi baik
+            if ($kondisi === 'baik') {
+                $detail->status = 'dikembalikan';
             }
 
             $detail->save();

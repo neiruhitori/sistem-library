@@ -47,7 +47,23 @@ class PeminjamanHarianController extends Controller
                     foreach ($row->details as $detail) {
                         $kode = $detail->kodeBuku->kode_buku ?? '???';
                         $judul = $detail->kodeBuku->buku->judul ?? '-';
-                        $html .= '<li><div class="mb-1">[' . $kode . '] ' . $judul . '</div></li>';
+
+                    // Badge color based on detail status
+                    $badgeClass = 'badge-secondary';
+                    if ($detail->status === 'dikembalikan') {
+                        $badgeClass = 'badge-success';
+                    } elseif ($detail->status === 'dipinjam') {
+                        $badgeClass = 'badge-warning';
+                    } elseif ($detail->status === 'hilang') {
+                        $badgeClass = 'badge-danger';
+                    }
+
+                    $statusText = ucfirst($detail->status ?? 'dipinjam');
+
+                    $html .= '<li><div class="mb-1">';
+                    $html .= '<span class="badge ' . $badgeClass . '">[' . $kode . ']</span> ';
+                    $html .= $judul . ' <small class="text-muted">(' . $statusText . ')</small>';
+                    $html .= '</div></li>';
                     }
                     $html .= '</ul>';
                     return $html;
