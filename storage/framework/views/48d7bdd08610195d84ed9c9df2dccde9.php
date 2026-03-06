@@ -1,6 +1,6 @@
 
 
-<?php $__env->startSection('title', 'Edit Periode Tahun Ajaran'); ?>
+<?php $__env->startSection('title', 'Edit Penerimaan Barang'); ?>
 
 <?php $__env->startSection('contents'); ?>
     <div class="content-header mx-auto mt-3" style="max-width: 98%;">
@@ -8,8 +8,8 @@
             <div class="row mb-2 align-items-center">
                 <div class="col-sm-6">
                     <h1 class="m-0">
-                        <i class="fas fa-edit text-warning" style="font-size:2rem;"></i>
-                        <span style="font-size:2rem;">Edit Periode</span>
+                        <i class="fas fa-edit text-primary" style="font-size:2rem;"></i>
+                        <span style="font-size:2rem;">Edit Penerimaan Barang</span>
                     </h1>
                 </div>
                 <div class="col-sm-6">
@@ -22,9 +22,9 @@
                             </a>
                         </li>
                         <li class="breadcrumb-item">
-                            <a href="<?php echo e(route('periode.index')); ?>">
+                            <a href="<?php echo e(route('penerimaanbarang.index')); ?>">
                                 <span class="badge badge-info" style="font-size:1.1rem;">
-                                    <i class="fas fa-calendar-alt"></i> Periode
+                                    <i class="fas fa-box"></i> Penerimaan Barang
                                 </span>
                             </a>
                         </li>
@@ -67,94 +67,23 @@
             <?php endif; ?>
 
             <div class="card shadow">
-                <div class="card-header bg-warning text-white">
+                <div class="card-header bg-primary text-white">
                     <h3 class="card-title mb-0">
-                        <i class="fas fa-edit"></i> Form Edit Periode Tahun Ajaran
+                        <i class="fas fa-edit"></i> Form Edit Penerimaan Barang
                     </h3>
                 </div>
-                <form action="<?php echo e(route('periode.update', $periode->id)); ?>" method="POST">
+                <form action="<?php echo e(route('penerimaanbarang.update', $penerimaanBarang->id)); ?>" method="POST">
                     <?php echo csrf_field(); ?>
                     <?php echo method_field('PUT'); ?>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="tahun_ajaran">
-                                        Tahun Ajaran <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="text" 
-                                           class="form-control <?php $__errorArgs = ['tahun_ajaran'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>" 
-                                           id="tahun_ajaran"
-                                           name="tahun_ajaran" 
-                                           placeholder="Contoh: 2024/2025"
-                                           value="<?php echo e(old('tahun_ajaran', $periode->tahun_ajaran)); ?>"
-                                           required>
-                                    <?php $__errorArgs = ['tahun_ajaran'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
-                                    <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="semester">
-                                        Semester <span class="text-danger">*</span>
-                                    </label>
-                                    <select class="form-control <?php $__errorArgs = ['semester'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>" 
-                                            id="semester"
-                                            name="semester" 
-                                            required>
-                                        <option value="">-- Pilih Semester --</option>
-                                        <option value="Ganjil" <?php echo e(old('semester', $periode->semester) == 'Ganjil' ? 'selected' : ''); ?>>
-                                            Ganjil (Juli - Desember)
-                                        </option>
-                                        <option value="Genap" <?php echo e(old('semester', $periode->semester) == 'Genap' ? 'selected' : ''); ?>>
-                                            Genap (Januari - Juni)
-                                        </option>
-                                    </select>
-                                    <?php $__errorArgs = ['semester'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
-                                    <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="tanggal_mulai">
-                                        Tanggal Mulai <span class="text-danger">*</span>
+                                    <label for="tanggal_terima">
+                                        Tanggal Terima Barang <span class="text-danger">*</span>
                                     </label>
                                     <input type="date" 
-                                           class="form-control <?php $__errorArgs = ['tanggal_mulai'];
+                                           class="form-control <?php $__errorArgs = ['tanggal_terima'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -162,11 +91,11 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                           id="tanggal_mulai"
-                                           name="tanggal_mulai" 
-                                           value="<?php echo e(old('tanggal_mulai', $periode->tanggal_mulai->format('Y-m-d'))); ?>"
+                                           id="tanggal_terima"
+                                           name="tanggal_terima" 
+                                           value="<?php echo e(old('tanggal_terima', $penerimaanBarang->tanggal_terima === '-' ? '' : $penerimaanBarang->tanggal_terima)); ?>"
                                            required>
-                                    <?php $__errorArgs = ['tanggal_mulai'];
+                                    <?php $__errorArgs = ['tanggal_terima'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -181,11 +110,11 @@ unset($__errorArgs, $__bag); ?>
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="tanggal_selesai">
-                                        Tanggal Selesai <span class="text-danger">*</span>
+                                    <label for="tahun">
+                                        Tahun <span class="text-danger">*</span>
                                     </label>
-                                    <input type="date" 
-                                           class="form-control <?php $__errorArgs = ['tanggal_selesai'];
+                                    <input type="number" 
+                                           class="form-control <?php $__errorArgs = ['tahun'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -193,11 +122,14 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                           id="tanggal_selesai"
-                                           name="tanggal_selesai" 
-                                           value="<?php echo e(old('tanggal_selesai', $periode->tanggal_selesai->format('Y-m-d'))); ?>"
+                                           id="tahun"
+                                           name="tahun" 
+                                           placeholder="Contoh: 2024"
+                                           value="<?php echo e(old('tahun', $penerimaanBarang->tahun)); ?>"
+                                           min="1900"
+                                           max="<?php echo e(date('Y') + 1); ?>"
                                            required>
-                                    <?php $__errorArgs = ['tanggal_selesai'];
+                                    <?php $__errorArgs = ['tahun'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -214,33 +146,115 @@ unset($__errorArgs, $__bag); ?>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" 
-                                               class="custom-control-input" 
-                                               id="is_active" 
-                                               name="is_active"
-                                               value="1"
-                                               <?php echo e(old('is_active', $periode->is_active) ? 'checked' : ''); ?>>
-                                        <label class="custom-control-label" for="is_active">
-                                            Set sebagai periode aktif
-                                        </label>
-                                    </div>
-                                    <small class="form-text text-muted">
-                                        <i class="fas fa-info-circle"></i>
-                                        Jika dicentang, periode lain akan otomatis menjadi tidak aktif
-                                    </small>
+                                    <label for="nama_barang">
+                                        Nama Barang <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control <?php $__errorArgs = ['nama_barang'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                           id="nama_barang"
+                                           name="nama_barang" 
+                                           placeholder="Masukkan nama barang"
+                                           value="<?php echo e(old('nama_barang', $penerimaanBarang->nama_barang)); ?>"
+                                           required>
+                                    <?php $__errorArgs = ['nama_barang'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="nama_pengarang">
+                                        Nama Pengarang <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control <?php $__errorArgs = ['nama_pengarang'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                           id="nama_pengarang"
+                                           name="nama_pengarang" 
+                                           placeholder="Masukkan nama pengarang"
+                                           value="<?php echo e(old('nama_pengarang', $penerimaanBarang->nama_pengarang)); ?>"
+                                           required>
+                                    <?php $__errorArgs = ['nama_pengarang'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="penerbit">
+                                        Penerbit <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control <?php $__errorArgs = ['penerbit'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
+                                           id="penerbit"
+                                           name="penerbit" 
+                                           placeholder="Masukkan nama penerbit"
+                                           value="<?php echo e(old('penerbit', $penerimaanBarang->penerbit)); ?>"
+                                           required>
+                                    <?php $__errorArgs = ['penerbit'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="card-footer">
-                        <button type="submit" class="btn btn-warning">
-                            <i class="fas fa-save"></i> Update
-                        </button>
-                        <a href="<?php echo e(route('periode.index')); ?>" class="btn btn-secondary">
-                            <i class="fas fa-times"></i> Batal
-                        </a>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Update
+                                </button>
+                                <a href="<?php echo e(route('penerimaanbarang.index')); ?>" class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Batal
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -248,4 +262,4 @@ unset($__errorArgs, $__bag); ?>
     </div>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\sistem-library\resources\views/periode/edit.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\sistem-library\resources\views/penerimaanbarang/edit.blade.php ENDPATH**/ ?>

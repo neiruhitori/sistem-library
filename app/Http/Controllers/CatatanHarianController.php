@@ -54,7 +54,7 @@ class CatatanHarianController extends Controller
     {
         $catatan = CatatanDenda::with([
             'siswa',
-            'peminjaman.details.kodeBuku.buku',
+            'peminjaman.details.kodeBuku.buku.penerbit',
             'handledByUser' // Tambahkan relasi untuk user yang menangani
         ])->findOrFail($id);
 
@@ -136,7 +136,7 @@ class CatatanHarianController extends Controller
 
         $catatan = CatatanDenda::with([
             'siswa',
-            'peminjaman.details.kodeBuku.buku',
+            'peminjaman.details.kodeBuku.buku.penerbit',
             'handledByUser' // Tambahkan relasi untuk user yang menangani
         ])->findOrFail($id);
 

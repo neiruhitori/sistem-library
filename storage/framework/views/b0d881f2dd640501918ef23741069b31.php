@@ -114,41 +114,160 @@ unset($__errorArgs, $__bag); ?>
                             </div>
                             <?php endif; ?>
 
+                            <div class="col-md-6">
+                                <label for="penerbit_id" class="form-label">Penerbit</label>
+                                <select class="form-control <?php $__errorArgs = ['penerbit_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" name="penerbit_id" id="penerbit_id">
+                                    <option value="">-- Pilih Penerbit --</option>
+                                    <?php $__currentLoopData = $penerbits; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $penerbit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($penerbit->id); ?>" <?php echo e(old('penerbit_id', $buku->penerbit_id ?? '') == $penerbit->id ? 'selected' : ''); ?>>
+                                            <?php echo e($penerbit->penerbit); ?> - <?php echo e($penerbit->nama_barang); ?>
+
+                                        </option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
+                                <?php $__errorArgs = ['penerbit_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                            </div>
+
                             <div class="col-12">
-                                <label class="form-label">Kode Buku (bisa lebih dari satu)</label>
+                                <label class="form-label fw-bold">Kode Buku <span class="text-danger">*</span></label>
+                                <small class="text-muted d-block mb-3">
+                                    <i class="fas fa-info-circle"></i> Masukkan kode awal dan kode akhir yang akan digabungkan menjadi kode buku. 
+                                    <strong>Contoh:</strong> Kode Awal "BK" + Kode Akhir "001" = <strong>"BK - 001"</strong>. Boleh mengisi salah satu saja.
+                                </small>
                                 <div id="kode-buku-container">
-                                    <?php if(old('kode_buku')): ?>
-                                        <?php $__currentLoopData = old('kode_buku'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kode): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <div class="input-group mb-2 kode-buku-item">
-                                                <input type="text" name="kode_buku[]" class="form-control"
-                                                    value="<?php echo e($kode); ?>" placeholder="Kode Buku">
-                                                <button type="button" class="btn btn-danger btn-sm"
-                                                    onclick="hapusKodeBuku(this)">❌</button>
+                                    <?php if(old('kode_awal')): ?>
+                                        <?php $__currentLoopData = old('kode_awal'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $kodeAwal): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <div class="kode-buku-item mb-3">
+                                                <div class="card border-light shadow-sm">
+                                                    <div class="card-body py-2">
+                                                        <div class="row align-items-center">
+                                                            <div class="col-md-5">
+                                                                <label class="small text-muted mb-1">Kode Awal</label>
+                                                                <input type="text" name="kode_awal[]" class="form-control" 
+                                                                    value="<?php echo e($kodeAwal); ?>" placeholder="Contoh: BK">
+                                                            </div>
+                                                            <div class="col-md-5">
+                                                                <label class="small text-muted mb-1">Kode Akhir</label>
+                                                                <input type="text" name="kode_akhir[]" class="form-control" 
+                                                                    value="<?php echo e(old('kode_akhir')[$index] ?? ''); ?>" placeholder="Contoh: 001">
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <label class="small text-muted mb-1 d-block">&nbsp;</label>
+                                                                <button type="button" class="btn btn-danger btn-sm" 
+                                                                    onclick="hapusKodeBuku(this)" title="Hapus">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    <?php elseif(isset($buku)): ?>
-                                        <?php $__currentLoopData = $buku->kodeBuku; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kode): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <div class="input-group mb-2 kode-buku-item">
-                                                <input type="text" name="kode_buku[]" class="form-control"
-                                                    value="<?php echo e($kode->kode_buku); ?>" placeholder="Kode Buku">
-                                                <button type="button" class="btn btn-danger btn-sm"
-                                                    onclick="hapusKodeBuku(this)">❌</button>
+                                    <?php elseif(isset($buku) && $buku->kodeBuku->isNotEmpty()): ?>
+                                        <?php $__currentLoopData = $buku->kodeBuku; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kodeBuku): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <?php
+                                                // Split kode_buku by ' - ' to get kode_awal and kode_akhir
+                                                $parts = explode(' - ', $kodeBuku->kode_buku);
+                                                $kodeAwal = $parts[0] ?? '';
+                                                $kodeAkhir = $parts[1] ?? '';
+                                            ?>
+                                            <div class="kode-buku-item mb-3">
+                                                <div class="card border-light shadow-sm">
+                                                    <div class="card-body py-2">
+                                                        <div class="row align-items-center">
+                                                            <div class="col-md-5">
+                                                                <label class="small text-muted mb-1">Kode Awal</label>
+                                                                <input type="text" name="kode_awal[]" class="form-control" 
+                                                                    value="<?php echo e($kodeAwal); ?>" placeholder="Contoh: BK">
+                                                            </div>
+                                                            <div class="col-md-5">
+                                                                <label class="small text-muted mb-1">Kode Akhir</label>
+                                                                <input type="text" name="kode_akhir[]" class="form-control" 
+                                                                    value="<?php echo e($kodeAkhir); ?>" placeholder="Contoh: 001">
+                                                            </div>
+                                                            <div class="col-md-2 text-center">
+                                                                <label class="small text-muted mb-1 d-block">&nbsp;</label>
+                                                                <button type="button" class="btn btn-danger btn-sm" 
+                                                                    onclick="hapusKodeBuku(this)" title="Hapus">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     <?php else: ?>
-                                        <div class="input-group mb-2 kode-buku-item">
-                                            <input type="text" name="kode_buku[]" class="form-control"
-                                                placeholder="Kode Buku">
-                                            <button type="button" class="btn btn-danger btn-sm"
-                                                onclick="hapusKodeBuku(this)">❌</button>
+                                        <div class="kode-buku-item mb-3">
+                                            <div class="card border-light shadow-sm">
+                                                <div class="card-body py-2">
+                                                    <div class="row align-items-center">
+                                                        <div class="col-md-5">
+                                                            <label class="small text-muted mb-1">Kode Awal</label>
+                                                            <input type="text" name="kode_awal[]" class="form-control" 
+                                                                placeholder="Contoh: BK">
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <label class="small text-muted mb-1">Kode Akhir</label>
+                                                            <input type="text" name="kode_akhir[]" class="form-control" 
+                                                                placeholder="Contoh: 001">
+                                                        </div>
+                                                        <div class="col-md-2 text-center">
+                                                            <label class="small text-muted mb-1 d-block">&nbsp;</label>
+                                                            <button type="button" class="btn btn-danger btn-sm" 
+                                                                onclick="hapusKodeBuku(this)" title="Hapus range ini">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     <?php endif; ?>
                                 </div>
 
-                                <button type="button" class="btn btn-sm btn-outline-primary mt-1"
-                                    onclick="tambahKodeBuku()">+ Tambah Kode</button>
+                                <button type="button" class="btn btn-sm btn-primary" 
+                                    onclick="tambahKodeBuku()">
+                                    <i class="fas fa-plus-circle"></i> Tambah Kode Buku Lagi
+                                </button>
 
                                 <?php $__errorArgs = ['kode_buku'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                <?php $__errorArgs = ['kode_awal'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="text-danger small mt-1"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                <?php $__errorArgs = ['kode_akhir'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -174,54 +293,6 @@ unset($__errorArgs, $__bag); ?>" name="tahun_terbit"
                                     id="tahun_terbit" placeholder="Masukkan Tahun Terbit"
                                     value="<?php echo e(old('tahun_terbit', $buku->tahun_terbit ?? '')); ?>">
                                 <?php $__errorArgs = ['tahun_terbit'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
-                                <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="isbn" class="form-label">Kode ISBN</label>
-                                <input type="text" class="form-control <?php $__errorArgs = ['isbn'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>"
-                                    name="isbn" id="isbn" placeholder="Masukkan Kode ISBN"
-                                    value="<?php echo e(old('isbn', $buku->isbn ?? '')); ?>">
-                                <?php $__errorArgs = ['isbn'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
-                                <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="kota_cetak" class="form-label">Kota Cetak</label>
-                                <input type="text" class="form-control <?php $__errorArgs = ['kota_cetak'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>"
-                                    name="kota_cetak" id="kota_cetak" placeholder="Masukkan Kota Cetak"
-                                    value="<?php echo e(old('kota_cetak', $buku->kota_cetak ?? '')); ?>">
-                                <?php $__errorArgs = ['kota_cetak'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -326,39 +397,83 @@ unset($__errorArgs, $__bag); ?>
                         </div>
                     </div>
                 </form>
-                
-                <script>
-                    function tambahKodeBuku() {
-                        const container = document.getElementById('kode-buku-container');
-                        const wrapper = document.createElement('div');
-                        wrapper.classList.add('input-group', 'mb-2', 'kode-buku-item');
-
-                        const input = document.createElement('input');
-                        input.type = 'text';
-                        input.name = 'kode_buku[]';
-                        input.placeholder = 'Kode Buku';
-                        input.classList.add('form-control');
-
-                        const btn = document.createElement('button');
-                        btn.type = 'button';
-                        btn.classList.add('btn', 'btn-danger', 'btn-sm');
-                        btn.textContent = '❌';
-                        btn.onclick = function() {
-                            wrapper.remove();
-                        };
-
-                        wrapper.appendChild(input);
-                        wrapper.appendChild(btn);
-                        container.appendChild(wrapper);
-                    }
-
-                    function hapusKodeBuku(el) {
-                        el.closest('.kode-buku-item').remove();
-                    }
-                </script>
             </div>
         </div>
     </div>
 <?php $__env->stopSection(); ?>
+
+<?php $__env->startPush('scripts'); ?>
+    
+    <link rel="stylesheet" href="<?php echo e(asset('AdminLTE-3.2.0/plugins/select2/css/select2.min.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('AdminLTE-3.2.0/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')); ?>">
+
+    
+    <script src="<?php echo e(asset('AdminLTE-3.2.0/plugins/select2/js/select2.full.min.js')); ?>"></script>
+
+    <script>
+        // Wait for DOM and jQuery to be fully loaded
+        $(document).ready(function() {
+            console.log('Initializing Select2...');
+            
+            // Initialize Select2 for penerbit dropdown
+            $('#penerbit_id').select2({
+                theme: 'bootstrap4',
+                placeholder: '-- Pilih Penerbit --',
+                allowClear: true,
+                width: '100%'
+            });
+            
+            console.log('Select2 initialized');
+        });
+
+        // Function to add new kode buku input pair
+        function tambahKodeBuku() {
+            const container = document.getElementById('kode-buku-container');
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('kode-buku-item', 'mb-3');
+
+            wrapper.innerHTML = `
+                <div class="card border-light shadow-sm">
+                    <div class="card-body py-2">
+                        <div class="row align-items-center">
+                            <div class="col-md-5">
+                                <label class="small text-muted mb-1">Kode Awal</label>
+                                <input type="text" name="kode_awal[]" class="form-control" 
+                                    placeholder="Contoh: BK">
+                            </div>
+                            <div class="col-md-5">
+                                <label class="small text-muted mb-1">Kode Akhir</label>
+                                <input type="text" name="kode_akhir[]" class="form-control" 
+                                    placeholder="Contoh: 001">
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <label class="small text-muted mb-1 d-block">&nbsp;</label>
+                                <button type="button" class="btn btn-danger btn-sm" 
+                                    onclick="hapusKodeBuku(this)" title="Hapus">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            container.appendChild(wrapper);
+        }
+
+        // Function to remove kode buku input pair
+        function hapusKodeBuku(el) {
+            const container = document.getElementById('kode-buku-container');
+            const items = container.querySelectorAll('.kode-buku-item');
+            
+            // Prevent removing if only one item remains
+            if (items.length > 1) {
+                el.closest('.kode-buku-item').remove();
+            } else {
+                alert('Minimal harus ada satu kode buku!');
+            }
+        }
+    </script>
+<?php $__env->stopPush(); ?>
 
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\sistem-library\resources\views/buku/form.blade.php ENDPATH**/ ?>

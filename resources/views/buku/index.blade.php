@@ -151,6 +151,12 @@
                         <a href="{{ route('buku.create', ['tipe' => $tipe]) }}" class="btn btn-success">
                             <i class="fas fa-plus"></i> Tambah Buku
                         </a>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#importModal">
+                            <i class="fas fa-file-import"></i> Import Excel
+                        </button>
+                        <a href="{{ route($tipe == 'harian' ? 'buku.harian.downloadTemplate' : 'buku.tahunan.downloadTemplate') }}" class="btn btn-info">
+                            <i class="fas fa-download"></i> Download Template
+                        </a>
                         <form action="{{ route('buku.hapussemua') }}" method="POST"
                             onsubmit="return confirm('Yakin ingin menghapus semua data buku {{ $tipe }}?')"
                             style="display: inline;">
@@ -308,7 +314,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center text-danger">Data buku {{ $tipe }} belum
+                                    <td colspan="{{ $tipe == 'tahunan' ? '9' : '8' }}" class="text-center text-danger">Data buku {{ $tipe }} belum
                                         tersedia.</td>
                                 </tr>
                             @endforelse
@@ -316,6 +322,68 @@
                     </table>
 
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="importModalLabel">
+                        <i class="fas fa-file-import"></i> Import Buku {{ ucfirst($tipe) }} dari Excel
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ route($tipe == 'harian' ? 'buku.harian.import' : 'buku.tahunan.import') }}" method="POST" enctype="multipart/form-data" id="importForm">
+                    @csrf
+                    <div class="modal-body">
+                        @if($tipe == 'tahunan')
+                            <div class="form-group">
+                                <label for="kelas">Pilih Kelas <span class="text-danger">*</span></label>
+                                <select name="kelas" id="kelas" class="form-control" required>
+                                    <option value="">-- Pilih Kelas --</option>
+                                    <option value="7">Kelas 7</option>
+                                    <option value="8">Kelas 8</option>
+                                    <option value="9">Kelas 9</option>
+                                </select>
+                                <small class="form-text text-muted">Pilih kelas terlebih dahulu sebelum upload file</small>
+                            </div>
+                        @endif
+                        
+                        <div id="fileUploadSection" style="{{ $tipe == 'tahunan' ? 'display: none;' : '' }}">
+                            <div class="form-group">
+                                <label for="file">File Excel <span class="text-danger">*</span></label>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="file" name="file" accept=".xlsx,.xls" {{ $tipe == 'harian' ? 'required' : '' }}>
+                                    <label class="custom-file-label" for="file">Pilih file...</label>
+                                </div>
+                                <small class="form-text text-muted">Format: .xlsx atau .xls (maksimal 2MB)</small>
+                            </div>
+                            
+                            <div class="alert alert-info">
+                                <h6><i class="fas fa-info-circle"></i> Ketentuan Import:</h6>
+                                <ul class="mb-0">
+                                    <li><strong>Judul Buku</strong> tidak boleh kosong</li>
+                                    <li><strong>Kode Awal, Kode Akhir, Penulis, Penerbit, Tahun</strong> boleh kosong (akan otomatis menjadi "-")</li>
+                                    <li>Minimal harus ada <strong>Kode Awal</strong> atau <strong>Kode Akhir</strong></li>
+                                    <li>Download template untuk format yang sesuai</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            <i class="fas fa-times"></i> Batal
+                        </button>
+                        <button type="submit" class="btn btn-primary" id="btnImport">
+                            <i class="fas fa-upload"></i> Import
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -382,9 +450,9 @@
             margin: 0;
         }
     </style>
-    @push('scripts')
-        <!-- DataTables & Plugins -->
-        <script src="{{ asset('AdminLTE-3.2.0/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    
+    <!-- DataTables & Plugins -->
+    <script src="{{ asset('AdminLTE-3.2.0/plugins/datatables/jquery.dataTables.min.js') }}"></script>
         <script src="{{ asset('AdminLTE-3.2.0/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
         <script src="{{ asset('AdminLTE-3.2.0/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
         <script src="{{ asset('AdminLTE-3.2.0/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
@@ -397,12 +465,52 @@
         <script src="{{ asset('AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
         <script src="{{ asset('AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
         <script>
-            $(function() {
-                $('#example1').DataTable({
-                    responsive: true,
-                    lengthChange: false,
-                    autoWidth: false,
-                });
+        $(function() {
+            // Initialize DataTable
+            $('#example1').DataTable({
+                responsive: true,
+                lengthChange: false,
+                autoWidth: false,
             });
-        </script>
-    @endpush
+        });
+        
+        // Handle kelas selection for buku tahunan
+        $(document).on('change', '#kelas', function() {
+            var selectedKelas = $(this).val();
+            console.log('Kelas selected:', selectedKelas);
+            
+            if (selectedKelas) {
+                $('#fileUploadSection').slideDown(300);
+                $('#file').prop('required', true);
+                console.log('File section shown, required set to true');
+            } else {
+                $('#fileUploadSection').slideUp(300);
+                $('#file').prop('required', false);
+                $('#file').val('');
+                $('.custom-file-label').text('Pilih file...');
+                console.log('File section hidden, required set to false');
+            }
+        });
+        
+        // Handle file input label change - outside document ready for better reliability
+        $(document).on('change', '#file', function() {
+            var fullPath = $(this).val();
+            console.log('File selected:', fullPath);
+            
+            if (fullPath) {
+                var fileName = fullPath.split('\\').pop();
+                console.log('File name:', fileName);
+                $('#file').next('.custom-file-label').text(fileName);
+            }
+        });
+
+        // Reset form when modal is closed
+        $(document).on('hidden.bs.modal', '#importModal', function () {
+            $('#importForm')[0].reset();
+            $('.custom-file-label').text('Pilih file...');
+            $('#fileUploadSection').hide();
+            $('#file').prop('required', false);
+            console.log('Modal closed, form reset');
+        });
+    </script>
+@endpush

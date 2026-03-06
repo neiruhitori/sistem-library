@@ -54,7 +54,7 @@ class CatatanTahunanController extends Controller
     {
         $catatan = CatatanDenda::with([
             'siswa',
-            'peminjamantahunan.details.kodeBuku.buku',
+            'peminjamantahunan.details.kodeBuku.buku.penerbit',
             'handledByUser' // Tambahkan relasi untuk user yang menangani
         ])->findOrFail($id);
 
@@ -133,7 +133,7 @@ class CatatanTahunanController extends Controller
 
         $catatan = CatatanDenda::with([
             'siswa',
-            'peminjamantahunan.details.kodeBuku.buku',
+            'peminjamantahunan.details.kodeBuku.buku.penerbit',
             'handledByUser' // Tambahkan relasi untuk user yang menangani
         ])->findOrFail($id);
 

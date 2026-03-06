@@ -176,8 +176,8 @@
 
                                         <p class="card-text mb-1">
                                             <small class="text-muted">
-                                                <strong>ISBN:</strong>
-                                                {{ $detail->kodeBuku->buku->isbn ?? '-' }}
+                                                <strong>Penerbit:</strong>
+                                                {{ $detail->kodeBuku->buku->penerbit->penerbit ?? '-' }}
                                             </small>
                                         </p>
 

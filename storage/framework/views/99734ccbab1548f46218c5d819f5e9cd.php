@@ -86,8 +86,7 @@ unset($__errorArgs, $__bag); ?>"
 
                             <div class="col-md-6">
                                 <label for="tahun_terbit" class="form-label">Tahun Terbit</label>
-                                <input type="number" min="1900" max="<?php echo e(date('Y')); ?>"
-                                    class="form-control <?php $__errorArgs = ['tahun_terbit'];
+                                <input type="text" class="form-control <?php $__errorArgs = ['tahun_terbit'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -100,17 +99,10 @@ unset($__errorArgs, $__bag); ?>" name="tahun_terbit"
                             </div>
 
                             <div class="col-md-6">
-                                <label for="isbn" class="form-label">Kode ISBN</label>
-                                <input type="text" class="form-control" name="isbn" id="isbn" 
-                                    placeholder="Tidak ada kode ISBN"
-                                    value="<?php echo e(old('isbn', $buku->isbn ?? '')); ?>" disabled>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="kota_cetak" class="form-label">Kota Cetak</label>
-                                <input type="text" class="form-control" name="kota_cetak" id="kota_cetak" 
-                                    placeholder="Tidak ada kota cetak"
-                                    value="<?php echo e(old('kota_cetak', $buku->kota_cetak ?? '')); ?>" disabled>
+                                <label for="penerbit" class="form-label">Penerbit</label>
+                                <input type="text" class="form-control" name="penerbit" id="penerbit" 
+                                    placeholder="Tidak ada penerbit"
+                                    value="<?php echo e($buku->penerbit->penerbit ?? '-'); ?>" disabled>
                             </div>
 
                             <?php if($tipe == 'tahunan'): ?>

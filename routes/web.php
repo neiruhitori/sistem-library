@@ -15,6 +15,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PenandatanganController;
+use App\Http\Controllers\PenerimaanBarangController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -52,6 +53,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/bukutahunan', [BukuController::class, 'indexTahunan'])->name('buku.tahunan');
     Route::delete('/buku/hapussemua', [BukuController::class, 'hapussemua'])->name('buku.hapussemua');
     Route::post('/buku/{id}/toggle-status', [BukuController::class, 'toggleStatus'])->name('buku.toggle-status');
+    Route::post('/bukuharian/import', [BukuController::class, 'importHarian'])->name('buku.harian.import');
+    Route::get('/bukuharian/download-template', [BukuController::class, 'downloadTemplateHarian'])->name('buku.harian.downloadTemplate');
+    Route::post('/bukutahunan/import', [BukuController::class, 'importTahunan'])->name('buku.tahunan.import');
+    Route::get('/bukutahunan/download-template', [BukuController::class, 'downloadTemplateTahunan'])->name('buku.tahunan.downloadTemplate');
     Route::resource('buku', BukuController::class)->except(['index']);
 
     // Peminjaman Harian
@@ -99,6 +104,11 @@ Route::middleware(['auth'])->group(function () {
     // Penandatangan
     Route::post('/penandatangan/{id}/toggle-active', [PenandatanganController::class, 'toggleActive'])->name('penandatangan.toggle-active');
     Route::resource('penandatangan', PenandatanganController::class);
+
+    // Penerimaan Barang
+    Route::get('/penerimaanbarang/download-template', [PenerimaanBarangController::class, 'downloadTemplate'])->name('penerimaanbarang.download.template');
+    Route::post('/penerimaanbarang/import', [PenerimaanBarangController::class, 'import'])->name('penerimaanbarang.import');
+    Route::resource('penerimaanbarang', PenerimaanBarangController::class);
 });
 
 

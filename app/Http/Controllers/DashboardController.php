@@ -173,13 +173,13 @@ class DashboardController extends Controller
             $topBorrowers = $allBorrowers->sortByDesc('total_peminjaman')->values()->take(5);
 
             // Popular books dari user ini (gabung harian dan tahunan)
-            $popularBooksHarianData = PeminjamanHarianDetail::with('kodeBuku.buku')
+            $popularBooksHarianData = PeminjamanHarianDetail::with('kodeBuku.buku.penerbit')
                 ->whereHas('peminjaman', function($query) use ($user) {
                     $query->where('user_id', $user->id);
                 })
                 ->get();
 
-            $popularBooksTahunanData = PeminjamanTahunanDetail::with('kodeBuku.buku')
+            $popularBooksTahunanData = PeminjamanTahunanDetail::with('kodeBuku.buku.penerbit')
                 ->whereHas('peminjaman', function($query) use ($user) {
                     $query->where('user_id', $user->id);
                 })

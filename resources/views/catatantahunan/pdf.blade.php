@@ -149,7 +149,7 @@
                 <p style="margin: 5px 0;"><strong>Kode Buku</strong> : {{ $detail->kodeBuku->kode_buku ?? '-' }}</p>
                 <p style="margin: 5px 0;"><strong>Penulis</strong> : {{ $detail->kodeBuku->buku->penulis ?? '-' }}</p>
                 <p style="margin: 5px 0;"><strong>Tahun</strong> : {{ $detail->kodeBuku->buku->tahun_terbit ?? '-' }}</p>
-                <p style="margin: 5px 0;"><strong>ISBN</strong> : {{ $detail->kodeBuku->buku->isbn ?? '-' }}</p>
+                <p style="margin: 5px 0;"><strong>Penerbit</strong> : {{ $detail->kodeBuku->buku->penerbit->penerbit ?? '-' }}</p>
                 <p style="margin: 5px 0;"><strong>Kelas Buku</strong> : {{ $detail->kodeBuku->buku->kelas ?? '-' }}</p>
             </div>
         @endif

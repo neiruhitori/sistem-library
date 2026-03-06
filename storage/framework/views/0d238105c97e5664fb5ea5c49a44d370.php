@@ -404,7 +404,7 @@
                                             <span class="badge badge-success float-right"><?php echo e($popular->total_peminjaman); ?>x</span>
                                         </a>
                                         <span class="product-description">
-                                            <?php echo e($popular->kodeBuku->buku->pengarang ?? ''); ?> - <?php echo e($popular->kodeBuku->buku->penerbit ?? ''); ?>
+                                            <?php echo e($popular->kodeBuku->buku->penulis ?? ''); ?> - <?php echo e($popular->kodeBuku->buku->penerbit->penerbit ?? ''); ?>
 
                                         </span>
                                     </div>
